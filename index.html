@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
 <title>ASB Inventory</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#03306b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ASB Inventory">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
@@ -119,8 +125,8 @@ body.light .color-dot{border-color:rgba(0,0,0,.12)}
 .checkout-card.out-of-stock{opacity:.25;pointer-events:none}
 .checkout-card .cc-flash{position:absolute;inset:0;background:var(--accent);opacity:0;transition:opacity .3s;pointer-events:none}.checkout-card.flashing .cc-flash{opacity:.2}
 .checkout-undo{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 24px;background:var(--bg2);border:1px solid var(--accent);border-radius:var(--radius);color:var(--accent);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,.4);display:none}.checkout-undo.show{display:block}
-.session-bar{background:var(--accent-dim);border:1px solid rgba(56,182,255,.2);border-radius:var(--radius);padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
-.session-bar .sb-info{font-size:14px;font-weight:600;color:var(--accent)}.session-bar .sb-sub{font-size:12px;color:var(--text3)}
+
+
 .settings-tabs{display:flex;gap:3px;margin-bottom:16px;flex-wrap:wrap}
 .settings-tabs button{padding:8px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;cursor:pointer}
 .settings-tabs button.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
@@ -153,7 +159,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 .toast{position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:var(--radius);font-size:13px;font-weight:500;z-index:2000;transform:translateY(20px);opacity:0;transition:all .3s;max-width:360px}.toast.show{transform:translateY(0);opacity:1}
 .toast-success{background:var(--accent-dim2);color:var(--accent);border:1px solid rgba(56,182,255,.3)}
 .toast-error{background:var(--red-dim);color:var(--red);border:1px solid rgba(248,113,113,.3)}
-@media print{body{background:#fff!important}.topbar,.toast,.modal-overlay,.checkout-undo,.session-bar{display:none!important}.content{padding:0}.page{display:none!important}#page-print{display:block!important}.print-qr{text-align:center;padding:40px}.print-qr h2{color:#000}.print-qr p{color:#333}}
+@media print{body{background:#fff!important}.topbar,.toast,.modal-overlay,.checkout-undo,.content{padding:0}.page{display:none!important}#page-print{display:block!important}.print-qr{text-align:center;padding:40px}.print-qr h2{color:#000}.print-qr p{color:#333}}
 @media(max-width:768px){.topbar{padding:0 10px;flex-wrap:wrap;height:auto;min-height:52px;padding:6px 10px}.topbar-left{gap:6px}.topbar-nav button{padding:5px 7px;font-size:11px}.topbar-user{display:none}.lang-select{font-size:11px;padding:4px 5px;max-width:90px}.content{padding:14px}.page-title{font-size:18px}.stat-card .stat-value{font-size:20px}.charts-grid,.boxes-grid{grid-template-columns:1fr}.login-card{padding:28px 20px}.items-table th,.items-table td{padding:8px 10px;font-size:12px}.detail-actions{width:100%}.detail-actions .btn{flex:1}.checkout-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}.qr-section{flex-direction:column;text-align:center}}
 @media(max-width:480px){.topbar-brand{font-size:14px}.topbar-brand span{display:none}.stats-row{grid-template-columns:repeat(2,1fr)}.checkout-grid{grid-template-columns:repeat(2,1fr)}}
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
@@ -209,6 +215,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <!-- BOXES -->
 <div class="page" id="page-boxes">
 <div class="page-header"><h2 class="page-title">Boxes</h2><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm" onclick="openFilterLocModal()">📍 Filter</button><button class="btn btn-primary btn-sm" onclick="openAddBoxModal()">+ Add</button></div></div>
+<input type="text" class="co-search" id="boxSearch" placeholder="Search boxes by name or location..." oninput="renderBoxes()">
 <div class="view-toggle"><button class="active" id="viewCards" onclick="setBoxView('cards')">Cards</button><button id="viewTable" onclick="setBoxView('table')">Summary</button></div>
 <div id="boxesList"></div></div>
 
@@ -226,7 +233,6 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <!-- CHECKOUT -->
 <div class="page" id="page-checkout">
 <div class="page-header"><h2 class="page-title">Checkout</h2></div>
-<div id="sessionBar"></div>
 <input type="text" class="co-search" id="coSearch" placeholder="Search items... (type, color, size)" oninput="renderCO()">
 <div class="checkout-filters" id="checkoutFilters"></div>
 <div class="checkout-grid" id="checkoutGrid"></div></div>
@@ -262,7 +268,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="settings-section" id="settings-types"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)">Item Types</h3><button class="btn btn-secondary btn-sm" onclick="openAddTypeModal()">+ Add</button></div><div class="types-grid" id="typesList"></div></div>
 <div class="settings-section" id="settings-locations"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)">Locations</h3><button class="btn btn-secondary btn-sm" onclick="openAddLocModal()">+ Add</button></div><div class="locations-grid" id="locList"></div></div>
 <div class="settings-section" id="settings-users"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)">Users</h3></div><div id="pendingUsers"></div><div class="users-grid" id="usersList"></div></div>
-<div class="settings-section" id="settings-general"><div style="max-width:400px"><div class="form-group"><label>Club Logo URL</label><input type="text" id="sLogo" placeholder="https://..."></div><div class="form-group"><label>Low Stock Threshold</label><input type="number" id="sThreshold" min="1" value="5"></div><button class="btn btn-primary" onclick="saveSettings()" style="width:auto;margin-top:8px">Save</button></div></div></div>
+<div class="settings-section" id="settings-general"><div style="max-width:400px"><div class="form-group"><label>Club Name</label><input type="text" id="sClubName" placeholder="AS Blainville"></div><div class="form-group"><label>Club Logo URL</label><input type="text" id="sLogo" placeholder="https://..."><p style="font-size:11px;color:var(--text3);margin-top:3px">Shown in topbar & login screen</p></div><div class="form-group"><label>App Icon URL (home screen)</label><input type="text" id="sIcon" placeholder="https://... (512x512 PNG)"><p style="font-size:11px;color:var(--text3);margin-top:3px">Icon when added to phone home screen</p></div><div class="form-group"><label>Low Stock Threshold</label><input type="number" id="sThreshold" min="1" value="5"></div><button class="btn btn-primary" onclick="saveSettings()" style="width:auto;margin-top:8px">Save</button></div></div></div>
 
 <div class="page" id="page-print"><div class="print-qr"><h2 id="printBoxName"></h2><p id="printBoxStatus"></p><canvas id="printQrCanvas" width="250" height="250"></canvas><p style="margin-top:10px;font-size:11px;color:#666" id="printBoxId"></p></div></div>
 </div></div>
@@ -292,9 +298,6 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="qty-modal-body"><button onclick="adjQty(-1)">−</button><div class="qty-val" id="qtyVal">1</div><button onclick="adjQty(1)">+</button></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('qtyModal')">Cancel</button><button class="btn btn-primary" onclick="confirmQty()" style="width:auto">Confirm</button></div></div></div>
 
-<div class="modal-overlay" id="sessionModal"><div class="modal"><h2>Start Session</h2>
-<div class="form-group"><label>Event Name</label><input type="text" id="sessionName" placeholder="U8 Pickup Day"></div>
-<div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('sessionModal')">Cancel</button><button class="btn btn-primary" onclick="startSession()" style="width:auto">Start</button></div></div></div>
 
 <div class="modal-overlay" id="snapModal"><div class="modal"><h2>Take Snapshot</h2>
 <p style="font-size:13px;color:var(--text3);margin-bottom:14px">Saves current inventory quantities</p>
@@ -331,7 +334,7 @@ tryIt(10)}
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script>
 const SB=supabase.createClient('https://iuepnofgpivqghcvdgnz.supabase.co','sb_publishable_H78FAZKcfoAdF1o6x2MOxA_VvFA2GDj');
-let U=null,UP=null,D={boxes:[],items:[],colors:[],types:[],locs:[],profiles:[],logs:[],sessions:[],snaps:[],settings:{}};
+let U=null,UP=null,D={boxes:[],items:[],colors:[],types:[],locs:[],profiles:[],logs:[],snaps:[],settings:{}};
 let curBox=null,editBox=null,editItem=null,editColor=null,editType=null,editLoc=null;
 let pendConf=null,lastUndo=null,coFilter='all',boxLocF=null,boxView='cards',lastTID=null,lastCID=null,charts={};
 let qtyPending=null,qtyCount=1;
@@ -352,18 +355,28 @@ if(localStorage.getItem('asb_theme')==='light')document.body.classList.add('ligh
 
 // NAV
 function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('page-'+p).classList.add('active');document.querySelectorAll('.topbar-nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p||(p==='detail'&&b.dataset.page==='boxes')));if(p==='dashboard')loadDash();if(p==='checkout')renderCO();if(p==='history')renderHistory();if(p==='snapshots')renderSnaps();if(p==='settings'){renderColors();renderTypes();renderLocs();if(isSA())renderUsers()}}
-function showSTab(t,b){document.querySelectorAll('.settings-section').forEach(s=>s.classList.remove('active'));$('settings-'+t).classList.add('active');document.querySelectorAll('.settings-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(t==='general'){$('sLogo').value=D.settings.logo_url||'';$('sThreshold').value=D.settings.low_stock_threshold||'5'}}
+function showSTab(t,b){document.querySelectorAll('.settings-section').forEach(s=>s.classList.remove('active'));$('settings-'+t).classList.add('active');document.querySelectorAll('.settings-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(t==='general'){$('sLogo').value=D.settings.logo_url||'';$('sThreshold').value=D.settings.low_stock_threshold||'5';$('sClubName').value=D.settings.club_name||'';$('sIcon').value=D.settings.app_icon||''}}
 
 // DATA
-async function loadData(){const[bx,it,co,ty,lo,lg,pr,st,ss,sn]=await Promise.all([SB.from('boxes').select('*').order('created_at',{ascending:false}),SB.from('box_items').select('*'),SB.from('colors').select('*').order('name_en'),SB.from('item_types').select('*').order('name'),SB.from('storage_locations').select('*').order('name'),SB.from('activity_log').select('*').order('created_at',{ascending:false}),SB.from('profiles').select('*').order('created_at'),SB.from('app_settings').select('*'),SB.from('checkout_sessions').select('*').order('started_at',{ascending:false}),SB.from('inventory_snapshots').select('*').order('created_at',{ascending:false})]);
-D.boxes=bx.data||[];D.items=it.data||[];D.colors=co.data||[];D.types=ty.data||[];D.locs=lo.data||[];D.logs=lg.data||[];D.profiles=pr.data||[];D.sessions=ss.data||[];D.snaps=sn.data||[];D.settings={};(st.data||[]).forEach(s=>D.settings[s.key]=s.value);applyLogo();loadDash();renderBoxes()}
+async function loadData(){const[bx,it,co,ty,lo,lg,pr,st,sn]=await Promise.all([SB.from('boxes').select('*').order('created_at',{ascending:false}),SB.from('box_items').select('*'),SB.from('colors').select('*').order('name_en'),SB.from('item_types').select('*').order('name'),SB.from('storage_locations').select('*').order('name'),SB.from('activity_log').select('*').order('created_at',{ascending:false}),SB.from('profiles').select('*').order('created_at'),SB.from('app_settings').select('*'),SB.from('inventory_snapshots').select('*').order('created_at',{ascending:false})]);
+D.boxes=bx.data||[];D.items=it.data||[];D.colors=co.data||[];D.types=ty.data||[];D.locs=lo.data||[];D.logs=lg.data||[];D.profiles=pr.data||[];D.snaps=sn.data||[];D.settings={};(st.data||[]).forEach(s=>D.settings[s.key]=s.value);applyLogo();loadDash();renderBoxes()}
 function gc(id){return D.colors.find(x=>x.id===id)||{name_en:'Unknown',name_fr:'?',hex_code:'#6b7280'}}
 function gcn(id){return gc(id).name_en}
 function gch(id){return gc(id).hex_code}
 function gtn(id){const t=D.types.find(x=>x.id===id);return t?t.name:'Unknown'}
 function gln(id){const l=D.locs.find(x=>x.id===id);return l?l.name:''}
 function getEmail(uid){const p=D.profiles.find(x=>x.id===uid);return p?p.email:'?'}
-function applyLogo(){const u=D.settings.logo_url;const t=$('topbarLogo'),l=$('loginLogo');if(u){t.src=u;t.style.display='block';l.innerHTML=`<img src="${u}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid var(--brand);margin-bottom:10px">`}else{t.style.display='none';l.innerHTML=''}}
+function applyLogo(){const u=D.settings.logo_url;const t=$('topbarLogo'),l=$('loginLogo');if(u){t.src=u;t.style.display='block';l.innerHTML=`<img src="${u}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid var(--brand);margin-bottom:10px">`}else{t.style.display='none';l.innerHTML=''}
+// Apply club name across UI
+const cn=D.settings.club_name||'AS Blainville';
+document.querySelectorAll('.topbar-brand span').forEach(s=>s.textContent=cn+' Inventory');
+document.querySelectorAll('.login-card .logo h1').forEach(h=>h.textContent=cn+' Inventory');
+document.title=cn+' Inventory';
+// Apply custom app icon (home screen) dynamically if provided
+const ic=D.settings.app_icon;if(ic){let appleIcon=document.querySelector('link[rel="apple-touch-icon"]');if(appleIcon)appleIcon.href=ic;
+// Rebuild manifest in-memory as a blob so the home-screen icon reflects the club's icon
+const mani={name:cn+' Inventory',short_name:cn,description:'Equipment inventory management',start_url:'./index.html',display:'standalone',orientation:'portrait',background_color:'#03306b',theme_color:'#03306b',icons:[{src:ic,sizes:'192x192',type:'image/png',purpose:'any maskable'},{src:ic,sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
+const blob=new Blob([JSON.stringify(mani)],{type:'application/json'});const url=URL.createObjectURL(blob);let ml=document.querySelector('link[rel="manifest"]');if(ml)ml.href=url}}
 
 // DASHBOARD
 function loadDash(){
@@ -396,7 +409,9 @@ charts[id]=new Chart(c,{type,data,options:{responsive:true,maintainAspectRatio:t
 
 // BOXES
 function setBoxView(v){boxView=v;$('viewCards').className=v==='cards'?'active':'';$('viewTable').className=v==='table'?'active':'';renderBoxes()}
-function renderBoxes(){let bx=D.boxes;if(boxLocF)bx=bx.filter(b=>b.location_id===boxLocF);const el=$('boxesList');
+function renderBoxes(){let bx=D.boxes;if(boxLocF)bx=bx.filter(b=>b.location_id===boxLocF);
+const sq=($('boxSearch')?.value||'').toLowerCase().trim();if(sq)bx=bx.filter(b=>(b.name||'').toLowerCase().includes(sq)||(gln(b.location_id)||'').toLowerCase().includes(sq));
+const el=$('boxesList');
 if(!bx.length){el.innerHTML=`<div class="empty-state"><p>📦</p><p>No boxes${boxLocF?' here':''}</p>${boxLocF?'<button class="btn btn-secondary btn-sm" onclick="boxLocF=null;renderBoxes()">Clear</button>':'<button class="btn btn-primary btn-sm" onclick="openAddBoxModal()">Add box</button>'}</div>`;return}
 if(boxView==='table'){
 el.innerHTML=`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>Box</th><th>Location</th><th>Status</th><th>Items</th><th>Types</th>${D.types.map(t=>`<th>${esc(t.name)}</th>`).join('')}</tr></thead><tbody>${bx.map(b=>{
@@ -452,8 +467,7 @@ await SB.from('activity_log').insert({action_type:'item_added',item_type_id:tid,
 lastTID=tid;lastCID=cid;b.innerHTML='Add All';b.disabled=0;toast(`Added ${entries.length} sizes`);closeModal('bulkModal');await loadData();openDetail(curBox)}
 
 // CHECKOUT
-function renderCO(){const active=D.sessions.find(s=>s.status==='active');
-$('sessionBar').innerHTML=active?`<div class="session-bar"><div><div class="sb-info">📋 ${esc(active.name)}</div><div class="sb-sub">Started ${new Date(active.started_at).toLocaleString()}</div></div><button class="btn btn-danger btn-sm" onclick="endSession('${active.id}')">End</button></div>`:`<div style="margin-bottom:10px"><button class="btn btn-secondary btn-sm" onclick="openModal('sessionModal')">▶ Start Session</button></div>`;
+function renderCO(){
 $('checkoutFilters').innerHTML=`<button class="${coFilter==='all'?'active':''}" onclick="coFilter='all';renderCO()">All</button>`+D.types.map(t=>`<button class="${coFilter===t.id?'active':''}" onclick="coFilter='${t.id}';renderCO()">${esc(t.name)}</button>`).join('');
 const search=($('coSearch').value||'').toLowerCase();
 const agg={};D.items.forEach(i=>{if(i.quantity<=0)return;const k=`${i.item_type_id}|${i.color_id}|${i.size}`;if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,qty:0};agg[k].qty+=i.quantity});
@@ -468,14 +482,11 @@ async function confirmQty(){if(!qtyPending)return;const{tid,cid,sz,el}=qtyPendin
 const src=D.items.find(i=>i.item_type_id===tid&&i.color_id===cid&&i.size===sz&&i.quantity>0);
 if(!src||src.quantity<qtyCount){toast('Not enough stock','error');return}
 el.classList.add('flashing');setTimeout(()=>el.classList.remove('flashing'),300);src.quantity-=qtyCount;
-const active=D.sessions.find(s=>s.status==='active');
-const[ur,lr]=await Promise.all([SB.from('box_items').update({quantity:src.quantity}).eq('id',src.id),SB.from('activity_log').insert({action_type:'checkout',item_type_id:tid,color_id:cid,size:sz,quantity:qtyCount,session_id:active?.id||null,created_by:U.id}).select()]);
+const[ur,lr]=await Promise.all([SB.from('box_items').update({quantity:src.quantity}).eq('id',src.id),SB.from('activity_log').insert({action_type:'checkout',item_type_id:tid,color_id:cid,size:sz,quantity:qtyCount,created_by:U.id}).select()]);
 if(ur.error){toast(ur.error.message,'error');src.quantity+=qtyCount;return}
 lastUndo={bid:src.id,lid:lr.data?.[0]?.id,oq:src.quantity+qtyCount};$('undoBtn').classList.add('show');clearTimeout(window._ut);window._ut=setTimeout(()=>$('undoBtn').classList.remove('show'),10000);
 el.querySelector('.cc-qty span').textContent=src.quantity;if(src.quantity<=0)el.classList.add('out-of-stock');qtyPending=null}
 async function undoLast(){if(!lastUndo)return;const l=lastUndo;lastUndo=null;$('undoBtn').classList.remove('show');await Promise.all([SB.from('box_items').update({quantity:l.oq}).eq('id',l.bid),l.lid?SB.from('activity_log').delete().eq('id',l.lid):Promise.resolve()]);toast('Undone');await loadData();renderCO()}
-async function startSession(){const n=$('sessionName').value.trim();if(!n){toast('Enter name','error');return}await SB.from('checkout_sessions').insert({name:n,started_by:U.id});toast('Started');closeModal('sessionModal');await loadData();renderCO()}
-async function endSession(id){await SB.from('checkout_sessions').update({status:'ended',ended_at:new Date().toISOString()}).eq('id',id);toast('Ended');await loadData();renderCO()}
 
 // HISTORY
 function renderHistory(){try{const af=$('histAction').value;const df=$('histDate').value;let logs=[...D.logs];if(af)logs=logs.filter(l=>l.action_type===af);if(df)logs=logs.filter(l=>l.created_at&&l.created_at.startsWith(df));
@@ -523,7 +534,11 @@ $('usersList').innerHTML=act.map(p=>`<div class="user-card"><div class="user-inf
 async function approveU(id){await SB.from('profiles').update({role:'admin'}).eq('id',id);toast('Approved');await loadData();renderUsers()}
 async function declineU(id){pendConf=async()=>{await SB.from('profiles').delete().eq('id',id);toast('Declined');closeModal('confirmModal');await loadData();renderUsers()};$('confirmText').textContent='Decline?';openModal('confirmModal')}
 async function removeU(id){pendConf=async()=>{await SB.from('profiles').delete().eq('id',id);toast('Removed');closeModal('confirmModal');await loadData();renderUsers()};$('confirmText').textContent='Remove user?';openModal('confirmModal')}
-async function saveSettings(){await Promise.all([SB.from('app_settings').update({value:$('sLogo').value.trim()}).eq('key','logo_url'),SB.from('app_settings').update({value:$('sThreshold').value}).eq('key','low_stock_threshold')]);toast('Saved');await loadData()}
+async function saveSettings(){const updates=[SB.from('app_settings').update({value:$('sLogo').value.trim()}).eq('key','logo_url'),SB.from('app_settings').update({value:$('sThreshold').value}).eq('key','low_stock_threshold')];
+const cn=$('sClubName')?.value.trim();const ic=$('sIcon')?.value.trim();
+if(cn!==undefined)updates.push(SB.from('app_settings').upsert({key:'club_name',value:cn||'AS Blainville'}));
+if(ic!==undefined)updates.push(SB.from('app_settings').upsert({key:'app_icon',value:ic||''}));
+await Promise.all(updates);toast('Saved');await loadData()}
 function exportCSV(){let csv='Type,Color,Size,Quantity,Box,Location\n';D.items.forEach(i=>{const b=D.boxes.find(x=>x.id===i.box_id);csv+=`"${gtn(i.item_type_id)}","${gcn(i.color_id)}","${i.size}",${i.quantity},"${b?b.name:''}","${b?gln(b.location_id):''}" \n`});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`asb_inventory_${new Date().toISOString().split('T')[0]}.csv`;a.click();toast('Exported')}
 
 // HELPERS
@@ -534,6 +549,8 @@ document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click
 function toast(m,t='success'){const e=$('toast');e.textContent=m;e.className='toast toast-'+t+' show';setTimeout(()=>e.classList.remove('show'),3000)}
 function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
 checkSession();
+// PWA service worker registration
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(e=>console.log('SW registration skipped:',e.message))}
 $('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')handleLogin()});
 $('signupPassword').addEventListener('keydown',e=>{if(e.key==='Enter')handleSignup()});
 </script>
