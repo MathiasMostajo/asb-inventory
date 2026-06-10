@@ -63,6 +63,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .goog-te-gadget{font-size:0!important}.goog-te-gadget span{display:none!important}
 .goog-te-banner-frame{display:none!important}body{top:0!important}
 .skiptranslate iframe{display:none!important}
+.goog-te-spinner-pos,.goog-te-spinner,#goog-gt-tt,.goog-tooltip,.goog-tooltip:hover{display:none!important}
+iframe.goog-te-banner-frame,iframe.skiptranslate{display:none!important;visibility:hidden!important}
+.goog-te-gadget img{display:none!important}
+font.goog-text-highlight{background:none!important;box-shadow:none!important}
 .content{max-width:1200px;margin:0 auto;padding:24px}
 .page{display:none}.page.active{display:block}
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
@@ -125,8 +129,8 @@ body.light .color-dot{border-color:rgba(0,0,0,.12)}
 .checkout-card.out-of-stock{opacity:.25;pointer-events:none}
 .checkout-card .cc-flash{position:absolute;inset:0;background:var(--accent);opacity:0;transition:opacity .3s;pointer-events:none}.checkout-card.flashing .cc-flash{opacity:.2}
 .checkout-undo{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 24px;background:var(--bg2);border:1px solid var(--accent);border-radius:var(--radius);color:var(--accent);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,.4);display:none}.checkout-undo.show{display:block}
-
-
+ 
+ 
 .settings-tabs{display:flex;gap:3px;margin-bottom:16px;flex-wrap:wrap}
 .settings-tabs button{padding:8px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;cursor:pointer}
 .settings-tabs button.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
@@ -168,7 +172,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 </style>
 </head>
 <body>
-
+ 
 <div class="login-wrap" id="loginView"><div class="login-card">
 <div class="logo"><div id="loginLogo"></div><h1>ASB Inventory</h1><p>AS Blainville Equipment Manager</p></div>
 <div class="login-error" id="loginError"></div>
@@ -184,7 +188,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <p class="login-toggle">Have an account? <a onclick="toggleAuth()">Sign in</a></p></div>
 </div></div>
 <div class="pending-wrap" id="pendingView" style="display:none"><div class="pending-card"><h2>Account Pending</h2><p>Waiting for admin approval.</p><button class="btn btn-secondary" onclick="handleLogout()">Sign Out</button></div></div>
-
+ 
 <div class="app-wrap" id="appView">
 <div class="topbar"><div class="topbar-left">
 <div class="topbar-brand"><img id="topbarLogo" src="" style="display:none"><span>ASB Inventory</span></div>
@@ -197,7 +201,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <button data-page="settings" onclick="showPage('settings')">Settings</button>
 </nav></div>
 <div class="topbar-right"><select class="lang-select" id="langSel" onchange="setLang(this.value)"><option value="">🌐 Language</option><option value="en">English</option><option value="fr">Français</option><option value="es">Español</option><option value="pt">Português</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="nl">Nederlands</option><option value="ja">日本語</option><option value="zh-CN">中文</option><option value="ko">한국어</option><option value="ar">العربية</option></select><div id="google_translate_element"></div><button class="theme-toggle" onclick="toggleTheme()" title="Light/Dark">☀</button><span class="topbar-user" id="userEmail"></span><button class="topbar-logout" onclick="handleLogout()">Out</button></div></div>
-
+ 
 <div class="content">
 <!-- DASHBOARD -->
 <div class="page active" id="page-dashboard">
@@ -211,14 +215,14 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="charts-grid"><div class="chart-card"><h3>Stock by Type</h3><canvas id="chartType"></canvas></div><div class="chart-card"><h3>Total Size Distribution</h3><canvas id="chartSize"></canvas></div></div>
 <div id="perTypeCharts"></div>
 <div class="charts-grid" style="margin-top:14px"><div class="chart-card"><h3>Checkout Breakdown</h3><canvas id="chartCheckout"></canvas></div><div class="chart-card"><h3>Box Status</h3><canvas id="chartStatus"></canvas></div></div></div>
-
+ 
 <!-- BOXES -->
 <div class="page" id="page-boxes">
 <div class="page-header"><h2 class="page-title">Boxes</h2><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm" onclick="openFilterLocModal()">📍 Filter</button><button class="btn btn-primary btn-sm" onclick="openAddBoxModal()">+ Add</button></div></div>
 <input type="text" class="co-search" id="boxSearch" placeholder="Search boxes by name or location..." oninput="renderBoxes()">
 <div class="view-toggle"><button class="active" id="viewCards" onclick="setBoxView('cards')">Cards</button><button id="viewTable" onclick="setBoxView('table')">Summary</button></div>
 <div id="boxesList"></div></div>
-
+ 
 <!-- BOX DETAIL -->
 <div class="page" id="page-detail">
 <div class="detail-header"><div class="detail-back" onclick="showPage('boxes')">&larr;</div><h2 class="detail-title" id="detailTitle"></h2><div id="detailStatus"></div>
@@ -229,7 +233,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="qr-section"><canvas id="qrCanvas" width="100" height="100"></canvas><div><h4 style="font-size:13px;color:var(--text2)">Box QR</h4><p style="font-size:11px;color:var(--text3)">Print and attach</p><button class="btn btn-secondary btn-sm" style="margin-top:6px" onclick="printBoxQR()">Print</button></div></div>
 <div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)">Items</h3><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm" onclick="openBulkModal()">Bulk</button><button class="btn btn-secondary btn-sm" onclick="openAddItemModal()">+ Add</button></div></div>
 <div id="itemsTable"></div></div>
-
+ 
 <!-- CHECKOUT -->
 <div class="page" id="page-checkout">
 <div class="page-header"><h2 class="page-title">Checkout</h2></div>
@@ -237,7 +241,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="checkout-filters" id="checkoutFilters"></div>
 <div class="checkout-grid" id="checkoutGrid"></div></div>
 <button class="checkout-undo" id="undoBtn" onclick="undoLast()">↩ Undo</button>
-
+ 
 <!-- HISTORY -->
 <div class="page" id="page-history">
 <div class="page-header"><h2 class="page-title">History</h2></div>
@@ -246,7 +250,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <input type="date" id="histDate" onchange="renderHistory()">
 <button class="btn btn-secondary btn-sm" onclick="$('histDate').value='';$('histAction').value='';renderHistory()">Clear</button></div>
 <div id="historyList"></div></div>
-
+ 
 <!-- SNAPSHOTS -->
 <div class="page" id="page-snapshots">
 <div class="page-header"><h2 class="page-title">Snapshots</h2><button class="btn btn-primary btn-sm" onclick="openSnapModal()">📸 Take Snapshot</button></div>
@@ -254,7 +258,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div id="snapCompare"></div>
 <div id="snapList"></div>
 </div>
-
+ 
 <!-- SETTINGS -->
 <div class="page" id="page-settings">
 <div class="page-header"><h2 class="page-title">Settings</h2></div>
@@ -269,10 +273,10 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="settings-section" id="settings-locations"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)">Locations</h3><button class="btn btn-secondary btn-sm" onclick="openAddLocModal()">+ Add</button></div><div class="locations-grid" id="locList"></div></div>
 <div class="settings-section" id="settings-users"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)">Users</h3></div><div id="pendingUsers"></div><div class="users-grid" id="usersList"></div></div>
 <div class="settings-section" id="settings-general"><div style="max-width:400px"><div class="form-group"><label>Club Name</label><input type="text" id="sClubName" placeholder="AS Blainville"></div><div class="form-group"><label>Club Logo URL</label><input type="text" id="sLogo" placeholder="https://..."><p style="font-size:11px;color:var(--text3);margin-top:3px">Shown in topbar & login screen</p></div><div class="form-group"><label>App Icon URL (home screen)</label><input type="text" id="sIcon" placeholder="https://... (512x512 PNG)"><p style="font-size:11px;color:var(--text3);margin-top:3px">Icon when added to phone home screen</p></div><div class="form-group"><label>Low Stock Threshold</label><input type="number" id="sThreshold" min="1" value="5"></div><button class="btn btn-primary" onclick="saveSettings()" style="width:auto;margin-top:8px">Save</button></div></div></div>
-
+ 
 <div class="page" id="page-print"><div class="print-qr"><h2 id="printBoxName"></h2><p id="printBoxStatus"></p><canvas id="printQrCanvas" width="250" height="250"></canvas><p style="margin-top:10px;font-size:11px;color:#666" id="printBoxId"></p></div></div>
 </div></div>
-
+ 
 <!-- MODALS -->
 <div class="modal-overlay" id="boxModal"><div class="modal"><h2 id="boxModalTitle">Add Box</h2>
 <div class="form-group"><label>Name</label><input type="text" id="boxName" placeholder="Shed 1 - U6 Blue"></div>
@@ -280,55 +284,56 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="form-group"><label>Status</label><select id="boxStatus"><option value="clean">Clean</option><option value="dirty">Dirty</option></select></div>
 <div class="form-group"><label>Notes</label><input type="text" id="boxNotes"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('boxModal')">Cancel</button><button class="btn btn-primary" onclick="saveBox()" id="saveBoxBtn" style="width:auto">Save</button></div></div></div>
-
+ 
 <div class="modal-overlay" id="itemModal"><div class="modal"><h2 id="itemModalTitle">Add Item</h2>
 <div class="form-group"><label>Type</label><select id="itemType"></select></div>
 <div class="form-group"><label>Color</label><div class="color-select-wrap"><select id="itemColor" onchange="updCP()"></select><div class="color-preview" id="colorPreview"></div></div></div>
 <div class="form-group"><label>Size</label><select id="itemSize"><option>XXS</option><option>XS</option><option>S</option><option selected>M</option><option>L</option><option>XL</option><option>XXL</option></select></div>
 <div class="form-group"><label>Quantity</label><input type="number" id="itemQty" min="0" value="1"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('itemModal')">Cancel</button><button class="btn btn-primary" onclick="saveItem()" id="saveItemBtn" style="width:auto">Save</button></div></div></div>
-
+ 
 <div class="modal-overlay" id="bulkModal"><div class="modal"><h2>Bulk Add Items</h2><p style="font-size:13px;color:var(--text3);margin-bottom:14px">Pick type + color, enter qty per size</p>
 <div class="form-group"><label>Type</label><select id="bulkType"></select></div>
 <div class="form-group"><label>Color</label><div class="color-select-wrap"><select id="bulkColor" onchange="updBCP()"></select><div class="color-preview" id="bulkCP"></div></div></div>
 <div class="bulk-sizes" id="bulkSizes"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('bulkModal')">Cancel</button><button class="btn btn-primary" onclick="saveBulk()" id="bulkBtn" style="width:auto">Add All</button></div></div></div>
-
+ 
 <div class="modal-overlay" id="qtyModal"><div class="modal"><h2 id="qtyModalTitle">Quantity</h2>
 <div class="qty-modal-body"><button onclick="adjQty(-1)">−</button><div class="qty-val" id="qtyVal">1</div><button onclick="adjQty(1)">+</button></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('qtyModal')">Cancel</button><button class="btn btn-primary" onclick="confirmQty()" style="width:auto">Confirm</button></div></div></div>
-
-
+ 
+ 
 <div class="modal-overlay" id="snapModal"><div class="modal"><h2>Take Snapshot</h2>
 <p style="font-size:13px;color:var(--text3);margin-bottom:14px">Saves current inventory quantities</p>
 <div class="form-group"><label>Snapshot Name</label><input type="text" id="snapName" placeholder="e.g. June 2026 Inventory"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('snapModal')">Cancel</button><button class="btn btn-primary" onclick="takeSnap()" id="snapBtn" style="width:auto">Save</button></div></div></div>
-
+ 
 <div class="modal-overlay" id="colorModal"><div class="modal"><h2 id="colorModalTitle">Add Color</h2>
 <div class="form-group"><label>Color Name</label><input type="text" id="colorName" placeholder="Blue"></div>
 <div class="form-group"><label>Color</label><input type="color" id="colorHex" value="#3b82f6" style="height:44px;padding:3px;cursor:pointer;width:100%"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('colorModal')">Cancel</button><button class="btn btn-primary" onclick="saveColor()" id="saveColorBtn" style="width:auto">Save</button></div></div></div>
-
+ 
 <div class="modal-overlay" id="typeModal"><div class="modal"><h2 id="typeModalTitle">Add Type</h2>
 <div class="form-group"><label>Name</label><input type="text" id="typeName" placeholder="Shin Guards"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('typeModal')">Cancel</button><button class="btn btn-primary" onclick="saveType()" id="saveTypeBtn" style="width:auto">Save</button></div></div></div>
-
+ 
 <div class="modal-overlay" id="locModal"><div class="modal"><h2 id="locModalTitle">Add Location</h2>
 <div class="form-group"><label>Name</label><input type="text" id="locName" placeholder="Main Shed"></div>
 <div class="form-group"><label>Description</label><input type="text" id="locDesc"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('locModal')">Cancel</button><button class="btn btn-primary" onclick="saveLoc()" id="saveLocBtn" style="width:auto">Save</button></div></div></div>
-
+ 
 <div class="modal-overlay" id="confirmModal"><div class="modal"><h2>Confirm</h2><p style="color:var(--text2);font-size:14px" id="confirmText"></p>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('confirmModal')">Cancel</button><button class="btn btn-danger" onclick="confirmAction()">Confirm</button></div></div></div>
-
+ 
 <div class="toast" id="toast"></div>
 <script type="text/javascript">
 function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:'en,fr,es,pt,de,it,nl,ja,zh-CN,ko,ar',autoDisplay:false},'google_translate_element')}
 function setLang(code){if(!code)return;
-const tryIt=(n)=>{const combo=document.querySelector('select.goog-te-combo');
-if(combo){combo.value=code;combo.dispatchEvent(new Event('change'));}
-else if(n>0)setTimeout(()=>tryIt(n-1),300)};
-tryIt(10)}
+let attempts=0;const maxAttempts=30;
+const tryIt=()=>{const combo=document.querySelector('select.goog-te-combo');
+if(combo&&combo.options.length>1){combo.value=code;combo.dispatchEvent(new Event('change'));setTimeout(()=>combo.dispatchEvent(new Event('change')),100);}
+else if(attempts++<maxAttempts)setTimeout(tryIt,200)};
+tryIt()}
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script>
@@ -338,7 +343,7 @@ let curBox=null,editBox=null,editItem=null,editColor=null,editType=null,editLoc=
 let pendConf=null,lastUndo=null,coFilter='all',boxLocF=null,boxView='cards',lastTID=null,lastCID=null,charts={};
 let qtyPending=null,qtyCount=1;
 const $=id=>document.getElementById(id);
-
+ 
 // AUTH
 async function checkSession(){const{data:{session}}=await SB.auth.getSession();if(session){U=session.user;await checkRole()}}
 function toggleAuth(){const l=$('loginForm'),s=$('signupForm');$('loginError').style.display='none';l.style.display=l.style.display==='none'?'block':'none';s.style.display=s.style.display==='none'?'block':'none'}
@@ -351,11 +356,11 @@ function isSA(){return UP&&UP.role==='super_admin'}
 function showApp(){$('loginView').style.display='none';$('pendingView').style.display='none';$('appView').style.display='block';$('userEmail').textContent=U.email;if(!isSA())$('usersTabBtn').style.display='none';loadData()}
 function toggleTheme(){document.body.classList.toggle('light');localStorage.setItem('asb_theme',document.body.classList.contains('light')?'light':'dark')}
 if(localStorage.getItem('asb_theme')==='light')document.body.classList.add('light');
-
+ 
 // NAV
 function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('page-'+p).classList.add('active');document.querySelectorAll('.topbar-nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p||(p==='detail'&&b.dataset.page==='boxes')));if(p==='dashboard')loadDash();if(p==='checkout')renderCO();if(p==='history')renderHistory();if(p==='snapshots')renderSnaps();if(p==='settings'){renderColors();renderTypes();renderLocs();if(isSA())renderUsers()}}
 function showSTab(t,b){document.querySelectorAll('.settings-section').forEach(s=>s.classList.remove('active'));$('settings-'+t).classList.add('active');document.querySelectorAll('.settings-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(t==='general'){$('sLogo').value=D.settings.logo_url||'';$('sThreshold').value=D.settings.low_stock_threshold||'5';$('sClubName').value=D.settings.club_name||'';$('sIcon').value=D.settings.app_icon||''}}
-
+ 
 // DATA
 async function loadData(){const[bx,it,co,ty,lo,lg,pr,st,sn]=await Promise.all([SB.from('boxes').select('*').order('created_at',{ascending:false}),SB.from('box_items').select('*'),SB.from('colors').select('*').order('name'),SB.from('item_types').select('*').order('name'),SB.from('storage_locations').select('*').order('name'),SB.from('activity_log').select('*').order('created_at',{ascending:false}),SB.from('profiles').select('*').order('created_at'),SB.from('app_settings').select('*'),SB.from('inventory_snapshots').select('*').order('created_at',{ascending:false})]);
 D.boxes=bx.data||[];D.items=it.data||[];D.colors=co.data||[];D.types=ty.data||[];D.locs=lo.data||[];D.logs=lg.data||[];D.profiles=pr.data||[];D.snaps=sn.data||[];D.settings={};(st.data||[]).forEach(s=>D.settings[s.key]=s.value);applyLogo();loadDash();renderBoxes()}
@@ -376,7 +381,7 @@ const ic=D.settings.app_icon;if(ic){let appleIcon=document.querySelector('link[r
 // Rebuild manifest in-memory as a blob so the home-screen icon reflects the club's icon
 const mani={name:cn+' Inventory',short_name:cn,description:'Equipment inventory management',start_url:'./index.html',display:'standalone',orientation:'portrait',background_color:'#03306b',theme_color:'#03306b',icons:[{src:ic,sizes:'192x192',type:'image/png',purpose:'any maskable'},{src:ic,sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
 const blob=new Blob([JSON.stringify(mani)],{type:'application/json'});const url=URL.createObjectURL(blob);let ml=document.querySelector('link[rel="manifest"]');if(ml)ml.href=url}}
-
+ 
 // DASHBOARD
 function loadDash(){
 const tot=D.items.reduce((s,i)=>s+i.quantity,0);const coTot=D.logs.filter(l=>l.action_type==='checkout').reduce((s,i)=>s+i.quantity,0);const clean=D.boxes.filter(b=>b.status==='clean').length;
@@ -401,11 +406,11 @@ const ccCanvas=document.getElementById('chartCheckout');if(ccCanvas)ccCanvas.sty
 const ccMsg=ccCanvas?.parentElement?.querySelector('.empty-msg');if(ccMsg)ccMsg.remove();
 if(Object.keys(coB).length>0){rChart('chartCheckout','bar',{labels:Object.keys(coB),datasets:[{data:Object.values(coB),backgroundColor:['#f87171','#fb923c','#fbbf24','#34d399','#38b6ff','#a855f7'],borderRadius:5,borderSkipped:false}]},{horiz:true,pl:false})}else{if(charts['chartCheckout']){charts['chartCheckout'].destroy();delete charts['chartCheckout']}ccCanvas?.parentElement?.insertAdjacentHTML('beforeend','<p class="empty-msg" style="color:var(--text3);font-size:13px;text-align:center;padding:30px 0">No checkouts yet</p>')}
 rChart('chartStatus','doughnut',{labels:['Clean','Dirty'],datasets:[{data:[clean,D.boxes.length-clean],backgroundColor:['#34d399','#fb923c'],borderWidth:0}]},{cut:60})}
-
+ 
 function rChart(id,type,data,o={}){const c=document.getElementById(id);if(!c)return;if(charts[id])charts[id].destroy();
 const scl=type==='bar'?(o.horiz?{x:{beginAtZero:true,grid:{color:'rgba(30,42,90,.3)'}},y:{grid:{display:false}}}:o.stacked?{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,grid:{color:'rgba(30,42,90,.3)'}}}:{y:{beginAtZero:true,grid:{color:'rgba(30,42,90,.3)'}},x:{grid:{display:false}}}):undefined;
 charts[id]=new Chart(c,{type,data,options:{responsive:true,maintainAspectRatio:true,indexAxis:o.horiz?'y':undefined,scales:scl,cutout:o.cut?o.cut+'%':undefined,plugins:{legend:o.pl===false?{display:false}:{position:'bottom',labels:{boxWidth:10,padding:5}}}}})}
-
+ 
 // BOXES
 function setBoxView(v){boxView=v;$('viewCards').className=v==='cards'?'active':'';$('viewTable').className=v==='table'?'active':'';renderBoxes()}
 function renderBoxes(){let bx=D.boxes;if(boxLocF)bx=bx.filter(b=>b.location_id===boxLocF);
@@ -425,7 +430,7 @@ function openAddBoxModal(){editBox=null;$('boxModalTitle').textContent='Add Box'
 function openEditBoxModal(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;editBox=b.id;$('boxModalTitle').textContent='Edit';$('boxName').value=b.name;$('boxStatus').value=b.status;$('boxNotes').value=b.notes||'';popLocDD(b.location_id||'');openModal('boxModal')}
 async function saveBox(){const n=$('boxName').value.trim(),st=$('boxStatus').value,nt=$('boxNotes').value.trim(),loc=$('boxLocation').value||null;if(!n){toast('Enter name','error');return}const b=$('saveBoxBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editBox){await SB.from('boxes').update({name:n,status:st,notes:nt||null,location_id:loc}).eq('id',editBox);toast('Updated')}else{await SB.from('boxes').insert({name:n,status:st,notes:nt||null,location_id:loc,created_by:U.id});toast('Added')}b.innerHTML='Save';b.disabled=0;closeModal('boxModal');await loadData();if(editBox)openDetail(editBox)}
 async function deleteBox(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;pendConf=async()=>{await SB.from('boxes').delete().eq('id',curBox);toast('Deleted');closeModal('confirmModal');showPage('boxes');await loadData()};$('confirmText').textContent=`Delete "${b.name}"?`;openModal('confirmModal')}
-
+ 
 // BOX DETAIL
 function openDetail(id){curBox=id;const b=D.boxes.find(x=>x.id===id);if(!b)return;
 $('detailTitle').textContent=b.name;$('detailStatus').innerHTML=`<span class="status-badge status-${b.status}">${b.status}</span>`;
@@ -441,7 +446,7 @@ rChart('dCB'+i,'doughnut',{labels:Object.keys(bc),datasets:[{data:Object.values(
 new QRious({element:$('qrCanvas'),value:`ASB-BOX:${id}`,size:100,backgroundAlpha:0,foreground:'#38b6ff',level:'M'});renderItems();showPage('detail')}
 function printBoxQR(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;$('printBoxName').textContent=b.name;$('printBoxStatus').textContent=b.status.toUpperCase();$('printBoxId').textContent=b.id;new QRious({element:$('printQrCanvas'),value:`ASB-BOX:${b.id}`,size:250,level:'M'});window.print()}
 function renderItems(){const items=D.items.filter(i=>i.box_id===curBox);$('itemsTable').innerHTML=items.length?`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>Type</th><th>Color</th><th>Size</th><th>Qty</th><th style="width:80px"></th></tr></thead><tbody>${items.map(i=>`<tr><td>${esc(gtn(i.item_type_id))}</td><td><span class="color-dot" style="background:${gch(i.color_id)}"></span>${esc(gcn(i.color_id))}</td><td>${i.size}</td><td class="qty">${i.quantity}</td><td><div class="actions-cell"><button class="btn-icon" onclick="event.stopPropagation();openEditItem('${i.id}')">✎</button><button class="btn-icon" onclick="event.stopPropagation();delItem('${i.id}')">✕</button></div></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty-state"><p>No items</p></div>'}
-
+ 
 // ITEMS
 function popTDD(s,v){$(s).innerHTML=D.types.map(t=>`<option value="${t.id}"${t.id===v?' selected':''}>${esc(t.name)}</option>`).join('')}
 function popCDD(s,v){$(s).innerHTML=D.colors.map(c=>`<option value="${c.id}"${c.id===v?' selected':''}>● ${esc(c.name)}</option>`).join('')}
@@ -464,7 +469,7 @@ for(const e of entries){const dup=D.items.find(i=>i.box_id===curBox&&i.item_type
 if(dup)await SB.from('box_items').update({quantity:dup.quantity+e.q}).eq('id',dup.id);else await SB.from('box_items').insert({box_id:curBox,item_type_id:tid,color_id:cid,size:e.s,quantity:e.q});
 await SB.from('activity_log').insert({action_type:'item_added',item_type_id:tid,color_id:cid,size:e.s,quantity:e.q,box_id:curBox,created_by:U.id})}
 lastTID=tid;lastCID=cid;b.innerHTML='Add All';b.disabled=0;toast(`Added ${entries.length} sizes`);closeModal('bulkModal');await loadData();openDetail(curBox)}
-
+ 
 // CHECKOUT
 function renderCO(){
 $('checkoutFilters').innerHTML=`<button class="${coFilter==='all'?'active':''}" onclick="coFilter='all';renderCO()">All</button>`+D.types.map(t=>`<button class="${coFilter===t.id?'active':''}" onclick="coFilter='${t.id}';renderCO()">${esc(t.name)}</button>`).join('');
@@ -474,7 +479,7 @@ let ent=Object.values(agg);if(coFilter!=='all')ent=ent.filter(e=>e.tid===coFilte
 if(search)ent=ent.filter(e=>{const str=`${gtn(e.tid)} ${gcn(e.cid)} ${e.size}`.toLowerCase();return str.includes(search)});
 const so={XXS:0,XS:1,S:2,M:3,L:4,XL:5,XXL:6};ent.sort((a,b)=>gtn(a.tid).localeCompare(gtn(b.tid))||gcn(a.cid).localeCompare(gcn(b.cid))||(so[a.size]||0)-(so[b.size]||0));
 $('checkoutGrid').innerHTML=ent.length?ent.map(e=>`<div class="checkout-card${e.qty<=0?' out-of-stock':''}" onclick="openQtyModal('${e.tid}','${e.cid}','${e.size}',${e.qty},this)"><div class="cc-flash"></div><div class="cc-type">${gtn(e.tid)}</div><div class="cc-color"><span class="color-dot" style="background:${gch(e.cid)}"></span>${gcn(e.cid)}</div><div class="cc-size">${e.size}</div><div class="cc-qty">Stock: <span>${e.qty}</span></div></div>`).join(''):'<div class="empty-state"><p>No items</p></div>'}
-
+ 
 function openQtyModal(tid,cid,sz,stock,el){qtyCount=1;qtyPending={tid,cid,sz,el};$('qtyVal').textContent=1;$('qtyModalTitle').textContent=`${gtn(tid)} ${gcn(cid)} ${sz}`;openModal('qtyModal')}
 function adjQty(d){qtyCount=Math.max(1,qtyCount+d);$('qtyVal').textContent=qtyCount}
 async function confirmQty(){if(!qtyPending)return;const{tid,cid,sz,el}=qtyPending;closeModal('qtyModal');
@@ -484,33 +489,46 @@ el.classList.add('flashing');setTimeout(()=>el.classList.remove('flashing'),300)
 const[ur,lr]=await Promise.all([SB.from('box_items').update({quantity:src.quantity}).eq('id',src.id),SB.from('activity_log').insert({action_type:'checkout',item_type_id:tid,color_id:cid,size:sz,quantity:qtyCount,created_by:U.id}).select()]);
 if(ur.error){toast(ur.error.message,'error');src.quantity+=qtyCount;return}
 lastUndo={bid:src.id,lid:lr.data?.[0]?.id,oq:src.quantity+qtyCount};$('undoBtn').classList.add('show');clearTimeout(window._ut);window._ut=setTimeout(()=>$('undoBtn').classList.remove('show'),10000);
+if(lr.data?.[0])D.logs.unshift(lr.data[0]);
 el.querySelector('.cc-qty span').textContent=src.quantity;if(src.quantity<=0)el.classList.add('out-of-stock');qtyPending=null}
-async function undoLast(){if(!lastUndo)return;const l=lastUndo;lastUndo=null;$('undoBtn').classList.remove('show');await Promise.all([SB.from('box_items').update({quantity:l.oq}).eq('id',l.bid),l.lid?SB.from('activity_log').delete().eq('id',l.lid):Promise.resolve()]);toast('Undone');await loadData();renderCO()}
-
+async function undoLast(){if(!lastUndo)return;const l=lastUndo;lastUndo=null;$('undoBtn').classList.remove('show');await Promise.all([SB.from('box_items').update({quantity:l.oq}).eq('id',l.bid),l.lid?SB.from('activity_log').delete().eq('id',l.lid):Promise.resolve()]);
+const src=D.items.find(i=>i.id===l.bid);if(src)src.quantity=l.oq;
+if(l.lid)D.logs=D.logs.filter(x=>x.id!==l.lid);
+toast('Undone');renderCO()}
+ 
 // HISTORY
 function renderHistory(){try{const af=$('histAction').value;const df=$('histDate').value;let logs=[...D.logs];if(af)logs=logs.filter(l=>l.action_type===af);if(df)logs=logs.filter(l=>l.created_at&&l.created_at.startsWith(df));
 $('historyList').innerHTML=logs.length?`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>Action</th><th>Item</th><th>Color</th><th>Size</th><th>Qty</th><th>By</th><th>Date</th></tr></thead><tbody>${logs.slice(0,200).map(l=>{const cls=l.action_type==='checkout'?'color:var(--red)':'color:var(--accent)';return`<tr><td><span style="${cls};font-weight:600;font-size:12px;text-transform:uppercase">${l.action_type.replace('_',' ')}</span></td><td>${esc(gtn(l.item_type_id))}</td><td><span class="color-dot" style="background:${gch(l.color_id)}"></span>${esc(gcn(l.color_id))}</td><td>${l.size||''}</td><td class="qty">${l.quantity}</td><td style="font-size:12px">${esc(getEmail(l.created_by))}</td><td style="font-size:12px">${new Date(l.created_at).toLocaleString()}</td></tr>`}).join('')}</tbody></table></div>`:'<div class="empty-state"><p>No activity yet</p><p style="font-size:13px">Actions will appear here as you add items and check them out</p></div>'}catch(e){console.error('History error:',e);$('historyList').innerHTML='<div class="empty-state"><p>Error loading history</p></div>'}}
-
+ 
 // SNAPSHOTS
 function renderSnaps(){const el=$('snapList');const cmp=$('snapCompare');
 if(!D.snaps.length){el.innerHTML='<div class="empty-state"><p>No snapshots yet</p><p style="font-size:13px">Take a snapshot to record your current inventory</p></div>';cmp.innerHTML='';return}
-// Compare selector (if 2+ snapshots)
-if(D.snaps.length>=2){cmp.innerHTML=`<div class="chart-card" style="margin-bottom:14px"><h3>Compare Snapshots</h3><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><select id="snapA" style="flex:1;padding:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:Outfit">${D.snaps.map((s,i)=>`<option value="${i}">${esc(s.name)} (${new Date(s.created_at).toLocaleDateString()})</option>`).join('')}</select><select id="snapB" style="flex:1;padding:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:Outfit">${D.snaps.map((s,i)=>`<option value="${i}"${i===1?' selected':''}>${esc(s.name)} (${new Date(s.created_at).toLocaleDateString()})</option>`).join('')}</select><button class="btn btn-secondary btn-sm" onclick="compareSnaps()">Compare</button></div><div id="snapDiff"></div></div>`}else cmp.innerHTML='';
-el.innerHTML=D.snaps.map(s=>`<div class="snapshot-card"><div class="snapshot-header"><div><div class="snapshot-name">${esc(s.name)}</div><span style="font-size:11px;color:var(--text3)">${new Date(s.created_at).toLocaleString()}</span></div><button class="btn-icon" onclick="delSnap('${s.id}')">✕</button></div></div>`).join('')}
-function compareSnaps(){const a=D.snaps[parseInt($('snapA').value)];const b=D.snaps[parseInt($('snapB').value)];if(!a||!b){toast('Select two','error');return}
-const am={},bm={};a.data.forEach(i=>am[`${i.tid}|${i.cid}|${i.size}`]=i.qty);b.data.forEach(i=>bm[`${i.tid}|${i.cid}|${i.size}`]=i.qty);
+// D.snaps comes newest-first. For comparison we want chronological (oldest first) so signs make sense.
+const chrono=[...D.snaps].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+if(chrono.length>=2){
+// Default: oldest on left (A), newest on right (B)
+cmp.innerHTML=`<div class="chart-card" style="margin-bottom:14px"><h3>Compare Snapshots</h3><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center"><span style="font-size:12px;color:var(--text3)">From:</span><select id="snapA" onchange="compareSnaps()" style="flex:1;padding:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:Outfit">${chrono.map((s,i)=>`<option value="${s.id}"${i===0?' selected':''}>${esc(s.name)} (${new Date(s.created_at).toLocaleDateString()})</option>`).join('')}</select><span style="font-size:12px;color:var(--text3)">→ To:</span><select id="snapB" onchange="compareSnaps()" style="flex:1;padding:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:Outfit">${chrono.map((s,i)=>`<option value="${s.id}"${i===chrono.length-1?' selected':''}>${esc(s.name)} (${new Date(s.created_at).toLocaleDateString()})</option>`).join('')}</select></div><div id="snapDiff"></div></div>`;
+// Auto-run comparison immediately
+setTimeout(compareSnaps,0);
+}else cmp.innerHTML='<p style="font-size:13px;color:var(--text3);margin-bottom:14px">Take a second snapshot to compare changes over time.</p>';
+el.innerHTML=chrono.slice().reverse().map(s=>`<div class="snapshot-card"><div class="snapshot-header"><div><div class="snapshot-name">${esc(s.name)}</div><span style="font-size:11px;color:var(--text3)">${new Date(s.created_at).toLocaleString()}</span></div><button class="btn-icon" onclick="delSnap('${s.id}')">✕</button></div></div>`).join('')}
+function compareSnaps(){const a=D.snaps.find(s=>s.id===$('snapA').value);const b=D.snaps.find(s=>s.id===$('snapB').value);if(!a||!b)return;
+// Ensure chronological: a should be older. If user picked them backwards, swap so signs stay correct.
+let older=a,newer=b;if(new Date(a.created_at)>new Date(b.created_at)){older=b;newer=a}
+const am={},bm={};older.data.forEach(i=>am[`${i.tid}|${i.cid}|${i.size}`]=i.qty);newer.data.forEach(i=>bm[`${i.tid}|${i.cid}|${i.size}`]=i.qty);
 const ak=new Set([...Object.keys(am),...Object.keys(bm)]);const rows=[];
 ak.forEach(k=>{const[t,c,s]=k.split('|');const av=am[k]||0,bv=bm[k]||0,d=bv-av;if(d!==0)rows.push({type:gtn(t),color:gcn(c),hex:gch(c),size:s,a:av,b:bv,diff:d})});
 rows.sort((x,y)=>x.type.localeCompare(y.type));
-$('snapDiff').innerHTML=rows.length?`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>Type</th><th>Color</th><th>Size</th><th>${esc(a.name)}</th><th>${esc(b.name)}</th><th>Diff</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.type)}</td><td><span class="color-dot" style="background:${r.hex}"></span>${esc(r.color)}</td><td>${r.size}</td><td class="qty">${r.a}</td><td class="qty">${r.b}</td><td class="qty" style="color:${r.diff<0?'var(--red)':r.diff>0?'var(--green)':'var(--text3)'}">${r.diff>0?'+':''}${r.diff}</td></tr>`).join('')}</tbody></table></div>`:'<p style="color:var(--text3);font-size:13px">No differences found</p>'}
+$('snapDiff').innerHTML=rows.length?`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>Type</th><th>Color</th><th>Size</th><th>${esc(older.name)}</th><th>${esc(newer.name)}</th><th>Diff</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.type)}</td><td><span class="color-dot" style="background:${r.hex}"></span>${esc(r.color)}</td><td>${r.size}</td><td class="qty">${r.a}</td><td class="qty">${r.b}</td><td class="qty" style="color:${r.diff<0?'var(--red)':r.diff>0?'var(--green)':'var(--text3)'}">${r.diff>0?'+':''}${r.diff}</td></tr>`).join('')}</tbody></table></div>`:'<p style="color:var(--text3);font-size:13px">No differences found</p>'}
 function openSnapModal(){$('snapName').value='';openModal('snapModal')}
 async function takeSnap(){const n=$('snapName').value.trim();if(!n){toast('Enter name','error');return}
 const agg={};D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}`;if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,qty:0};agg[k].qty+=i.quantity});
 const b=$('snapBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;
-await SB.from('inventory_snapshots').insert({name:n,data:Object.values(agg),created_by:U.id});
-b.innerHTML='Save';b.disabled=0;toast('Snapshot saved');closeModal('snapModal');await loadData();renderSnaps()}
-async function delSnap(id){pendConf=async()=>{await SB.from('inventory_snapshots').delete().eq('id',id);toast('Deleted');closeModal('confirmModal');await loadData();renderSnaps()};$('confirmText').textContent='Delete snapshot?';openModal('confirmModal')}
-
+const{data}=await SB.from('inventory_snapshots').insert({name:n,data:Object.values(agg),created_by:U.id}).select();
+if(data?.[0])D.snaps.unshift(data[0]);
+b.innerHTML='Save';b.disabled=0;toast('Snapshot saved');closeModal('snapModal');renderSnaps()}
+async function delSnap(id){pendConf=async()=>{await SB.from('inventory_snapshots').delete().eq('id',id);D.snaps=D.snaps.filter(s=>s.id!==id);toast('Deleted');closeModal('confirmModal');renderSnaps()};$('confirmText').textContent='Delete snapshot?';openModal('confirmModal')}
+ 
 // SETTINGS
 function renderColors(){$('colorsList').innerHTML=D.colors.map(c=>`<div class="color-card"><div class="color-swatch" style="background:${c.hex_code}"></div><div class="color-names"><div class="en">${esc(c.name)}</div></div><button class="btn-icon" onclick="openEditColor('${c.id}')">✎</button><button class="btn-icon" onclick="delColor('${c.id}')">✕</button></div>`).join('')}
 function openAddColorModal(){editColor=null;$('colorModalTitle').textContent='Add';$('colorName').value='';$('colorHex').value='#3b82f6';openModal('colorModal')}
@@ -539,7 +557,7 @@ if(cn!==undefined)updates.push(SB.from('app_settings').upsert({key:'club_name',v
 if(ic!==undefined)updates.push(SB.from('app_settings').upsert({key:'app_icon',value:ic||''}));
 await Promise.all(updates);toast('Saved');await loadData()}
 function exportCSV(){let csv='Type,Color,Size,Quantity,Box,Location\n';D.items.forEach(i=>{const b=D.boxes.find(x=>x.id===i.box_id);csv+=`"${gtn(i.item_type_id)}","${gcn(i.color_id)}","${i.size}",${i.quantity},"${b?b.name:''}","${b?gln(b.location_id):''}" \n`});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`asb_inventory_${new Date().toISOString().split('T')[0]}.csv`;a.click();toast('Exported')}
-
+ 
 // HELPERS
 function openModal(id){$(id).classList.add('show')}
 function closeModal(id){$(id).classList.remove('show')}
@@ -554,3 +572,4 @@ $('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')handleLogin
 $('signupPassword').addEventListener('keydown',e=>{if(e.key==='Enter')handleSignup()});
 </script>
 </body></html>
+ 
