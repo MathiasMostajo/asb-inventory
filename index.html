@@ -52,7 +52,11 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .topbar-logout:hover{border-color:var(--red);color:var(--red)}
 .theme-toggle{padding:5px 10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius-sm);color:rgba(255,255,255,.65);font-size:14px;cursor:pointer;line-height:1}
 #google_translate_element{display:flex;align-items:center}
-#google_translate_element select{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius-sm);color:rgba(255,255,255,.65);font-family:'Outfit',sans-serif;font-size:12px;padding:4px 8px;cursor:pointer}
+#google_translate_element select{background:transparent;border:none;color:rgba(255,255,255,.8);font-family:'Outfit',sans-serif;font-size:12px;padding:0;cursor:pointer;outline:none}
+#google_translate_element select option{background:var(--bg2);color:var(--text)}
+.translate-wrap{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius-sm);padding:4px 10px;cursor:pointer}
+.translate-wrap:hover{background:rgba(255,255,255,.15)}
+.translate-label{font-size:12px;color:rgba(255,255,255,.7);font-family:'Outfit',sans-serif;white-space:nowrap}
 .goog-te-gadget{font-size:0!important}.goog-te-gadget span{display:none!important}
 .goog-te-banner-frame{display:none!important}body{top:0!important}
 .content{max-width:1200px;margin:0 auto;padding:24px}
@@ -152,7 +156,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 .toast-success{background:var(--accent-dim2);color:var(--accent);border:1px solid rgba(56,182,255,.3)}
 .toast-error{background:var(--red-dim);color:var(--red);border:1px solid rgba(248,113,113,.3)}
 @media print{body{background:#fff!important}.topbar,.toast,.modal-overlay,.checkout-undo,.session-bar{display:none!important}.content{padding:0}.page{display:none!important}#page-print{display:block!important}.print-qr{text-align:center;padding:40px}.print-qr h2{color:#000}.print-qr p{color:#333}}
-@media(max-width:768px){.topbar{padding:0 10px;flex-wrap:wrap;height:auto;min-height:52px;padding:6px 10px}.topbar-left{gap:6px}.topbar-nav button{padding:5px 7px;font-size:11px}.topbar-user{display:none}.content{padding:14px}.page-title{font-size:18px}.stat-card .stat-value{font-size:20px}.charts-grid,.boxes-grid{grid-template-columns:1fr}.login-card{padding:28px 20px}.items-table th,.items-table td{padding:8px 10px;font-size:12px}.detail-actions{width:100%}.detail-actions .btn{flex:1}.checkout-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}.qr-section{flex-direction:column;text-align:center}}
+@media(max-width:768px){.topbar{padding:0 10px;flex-wrap:wrap;height:auto;min-height:52px;padding:6px 10px}.topbar-left{gap:6px}.topbar-nav button{padding:5px 7px;font-size:11px}.topbar-user{display:none}.translate-label{font-size:0}.translate-label::before{content:'🌐';font-size:14px}.content{padding:14px}.page-title{font-size:18px}.stat-card .stat-value{font-size:20px}.charts-grid,.boxes-grid{grid-template-columns:1fr}.login-card{padding:28px 20px}.items-table th,.items-table td{padding:8px 10px;font-size:12px}.detail-actions{width:100%}.detail-actions .btn{flex:1}.checkout-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}.qr-section{flex-direction:column;text-align:center}}
 @media(max-width:480px){.topbar-brand{font-size:14px}.topbar-brand span{display:none}.stats-row{grid-template-columns:repeat(2,1fr)}.checkout-grid{grid-template-columns:repeat(2,1fr)}}
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -188,7 +192,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <button data-page="snapshots" onclick="showPage('snapshots')">Snapshots</button>
 <button data-page="settings" onclick="showPage('settings')">Settings</button>
 </nav></div>
-<div class="topbar-right"><div id="google_translate_element"></div><button class="theme-toggle" onclick="toggleTheme()" title="Light/Dark">☀</button><span class="topbar-user" id="userEmail"></span><button class="topbar-logout" onclick="handleLogout()">Out</button></div></div>
+<div class="topbar-right"><div class="translate-wrap" onclick="document.querySelector('#google_translate_element select')?.click()"><span class="translate-label">🌐 Language</span><div id="google_translate_element"></div></div><button class="theme-toggle" onclick="toggleTheme()" title="Light/Dark">☀</button><span class="topbar-user" id="userEmail"></span><button class="topbar-logout" onclick="handleLogout()">Out</button></div></div>
 
 <div class="content">
 <!-- DASHBOARD -->
