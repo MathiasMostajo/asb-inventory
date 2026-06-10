@@ -51,12 +51,12 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .topbar-logout{padding:5px 12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius-sm);color:rgba(255,255,255,.65);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer}
 .topbar-logout:hover{border-color:var(--red);color:var(--red)}
 .theme-toggle{padding:5px 10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius-sm);color:rgba(255,255,255,.65);font-size:14px;cursor:pointer;line-height:1}
-#google_translate_element{display:flex;align-items:center}
-#google_translate_element select{background:transparent;border:none;color:rgba(255,255,255,.8);font-family:'Outfit',sans-serif;font-size:12px;padding:0;cursor:pointer;outline:none}
-#google_translate_element select option{background:var(--bg2);color:var(--text)}
-.translate-wrap{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius-sm);padding:4px 10px;cursor:pointer}
+#google_translate_element{position:absolute;inset:0;overflow:hidden}
+#google_translate_element select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px}
+#google_translate_element .goog-te-gadget{position:absolute;inset:0}
+.translate-wrap{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius-sm);padding:4px 10px;cursor:pointer;position:relative;min-height:30px}
 .translate-wrap:hover{background:rgba(255,255,255,.15)}
-.translate-label{font-size:12px;color:rgba(255,255,255,.7);font-family:'Outfit',sans-serif;white-space:nowrap}
+.translate-label{font-size:12px;color:rgba(255,255,255,.7);font-family:'Outfit',sans-serif;white-space:nowrap;pointer-events:none}
 .goog-te-gadget{font-size:0!important}.goog-te-gadget span{display:none!important}
 .goog-te-banner-frame{display:none!important}body{top:0!important}
 .content{max-width:1200px;margin:0 auto;padding:24px}
@@ -192,7 +192,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <button data-page="snapshots" onclick="showPage('snapshots')">Snapshots</button>
 <button data-page="settings" onclick="showPage('settings')">Settings</button>
 </nav></div>
-<div class="topbar-right"><div class="translate-wrap" onclick="document.querySelector('#google_translate_element select')?.click()"><span class="translate-label">🌐 Language</span><div id="google_translate_element"></div></div><button class="theme-toggle" onclick="toggleTheme()" title="Light/Dark">☀</button><span class="topbar-user" id="userEmail"></span><button class="topbar-logout" onclick="handleLogout()">Out</button></div></div>
+<div class="topbar-right"><div class="translate-wrap"><span class="translate-label">🌐 Language</span><div id="google_translate_element"></div></div><button class="theme-toggle" onclick="toggleTheme()" title="Light/Dark">☀</button><span class="topbar-user" id="userEmail"></span><button class="topbar-logout" onclick="handleLogout()">Out</button></div></div>
 
 <div class="content">
 <!-- DASHBOARD -->
