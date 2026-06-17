@@ -129,8 +129,8 @@ body.light .color-dot{border-color:rgba(0,0,0,.12)}
 .checkout-card.out-of-stock{opacity:.25;pointer-events:none}
 .checkout-card .cc-flash{position:absolute;inset:0;background:var(--accent);opacity:0;transition:opacity .3s;pointer-events:none}.checkout-card.flashing .cc-flash{opacity:.2}
 .checkout-undo{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 24px;background:var(--bg2);border:1px solid var(--accent);border-radius:var(--radius);color:var(--accent);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,.4);display:none}.checkout-undo.show{display:block}
- 
- 
+
+
 .settings-tabs{display:flex;gap:3px;margin-bottom:16px;flex-wrap:wrap}
 .settings-tabs button{padding:8px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;cursor:pointer}
 .settings-tabs button.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
@@ -172,26 +172,46 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 </style>
 </head>
 <body>
- 
+
 <div class="login-wrap" id="loginView"><div class="login-card">
-<div class="logo"><div id="loginLogo"></div><h1>ASB Inventory</h1><p>AS Blainville Equipment Manager</p></div>
+<div class="logo"><div id="loginLogo"></div><h1>Boxtory</h1><p>Club Equipment Inventory</p></div>
 <div class="login-error" id="loginError"></div>
+
 <div id="loginForm">
-<div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="you@asblainville.com" autocomplete="email"></div>
+<div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"></div>
 <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"></div>
 <button class="btn btn-primary" onclick="handleLogin()" id="loginBtn">Sign In</button>
-<p class="login-toggle">No account? <a onclick="toggleAuth()">Sign up</a></p></div>
-<div id="signupForm" style="display:none">
-<div class="form-group"><label>Email</label><input type="email" id="signupEmail" autocomplete="email"></div>
-<div class="form-group"><label>Password</label><input type="password" id="signupPassword" placeholder="Min 6 characters" autocomplete="new-password"></div>
-<button class="btn btn-primary" onclick="handleSignup()" id="signupBtn">Create Account</button>
-<p class="login-toggle">Have an account? <a onclick="toggleAuth()">Sign in</a></p></div>
+<p class="login-toggle">New here? <a onclick="showAuthMode('choose')">Get started</a></p></div>
+
+<div id="chooseForm" style="display:none">
+<p style="color:var(--text2);font-size:14px;margin-bottom:16px;text-align:center">How do you want to start?</p>
+<button class="btn btn-primary" onclick="showAuthMode('create')" style="margin-bottom:10px">➕ Create a new club</button>
+<button class="btn btn-secondary" onclick="showAuthMode('join')" style="width:100%">🔗 Join an existing club</button>
+<p class="login-toggle" style="margin-top:18px">Already have an account? <a onclick="showAuthMode('login')">Sign in</a></p></div>
+
+<div id="createForm" style="display:none">
+<div class="form-group"><label>Club Name</label><input type="text" id="createClubName" placeholder="e.g. FC Barcelona Youth"></div>
+<div class="form-group"><label>Your Email</label><input type="email" id="createEmail" autocomplete="email"></div>
+<div class="form-group"><label>Password</label><input type="password" id="createPassword" placeholder="Min 6 characters" autocomplete="new-password"></div>
+<button class="btn btn-primary" onclick="handleCreateClub()" id="createBtn">Create Club & Account</button>
+<p style="font-size:11px;color:var(--text3);margin-top:8px;text-align:center">You'll be the club's admin. 14-day free trial.</p>
+<p class="login-toggle">← <a onclick="showAuthMode('choose')">Back</a></p></div>
+
+<div id="joinForm" style="display:none">
+<div class="form-group"><label>Find Your Club</label><input type="text" id="joinSearch" placeholder="Search club name..." oninput="renderClubList()"></div>
+<div id="clubList" style="max-height:200px;overflow-y:auto;margin-bottom:14px"></div>
+<input type="hidden" id="joinClubId">
+<div class="form-group"><label>Your Email</label><input type="email" id="joinEmail" autocomplete="email"></div>
+<div class="form-group"><label>Password</label><input type="password" id="joinPassword" placeholder="Min 6 characters" autocomplete="new-password"></div>
+<button class="btn btn-primary" onclick="handleJoinClub()" id="joinBtn">Request to Join</button>
+<p class="login-toggle">← <a onclick="showAuthMode('choose')">Back</a></p></div>
+
 </div></div>
-<div class="pending-wrap" id="pendingView" style="display:none"><div class="pending-card"><h2>Account Pending</h2><p>Waiting for admin approval.</p><button class="btn btn-secondary" onclick="handleLogout()">Sign Out</button></div></div>
- 
+<div class="pending-wrap" id="pendingView" style="display:none"><div class="pending-card"><h2>Account Pending</h2><p id="pendingMsg">Your request is waiting for approval from your club's admin.</p><button class="btn btn-secondary" onclick="handleLogout()">Sign Out</button></div></div>
+
 <div class="app-wrap" id="appView">
 <div class="topbar"><div class="topbar-left">
-<div class="topbar-brand"><img id="topbarLogo" src="" style="display:none"><span>ASB Inventory</span></div>
+<div class="topbar-brand"><img id="topbarLogo" src="" style="display:none"><span id="topbarClubName">Boxtory</span></div>
 <nav class="topbar-nav">
 <button class="active" data-page="dashboard" onclick="showPage('dashboard')">Dashboard</button>
 <button data-page="boxes" onclick="showPage('boxes')">Boxes</button>
@@ -201,7 +221,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <button data-page="settings" onclick="showPage('settings')">Settings</button>
 </nav></div>
 <div class="topbar-right"><select class="lang-select" id="langSel" onchange="setLang(this.value)"><option value="">🌐 Language</option><option value="en">English</option><option value="fr">Français</option><option value="es">Español</option><option value="pt">Português</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="nl">Nederlands</option><option value="ja">日本語</option><option value="zh-CN">中文</option><option value="ko">한국어</option><option value="ar">العربية</option></select><div id="google_translate_element"></div><button class="theme-toggle" onclick="toggleTheme()" title="Light/Dark">☀</button><span class="topbar-user" id="userEmail"></span><button class="topbar-logout" onclick="handleLogout()">Out</button></div></div>
- 
+
 <div class="content">
 <!-- DASHBOARD -->
 <div class="page active" id="page-dashboard">
@@ -215,14 +235,14 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="charts-grid"><div class="chart-card"><h3>Stock by Type</h3><canvas id="chartType"></canvas></div><div class="chart-card"><h3>Total Size Distribution</h3><canvas id="chartSize"></canvas></div></div>
 <div id="perTypeCharts"></div>
 <div class="charts-grid" style="margin-top:14px"><div class="chart-card"><h3>Checkout Breakdown</h3><canvas id="chartCheckout"></canvas></div><div class="chart-card"><h3>Box Status</h3><canvas id="chartStatus"></canvas></div></div></div>
- 
+
 <!-- BOXES -->
 <div class="page" id="page-boxes">
 <div class="page-header"><h2 class="page-title">Boxes</h2><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm" onclick="openFilterLocModal()">📍 Filter</button><button class="btn btn-primary btn-sm" onclick="openAddBoxModal()">+ Add</button></div></div>
 <input type="text" class="co-search" id="boxSearch" placeholder="Search boxes by name or location..." oninput="renderBoxes()">
 <div class="view-toggle"><button class="active" id="viewCards" onclick="setBoxView('cards')">Cards</button><button id="viewTable" onclick="setBoxView('table')">Summary</button></div>
 <div id="boxesList"></div></div>
- 
+
 <!-- BOX DETAIL -->
 <div class="page" id="page-detail">
 <div class="detail-header"><div class="detail-back" onclick="showPage('boxes')">&larr;</div><h2 class="detail-title" id="detailTitle"></h2><div id="detailStatus"></div>
@@ -233,7 +253,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="qr-section"><canvas id="qrCanvas" width="100" height="100"></canvas><div><h4 style="font-size:13px;color:var(--text2)">Box QR</h4><p style="font-size:11px;color:var(--text3)">Print and attach</p><button class="btn btn-secondary btn-sm" style="margin-top:6px" onclick="printBoxQR()">Print</button></div></div>
 <div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)">Items</h3><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm" onclick="openBulkModal()">Bulk</button><button class="btn btn-secondary btn-sm" onclick="openAddItemModal()">+ Add</button></div></div>
 <div id="itemsTable"></div></div>
- 
+
 <!-- CHECKOUT -->
 <div class="page" id="page-checkout">
 <div class="page-header"><h2 class="page-title">Checkout</h2></div>
@@ -241,7 +261,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="checkout-filters" id="checkoutFilters"></div>
 <div class="checkout-grid" id="checkoutGrid"></div></div>
 <button class="checkout-undo" id="undoBtn" onclick="undoLast()">↩ Undo</button>
- 
+
 <!-- HISTORY -->
 <div class="page" id="page-history">
 <div class="page-header"><h2 class="page-title">History</h2></div>
@@ -250,7 +270,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <input type="date" id="histDate" onchange="renderHistory()">
 <button class="btn btn-secondary btn-sm" onclick="$('histDate').value='';$('histAction').value='';renderHistory()">Clear</button></div>
 <div id="historyList"></div></div>
- 
+
 <!-- SNAPSHOTS -->
 <div class="page" id="page-snapshots">
 <div class="page-header"><h2 class="page-title">Snapshots</h2><button class="btn btn-primary btn-sm" onclick="openSnapModal()">📸 Take Snapshot</button></div>
@@ -258,7 +278,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div id="snapCompare"></div>
 <div id="snapList"></div>
 </div>
- 
+
 <!-- SETTINGS -->
 <div class="page" id="page-settings">
 <div class="page-header"><h2 class="page-title">Settings</h2></div>
@@ -273,10 +293,10 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="settings-section" id="settings-locations"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)">Locations</h3><button class="btn btn-secondary btn-sm" onclick="openAddLocModal()">+ Add</button></div><div class="locations-grid" id="locList"></div></div>
 <div class="settings-section" id="settings-users"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)">Users</h3></div><div id="pendingUsers"></div><div class="users-grid" id="usersList"></div></div>
 <div class="settings-section" id="settings-general"><div style="max-width:400px"><div class="form-group"><label>Club Name</label><input type="text" id="sClubName" placeholder="AS Blainville"></div><div class="form-group"><label>Club Logo URL</label><input type="text" id="sLogo" placeholder="https://..."><p style="font-size:11px;color:var(--text3);margin-top:3px">Shown in topbar & login screen</p></div><div class="form-group"><label>App Icon URL (home screen)</label><input type="text" id="sIcon" placeholder="https://... (512x512 PNG)"><p style="font-size:11px;color:var(--text3);margin-top:3px">Icon when added to phone home screen</p></div><div class="form-group"><label>Low Stock Threshold</label><input type="number" id="sThreshold" min="1" value="5"></div><button class="btn btn-primary" onclick="saveSettings()" style="width:auto;margin-top:8px">Save</button></div></div></div>
- 
+
 <div class="page" id="page-print"><div class="print-qr"><h2 id="printBoxName"></h2><p id="printBoxStatus"></p><canvas id="printQrCanvas" width="250" height="250"></canvas><p style="margin-top:10px;font-size:11px;color:#666" id="printBoxId"></p></div></div>
 </div></div>
- 
+
 <!-- MODALS -->
 <div class="modal-overlay" id="boxModal"><div class="modal"><h2 id="boxModalTitle">Add Box</h2>
 <div class="form-group"><label>Name</label><input type="text" id="boxName" placeholder="Shed 1 - U6 Blue"></div>
@@ -284,47 +304,47 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="form-group"><label>Status</label><select id="boxStatus"><option value="clean">Clean</option><option value="dirty">Dirty</option></select></div>
 <div class="form-group"><label>Notes</label><input type="text" id="boxNotes"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('boxModal')">Cancel</button><button class="btn btn-primary" onclick="saveBox()" id="saveBoxBtn" style="width:auto">Save</button></div></div></div>
- 
+
 <div class="modal-overlay" id="itemModal"><div class="modal"><h2 id="itemModalTitle">Add Item</h2>
 <div class="form-group"><label>Type</label><select id="itemType"></select></div>
 <div class="form-group"><label>Color</label><div class="color-select-wrap"><select id="itemColor" onchange="updCP()"></select><div class="color-preview" id="colorPreview"></div></div></div>
 <div class="form-group"><label>Size</label><select id="itemSize"><option>XXS</option><option>XS</option><option>S</option><option selected>M</option><option>L</option><option>XL</option><option>XXL</option></select></div>
 <div class="form-group"><label>Quantity</label><input type="number" id="itemQty" min="0" value="1"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('itemModal')">Cancel</button><button class="btn btn-primary" onclick="saveItem()" id="saveItemBtn" style="width:auto">Save</button></div></div></div>
- 
+
 <div class="modal-overlay" id="bulkModal"><div class="modal"><h2>Bulk Add Items</h2><p style="font-size:13px;color:var(--text3);margin-bottom:14px">Pick type + color, enter qty per size</p>
 <div class="form-group"><label>Type</label><select id="bulkType"></select></div>
 <div class="form-group"><label>Color</label><div class="color-select-wrap"><select id="bulkColor" onchange="updBCP()"></select><div class="color-preview" id="bulkCP"></div></div></div>
 <div class="bulk-sizes" id="bulkSizes"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('bulkModal')">Cancel</button><button class="btn btn-primary" onclick="saveBulk()" id="bulkBtn" style="width:auto">Add All</button></div></div></div>
- 
+
 <div class="modal-overlay" id="qtyModal"><div class="modal"><h2 id="qtyModalTitle">Quantity</h2>
 <div class="qty-modal-body"><button onclick="adjQty(-1)">−</button><div class="qty-val" id="qtyVal">1</div><button onclick="adjQty(1)">+</button></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('qtyModal')">Cancel</button><button class="btn btn-primary" onclick="confirmQty()" style="width:auto">Confirm</button></div></div></div>
- 
- 
+
+
 <div class="modal-overlay" id="snapModal"><div class="modal"><h2>Take Snapshot</h2>
 <p style="font-size:13px;color:var(--text3);margin-bottom:14px">Saves current inventory quantities</p>
 <div class="form-group"><label>Snapshot Name</label><input type="text" id="snapName" placeholder="e.g. June 2026 Inventory"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('snapModal')">Cancel</button><button class="btn btn-primary" onclick="takeSnap()" id="snapBtn" style="width:auto">Save</button></div></div></div>
- 
+
 <div class="modal-overlay" id="colorModal"><div class="modal"><h2 id="colorModalTitle">Add Color</h2>
 <div class="form-group"><label>Color Name</label><input type="text" id="colorName" placeholder="Blue"></div>
 <div class="form-group"><label>Color</label><input type="color" id="colorHex" value="#3b82f6" style="height:44px;padding:3px;cursor:pointer;width:100%"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('colorModal')">Cancel</button><button class="btn btn-primary" onclick="saveColor()" id="saveColorBtn" style="width:auto">Save</button></div></div></div>
- 
+
 <div class="modal-overlay" id="typeModal"><div class="modal"><h2 id="typeModalTitle">Add Type</h2>
 <div class="form-group"><label>Name</label><input type="text" id="typeName" placeholder="Shin Guards"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('typeModal')">Cancel</button><button class="btn btn-primary" onclick="saveType()" id="saveTypeBtn" style="width:auto">Save</button></div></div></div>
- 
+
 <div class="modal-overlay" id="locModal"><div class="modal"><h2 id="locModalTitle">Add Location</h2>
 <div class="form-group"><label>Name</label><input type="text" id="locName" placeholder="Main Shed"></div>
 <div class="form-group"><label>Description</label><input type="text" id="locDesc"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('locModal')">Cancel</button><button class="btn btn-primary" onclick="saveLoc()" id="saveLocBtn" style="width:auto">Save</button></div></div></div>
- 
+
 <div class="modal-overlay" id="confirmModal"><div class="modal"><h2>Confirm</h2><p style="color:var(--text2);font-size:14px" id="confirmText"></p>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('confirmModal')">Cancel</button><button class="btn btn-danger" onclick="confirmAction()">Confirm</button></div></div></div>
- 
+
 <div class="toast" id="toast"></div>
 <script type="text/javascript">
 function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:'en,fr,es,pt,de,it,nl,ja,zh-CN,ko,ar',autoDisplay:false},'google_translate_element')}
@@ -338,31 +358,81 @@ tryIt()}
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script>
 const SB=supabase.createClient('https://iuepnofgpivqghcvdgnz.supabase.co','sb_publishable_H78FAZKcfoAdF1o6x2MOxA_VvFA2GDj');
-let U=null,UP=null,D={boxes:[],items:[],colors:[],types:[],locs:[],profiles:[],logs:[],snaps:[],settings:{}};
+let U=null,UP=null,CID=null,CLUB=null,D={boxes:[],items:[],colors:[],types:[],locs:[],profiles:[],logs:[],snaps:[],settings:{}};
+let allClubs=[]; // for join-club picker
+// Club-scoped insert: automatically stamps club_id on every row
+function ins(table,rows){const arr=Array.isArray(rows)?rows:[rows];const stamped=arr.map(r=>({...r,club_id:CID}));return SB.from(table).insert(stamped)}
 let curBox=null,editBox=null,editItem=null,editColor=null,editType=null,editLoc=null;
 let pendConf=null,lastUndo=null,coFilter='all',boxLocF=null,boxView='cards',lastTID=null,lastCID=null,charts={};
 let qtyPending=null,qtyCount=1;
 const $=id=>document.getElementById(id);
- 
+
 // AUTH
 async function checkSession(){const{data:{session}}=await SB.auth.getSession();if(session){U=session.user;await checkRole()}}
-function toggleAuth(){const l=$('loginForm'),s=$('signupForm');$('loginError').style.display='none';l.style.display=l.style.display==='none'?'block':'none';s.style.display=s.style.display==='none'?'block':'none'}
+function showAuthMode(mode){['loginForm','chooseForm','createForm','joinForm'].forEach(f=>$(f).style.display='none');$('loginError').style.display='none';
+const map={login:'loginForm',choose:'chooseForm',create:'createForm',join:'joinForm'};
+$(map[mode]||'loginForm').style.display='block';
+if(mode==='join')loadClubsForPicker()}
+
 async function handleLogin(){const e=$('loginEmail').value.trim(),p=$('loginPassword').value,err=$('loginError'),b=$('loginBtn');if(!e||!p){sErr(err,'Enter email and password');return}b.innerHTML='<span class="spinner"></span>';b.disabled=1;const{data,error}=await SB.auth.signInWithPassword({email:e,password:p});b.innerHTML='Sign In';b.disabled=0;if(error){sErr(err,error.message);return}U=data.user;await checkRole()}
-async function handleSignup(){const e=$('signupEmail').value.trim(),p=$('signupPassword').value,err=$('loginError'),b=$('signupBtn');if(!e||!p){sErr(err,'Enter email and password');return}if(p.length<6){sErr(err,'Min 6 characters');return}b.innerHTML='<span class="spinner"></span>';b.disabled=1;const{data,error}=await SB.auth.signUp({email:e,password:p});b.innerHTML='Create Account';b.disabled=0;if(error){sErr(err,error.message);return}if(data.user&&!data.session){err.textContent='Check email to confirm';err.style.display='block';err.style.background='var(--accent-dim)';err.style.color='var(--accent)';return}U=data.user;await checkRole()}
-async function checkRole(){const{data}=await SB.from('profiles').select('*').eq('id',U.id).single();UP=data;if(!data||data.role==='pending'){$('loginView').style.display='none';$('pendingView').style.display='flex';return}showApp()}
-async function handleLogout(){await SB.auth.signOut();U=null;UP=null;$('loginView').style.display='flex';$('appView').style.display='none';$('pendingView').style.display='none'}
+
+async function handleCreateClub(){const cn=$('createClubName').value.trim(),e=$('createEmail').value.trim(),p=$('createPassword').value,err=$('loginError'),b=$('createBtn');
+if(!cn){sErr(err,'Enter a club name');return}if(!e||!p){sErr(err,'Enter email and password');return}if(p.length<6){sErr(err,'Min 6 characters');return}
+b.innerHTML='<span class="spinner"></span>';b.disabled=1;
+// 1. Create auth user
+const{data:au,error:ae}=await SB.auth.signUp({email:e,password:p});
+if(ae){b.innerHTML='Create Club & Account';b.disabled=0;sErr(err,ae.message);return}
+if(!au.session){b.innerHTML='Create Club & Account';b.disabled=0;sErr(err,'Check your email to confirm, then sign in');return}
+U=au.user;
+// 2. Create the club (trigger auto-provisions defaults)
+const{data:club,error:ce}=await SB.from('clubs').insert({name:cn}).select().single();
+if(ce){b.innerHTML='Create Club & Account';b.disabled=0;sErr(err,'Club creation failed: '+ce.message);return}
+// 3. Create profile as super_admin of this club
+const{error:pe}=await SB.from('profiles').insert({id:U.id,email:e,club_id:club.id,role:'super_admin'});
+b.innerHTML='Create Club & Account';b.disabled=0;
+if(pe){sErr(err,'Profile creation failed: '+pe.message);return}
+await checkRole()}
+
+async function handleJoinClub(){const cid=$('joinClubId').value,e=$('joinEmail').value.trim(),p=$('joinPassword').value,err=$('loginError'),b=$('joinBtn');
+if(!cid){sErr(err,'Select your club from the list');return}if(!e||!p){sErr(err,'Enter email and password');return}if(p.length<6){sErr(err,'Min 6 characters');return}
+b.innerHTML='<span class="spinner"></span>';b.disabled=1;
+const{data:au,error:ae}=await SB.auth.signUp({email:e,password:p});
+if(ae){b.innerHTML='Request to Join';b.disabled=0;sErr(err,ae.message);return}
+if(!au.session){b.innerHTML='Request to Join';b.disabled=0;sErr(err,'Check your email to confirm, then sign in');return}
+U=au.user;
+// Create profile as pending member of chosen club
+const{error:pe}=await SB.from('profiles').insert({id:U.id,email:e,club_id:cid,role:'pending'});
+b.innerHTML='Request to Join';b.disabled=0;
+if(pe){sErr(err,'Request failed: '+pe.message);return}
+await checkRole()}
+
+async function loadClubsForPicker(){const{data}=await SB.from('clubs').select('id,name').order('name');allClubs=data||[];renderClubList()}
+function renderClubList(){const q=($('joinSearch').value||'').toLowerCase().trim();let list=allClubs;if(q)list=allClubs.filter(c=>c.name.toLowerCase().includes(q));
+const el=$('clubList');if(!list.length){el.innerHTML='<p style="font-size:13px;color:var(--text3);padding:10px;text-align:center">No clubs found</p>';return}
+el.innerHTML=list.slice(0,50).map(c=>`<div onclick="pickClub('${c.id}','${esc(c.name).replace(/'/g,"\\'")}')" style="padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:6px;cursor:pointer;font-size:14px" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor=this.dataset.sel==='1'?'var(--accent)':'var(--border)'" data-cid="${c.id}">${esc(c.name)}</div>`).join('')}
+function pickClub(id,name){$('joinClubId').value=id;document.querySelectorAll('#clubList [data-cid]').forEach(d=>{d.dataset.sel='0';d.style.borderColor='var(--border)';d.style.background='transparent'});const sel=document.querySelector(`#clubList [data-cid="${id}"]`);if(sel){sel.dataset.sel='1';sel.style.borderColor='var(--accent)';sel.style.background='var(--accent-dim)'}}
+
+async function checkRole(){const{data}=await SB.from('profiles').select('*').eq('id',U.id).single();UP=data;
+if(!data){$('loginView').style.display='none';$('pendingView').style.display='flex';$('pendingMsg').textContent='Your account has no club assigned. Contact support.';return}
+CID=data.club_id;
+if(data.role==='pending'){$('loginView').style.display='none';$('pendingView').style.display='flex';return}
+// Load club info
+const{data:club}=await SB.from('clubs').select('*').eq('id',CID).single();CLUB=club;
+showApp()}
+
+async function handleLogout(){await SB.auth.signOut();U=null;UP=null;CID=null;CLUB=null;$('loginView').style.display='flex';showAuthMode('login');$('appView').style.display='none';$('pendingView').style.display='none'}
 function sErr(el,m){el.textContent=m;el.style.display='block';el.style.background='';el.style.color=''}
 function isSA(){return UP&&UP.role==='super_admin'}
 function showApp(){$('loginView').style.display='none';$('pendingView').style.display='none';$('appView').style.display='block';$('userEmail').textContent=U.email;if(!isSA())$('usersTabBtn').style.display='none';loadData()}
 function toggleTheme(){document.body.classList.toggle('light');localStorage.setItem('asb_theme',document.body.classList.contains('light')?'light':'dark')}
 if(localStorage.getItem('asb_theme')==='light')document.body.classList.add('light');
- 
+
 // NAV
 function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('page-'+p).classList.add('active');document.querySelectorAll('.topbar-nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p||(p==='detail'&&b.dataset.page==='boxes')));if(p==='dashboard')loadDash();if(p==='checkout')renderCO();if(p==='history')renderHistory();if(p==='snapshots')renderSnaps();if(p==='settings'){renderColors();renderTypes();renderLocs();if(isSA())renderUsers()}}
 function showSTab(t,b){document.querySelectorAll('.settings-section').forEach(s=>s.classList.remove('active'));$('settings-'+t).classList.add('active');document.querySelectorAll('.settings-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(t==='general'){$('sLogo').value=D.settings.logo_url||'';$('sThreshold').value=D.settings.low_stock_threshold||'5';$('sClubName').value=D.settings.club_name||'';$('sIcon').value=D.settings.app_icon||''}}
- 
+
 // DATA
-async function loadData(){const[bx,it,co,ty,lo,lg,pr,st,sn]=await Promise.all([SB.from('boxes').select('*').order('created_at',{ascending:false}),SB.from('box_items').select('*'),SB.from('colors').select('*').order('name'),SB.from('item_types').select('*').order('name'),SB.from('storage_locations').select('*').order('name'),SB.from('activity_log').select('*').order('created_at',{ascending:false}),SB.from('profiles').select('*').order('created_at'),SB.from('app_settings').select('*'),SB.from('inventory_snapshots').select('*').order('created_at',{ascending:false})]);
+async function loadData(){const[bx,it,co,ty,lo,lg,pr,st,sn]=await Promise.all([SB.from('boxes').select('*').order('created_at',{ascending:false}),SB.from('box_items').select('*'),SB.from('colors').select('*').order('name'),SB.from('item_types').select('*').order('name'),SB.from('storage_locations').select('*').order('name'),SB.from('activity_log').select('*').order('created_at',{ascending:false}),SB.from('profiles').select('*').eq('club_id',CID).order('created_at'),SB.from('app_settings').select('*'),SB.from('inventory_snapshots').select('*').order('created_at',{ascending:false})]);
 D.boxes=bx.data||[];D.items=it.data||[];D.colors=co.data||[];D.types=ty.data||[];D.locs=lo.data||[];D.logs=lg.data||[];D.profiles=pr.data||[];D.snaps=sn.data||[];D.settings={};(st.data||[]).forEach(s=>D.settings[s.key]=s.value);applyLogo();loadDash();renderBoxes()}
 function gc(id){return D.colors.find(x=>x.id===id)||{name:'Unknown',hex_code:'#6b7280'}}
 function gcn(id){return gc(id).name}
@@ -370,18 +440,16 @@ function gch(id){return gc(id).hex_code}
 function gtn(id){const t=D.types.find(x=>x.id===id);return t?t.name:'Unknown'}
 function gln(id){const l=D.locs.find(x=>x.id===id);return l?l.name:''}
 function getEmail(uid){const p=D.profiles.find(x=>x.id===uid);return p?p.email:'?'}
-function applyLogo(){const u=D.settings.logo_url;const t=$('topbarLogo'),l=$('loginLogo');if(u){t.src=u;t.style.display='block';l.innerHTML=`<img src="${u}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid var(--brand);margin-bottom:10px">`}else{t.style.display='none';l.innerHTML=''}
-// Apply club name across UI
-const cn=D.settings.club_name||'AS Blainville';
-document.querySelectorAll('.topbar-brand span').forEach(s=>s.textContent=cn+' Inventory');
-document.querySelectorAll('.login-card .logo h1').forEach(h=>h.textContent=cn+' Inventory');
-document.title=cn+' Inventory';
+function applyLogo(){const u=D.settings.logo_url;const t=$('topbarLogo'),l=$('loginLogo');if(u){t.src=u;t.style.display='block'}else{t.style.display='none'}
+// Club name in topbar; login screen stays "Boxtory" branding
+const cn=D.settings.club_name||CLUB?.name||'Boxtory';
+const tcn=$('topbarClubName');if(tcn)tcn.textContent=cn;
+document.title=cn+' · Boxtory';
 // Apply custom app icon (home screen) dynamically if provided
 const ic=D.settings.app_icon;if(ic){let appleIcon=document.querySelector('link[rel="apple-touch-icon"]');if(appleIcon)appleIcon.href=ic;
-// Rebuild manifest in-memory as a blob so the home-screen icon reflects the club's icon
-const mani={name:cn+' Inventory',short_name:cn,description:'Equipment inventory management',start_url:'./index.html',display:'standalone',orientation:'portrait',background_color:'#03306b',theme_color:'#03306b',icons:[{src:ic,sizes:'192x192',type:'image/png',purpose:'any maskable'},{src:ic,sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
+const mani={name:cn+' · Boxtory',short_name:cn,description:'Club equipment inventory',start_url:'./index.html',display:'standalone',orientation:'portrait',background_color:'#03306b',theme_color:'#03306b',icons:[{src:ic,sizes:'192x192',type:'image/png',purpose:'any maskable'},{src:ic,sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
 const blob=new Blob([JSON.stringify(mani)],{type:'application/json'});const url=URL.createObjectURL(blob);let ml=document.querySelector('link[rel="manifest"]');if(ml)ml.href=url}}
- 
+
 // DASHBOARD
 function loadDash(){
 const tot=D.items.reduce((s,i)=>s+i.quantity,0);const coTot=D.logs.filter(l=>l.action_type==='checkout').reduce((s,i)=>s+i.quantity,0);const clean=D.boxes.filter(b=>b.status==='clean').length;
@@ -406,11 +474,11 @@ const ccCanvas=document.getElementById('chartCheckout');if(ccCanvas)ccCanvas.sty
 const ccMsg=ccCanvas?.parentElement?.querySelector('.empty-msg');if(ccMsg)ccMsg.remove();
 if(Object.keys(coB).length>0){rChart('chartCheckout','bar',{labels:Object.keys(coB),datasets:[{data:Object.values(coB),backgroundColor:['#f87171','#fb923c','#fbbf24','#34d399','#38b6ff','#a855f7'],borderRadius:5,borderSkipped:false}]},{horiz:true,pl:false})}else{if(charts['chartCheckout']){charts['chartCheckout'].destroy();delete charts['chartCheckout']}ccCanvas?.parentElement?.insertAdjacentHTML('beforeend','<p class="empty-msg" style="color:var(--text3);font-size:13px;text-align:center;padding:30px 0">No checkouts yet</p>')}
 rChart('chartStatus','doughnut',{labels:['Clean','Dirty'],datasets:[{data:[clean,D.boxes.length-clean],backgroundColor:['#34d399','#fb923c'],borderWidth:0}]},{cut:60})}
- 
+
 function rChart(id,type,data,o={}){const c=document.getElementById(id);if(!c)return;if(charts[id])charts[id].destroy();
 const scl=type==='bar'?(o.horiz?{x:{beginAtZero:true,grid:{color:'rgba(30,42,90,.3)'}},y:{grid:{display:false}}}:o.stacked?{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,grid:{color:'rgba(30,42,90,.3)'}}}:{y:{beginAtZero:true,grid:{color:'rgba(30,42,90,.3)'}},x:{grid:{display:false}}}):undefined;
 charts[id]=new Chart(c,{type,data,options:{responsive:true,maintainAspectRatio:true,indexAxis:o.horiz?'y':undefined,scales:scl,cutout:o.cut?o.cut+'%':undefined,plugins:{legend:o.pl===false?{display:false}:{position:'bottom',labels:{boxWidth:10,padding:5}}}}})}
- 
+
 // BOXES
 function setBoxView(v){boxView=v;$('viewCards').className=v==='cards'?'active':'';$('viewTable').className=v==='table'?'active':'';renderBoxes()}
 function renderBoxes(){let bx=D.boxes;if(boxLocF)bx=bx.filter(b=>b.location_id===boxLocF);
@@ -428,9 +496,9 @@ function openFilterLocModal(){if(!D.locs.length){toast('No locations','error');r
 function popLocDD(v){$('boxLocation').innerHTML='<option value="">— None —</option>'+D.locs.map(l=>`<option value="${l.id}"${l.id===v?' selected':''}>${esc(l.name)}</option>`).join('')}
 function openAddBoxModal(){editBox=null;$('boxModalTitle').textContent='Add Box';$('boxName').value='';$('boxStatus').value='clean';$('boxNotes').value='';popLocDD('');openModal('boxModal')}
 function openEditBoxModal(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;editBox=b.id;$('boxModalTitle').textContent='Edit';$('boxName').value=b.name;$('boxStatus').value=b.status;$('boxNotes').value=b.notes||'';popLocDD(b.location_id||'');openModal('boxModal')}
-async function saveBox(){const n=$('boxName').value.trim(),st=$('boxStatus').value,nt=$('boxNotes').value.trim(),loc=$('boxLocation').value||null;if(!n){toast('Enter name','error');return}const b=$('saveBoxBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editBox){await SB.from('boxes').update({name:n,status:st,notes:nt||null,location_id:loc}).eq('id',editBox);toast('Updated')}else{await SB.from('boxes').insert({name:n,status:st,notes:nt||null,location_id:loc,created_by:U.id});toast('Added')}b.innerHTML='Save';b.disabled=0;closeModal('boxModal');await loadData();if(editBox)openDetail(editBox)}
+async function saveBox(){const n=$('boxName').value.trim(),st=$('boxStatus').value,nt=$('boxNotes').value.trim(),loc=$('boxLocation').value||null;if(!n){toast('Enter name','error');return}const b=$('saveBoxBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editBox){await SB.from('boxes').update({name:n,status:st,notes:nt||null,location_id:loc}).eq('id',editBox);toast('Updated')}else{await ins('boxes',{name:n,status:st,notes:nt||null,location_id:loc,created_by:U.id});toast('Added')}b.innerHTML='Save';b.disabled=0;closeModal('boxModal');await loadData();if(editBox)openDetail(editBox)}
 async function deleteBox(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;pendConf=async()=>{await SB.from('boxes').delete().eq('id',curBox);toast('Deleted');closeModal('confirmModal');showPage('boxes');await loadData()};$('confirmText').textContent=`Delete "${b.name}"?`;openModal('confirmModal')}
- 
+
 // BOX DETAIL
 function openDetail(id){curBox=id;const b=D.boxes.find(x=>x.id===id);if(!b)return;
 $('detailTitle').textContent=b.name;$('detailStatus').innerHTML=`<span class="status-badge status-${b.status}">${b.status}</span>`;
@@ -446,7 +514,7 @@ rChart('dCB'+i,'doughnut',{labels:Object.keys(bc),datasets:[{data:Object.values(
 new QRious({element:$('qrCanvas'),value:`ASB-BOX:${id}`,size:100,backgroundAlpha:0,foreground:'#38b6ff',level:'M'});renderItems();showPage('detail')}
 function printBoxQR(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;$('printBoxName').textContent=b.name;$('printBoxStatus').textContent=b.status.toUpperCase();$('printBoxId').textContent=b.id;new QRious({element:$('printQrCanvas'),value:`ASB-BOX:${b.id}`,size:250,level:'M'});window.print()}
 function renderItems(){const items=D.items.filter(i=>i.box_id===curBox);$('itemsTable').innerHTML=items.length?`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>Type</th><th>Color</th><th>Size</th><th>Qty</th><th style="width:80px"></th></tr></thead><tbody>${items.map(i=>`<tr><td>${esc(gtn(i.item_type_id))}</td><td><span class="color-dot" style="background:${gch(i.color_id)}"></span>${esc(gcn(i.color_id))}</td><td>${i.size}</td><td class="qty">${i.quantity}</td><td><div class="actions-cell"><button class="btn-icon" onclick="event.stopPropagation();openEditItem('${i.id}')">✎</button><button class="btn-icon" onclick="event.stopPropagation();delItem('${i.id}')">✕</button></div></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty-state"><p>No items</p></div>'}
- 
+
 // ITEMS
 function popTDD(s,v){$(s).innerHTML=D.types.map(t=>`<option value="${t.id}"${t.id===v?' selected':''}>${esc(t.name)}</option>`).join('')}
 function popCDD(s,v){$(s).innerHTML=D.colors.map(c=>`<option value="${c.id}"${c.id===v?' selected':''}>● ${esc(c.name)}</option>`).join('')}
@@ -456,20 +524,20 @@ function openAddItemModal(){editItem=null;$('itemModalTitle').textContent='Add I
 function openEditItem(id){const i=D.items.find(x=>x.id===id);if(!i)return;editItem=id;$('itemModalTitle').textContent='Edit';popTDD('itemType',i.item_type_id);popCDD('itemColor',i.color_id);updCP();$('itemSize').value=i.size;$('itemQty').value=i.quantity;openModal('itemModal')}
 async function saveItem(){const tid=$('itemType').value,cid=$('itemColor').value,sz=$('itemSize').value,qty=parseInt($('itemQty').value)||0;if(!cid||!tid){toast('Select type and color','error');return}
 if(!editItem){const dup=D.items.find(i=>i.box_id===curBox&&i.item_type_id===tid&&i.color_id===cid&&i.size===sz);
-if(dup){pendConf=async()=>{await SB.from('box_items').update({quantity:dup.quantity+qty}).eq('id',dup.id);await SB.from('activity_log').insert({action_type:'item_added',item_type_id:tid,color_id:cid,size:sz,quantity:qty,box_id:curBox,created_by:U.id});toast('Merged');closeModal('confirmModal');closeModal('itemModal');lastTID=tid;lastCID=cid;await loadData();openDetail(curBox)};$('confirmText').textContent=`${gtn(tid)} ${gcn(cid)} ${sz} exists (${dup.quantity}). Add ${qty}?`;openModal('confirmModal');return}}
+if(dup){pendConf=async()=>{await SB.from('box_items').update({quantity:dup.quantity+qty}).eq('id',dup.id);await ins('activity_log',{action_type:'item_added',item_type_id:tid,color_id:cid,size:sz,quantity:qty,box_id:curBox,created_by:U.id});toast('Merged');closeModal('confirmModal');closeModal('itemModal');lastTID=tid;lastCID=cid;await loadData();openDetail(curBox)};$('confirmText').textContent=`${gtn(tid)} ${gcn(cid)} ${sz} exists (${dup.quantity}). Add ${qty}?`;openModal('confirmModal');return}}
 const b=$('saveItemBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;
-if(editItem){await SB.from('box_items').update({item_type_id:tid,color_id:cid,size:sz,quantity:qty}).eq('id',editItem);await SB.from('activity_log').insert({action_type:'item_updated',item_type_id:tid,color_id:cid,size:sz,quantity:qty,box_id:curBox,created_by:U.id});toast('Updated')}
-else{await SB.from('box_items').insert({box_id:curBox,item_type_id:tid,color_id:cid,size:sz,quantity:qty});await SB.from('activity_log').insert({action_type:'item_added',item_type_id:tid,color_id:cid,size:sz,quantity:qty,box_id:curBox,created_by:U.id});toast('Added');lastTID=tid;lastCID=cid}
+if(editItem){await SB.from('box_items').update({item_type_id:tid,color_id:cid,size:sz,quantity:qty}).eq('id',editItem);await ins('activity_log',{action_type:'item_updated',item_type_id:tid,color_id:cid,size:sz,quantity:qty,box_id:curBox,created_by:U.id});toast('Updated')}
+else{await ins('box_items',{box_id:curBox,item_type_id:tid,color_id:cid,size:sz,quantity:qty});await ins('activity_log',{action_type:'item_added',item_type_id:tid,color_id:cid,size:sz,quantity:qty,box_id:curBox,created_by:U.id});toast('Added');lastTID=tid;lastCID=cid}
 b.innerHTML='Save';b.disabled=0;closeModal('itemModal');await loadData();openDetail(curBox)}
-async function delItem(id){const i=D.items.find(x=>x.id===id);pendConf=async()=>{await SB.from('box_items').delete().eq('id',id);if(i)await SB.from('activity_log').insert({action_type:'item_removed',item_type_id:i.item_type_id,color_id:i.color_id,size:i.size,quantity:i.quantity,box_id:curBox,created_by:U.id});toast('Deleted');closeModal('confirmModal');await loadData();openDetail(curBox)};$('confirmText').textContent='Delete this item?';openModal('confirmModal')}
+async function delItem(id){const i=D.items.find(x=>x.id===id);pendConf=async()=>{await SB.from('box_items').delete().eq('id',id);if(i)await ins('activity_log',{action_type:'item_removed',item_type_id:i.item_type_id,color_id:i.color_id,size:i.size,quantity:i.quantity,box_id:curBox,created_by:U.id});toast('Deleted');closeModal('confirmModal');await loadData();openDetail(curBox)};$('confirmText').textContent='Delete this item?';openModal('confirmModal')}
 function openBulkModal(){popTDD('bulkType',lastTID||D.types[0]?.id);popCDD('bulkColor',lastCID||D.colors[0]?.id);updBCP();$('bulkSizes').innerHTML=['XXS','XS','S','M','L','XL','XXL'].map(s=>`<div class="bulk-size-item"><label>${s}</label><input type="number" min="0" value="0" id="bulk_${s}"></div>`).join('');openModal('bulkModal')}
 async function saveBulk(){const tid=$('bulkType').value,cid=$('bulkColor').value;const entries=[];['XXS','XS','S','M','L','XL','XXL'].forEach(s=>{const q=parseInt($('bulk_'+s).value)||0;if(q>0)entries.push({s,q})});
 if(!entries.length){toast('Enter qty','error');return}const b=$('bulkBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;
 for(const e of entries){const dup=D.items.find(i=>i.box_id===curBox&&i.item_type_id===tid&&i.color_id===cid&&i.size===e.s);
-if(dup)await SB.from('box_items').update({quantity:dup.quantity+e.q}).eq('id',dup.id);else await SB.from('box_items').insert({box_id:curBox,item_type_id:tid,color_id:cid,size:e.s,quantity:e.q});
-await SB.from('activity_log').insert({action_type:'item_added',item_type_id:tid,color_id:cid,size:e.s,quantity:e.q,box_id:curBox,created_by:U.id})}
+if(dup)await SB.from('box_items').update({quantity:dup.quantity+e.q}).eq('id',dup.id);else await ins('box_items',{box_id:curBox,item_type_id:tid,color_id:cid,size:e.s,quantity:e.q});
+await ins('activity_log',{action_type:'item_added',item_type_id:tid,color_id:cid,size:e.s,quantity:e.q,box_id:curBox,created_by:U.id})}
 lastTID=tid;lastCID=cid;b.innerHTML='Add All';b.disabled=0;toast(`Added ${entries.length} sizes`);closeModal('bulkModal');await loadData();openDetail(curBox)}
- 
+
 // CHECKOUT
 function renderCO(){
 $('checkoutFilters').innerHTML=`<button class="${coFilter==='all'?'active':''}" onclick="coFilter='all';renderCO()">All</button>`+D.types.map(t=>`<button class="${coFilter===t.id?'active':''}" onclick="coFilter='${t.id}';renderCO()">${esc(t.name)}</button>`).join('');
@@ -479,14 +547,14 @@ let ent=Object.values(agg);if(coFilter!=='all')ent=ent.filter(e=>e.tid===coFilte
 if(search)ent=ent.filter(e=>{const str=`${gtn(e.tid)} ${gcn(e.cid)} ${e.size}`.toLowerCase();return str.includes(search)});
 const so={XXS:0,XS:1,S:2,M:3,L:4,XL:5,XXL:6};ent.sort((a,b)=>gtn(a.tid).localeCompare(gtn(b.tid))||gcn(a.cid).localeCompare(gcn(b.cid))||(so[a.size]||0)-(so[b.size]||0));
 $('checkoutGrid').innerHTML=ent.length?ent.map(e=>`<div class="checkout-card${e.qty<=0?' out-of-stock':''}" onclick="openQtyModal('${e.tid}','${e.cid}','${e.size}',${e.qty},this)"><div class="cc-flash"></div><div class="cc-type">${gtn(e.tid)}</div><div class="cc-color"><span class="color-dot" style="background:${gch(e.cid)}"></span>${gcn(e.cid)}</div><div class="cc-size">${e.size}</div><div class="cc-qty">Stock: <span>${e.qty}</span></div></div>`).join(''):'<div class="empty-state"><p>No items</p></div>'}
- 
+
 function openQtyModal(tid,cid,sz,stock,el){qtyCount=1;qtyPending={tid,cid,sz,el};$('qtyVal').textContent=1;$('qtyModalTitle').textContent=`${gtn(tid)} ${gcn(cid)} ${sz}`;openModal('qtyModal')}
 function adjQty(d){qtyCount=Math.max(1,qtyCount+d);$('qtyVal').textContent=qtyCount}
 async function confirmQty(){if(!qtyPending)return;const{tid,cid,sz,el}=qtyPending;closeModal('qtyModal');
 const src=D.items.find(i=>i.item_type_id===tid&&i.color_id===cid&&i.size===sz&&i.quantity>0);
 if(!src||src.quantity<qtyCount){toast('Not enough stock','error');return}
 el.classList.add('flashing');setTimeout(()=>el.classList.remove('flashing'),300);src.quantity-=qtyCount;
-const[ur,lr]=await Promise.all([SB.from('box_items').update({quantity:src.quantity}).eq('id',src.id),SB.from('activity_log').insert({action_type:'checkout',item_type_id:tid,color_id:cid,size:sz,quantity:qtyCount,created_by:U.id}).select()]);
+const[ur,lr]=await Promise.all([SB.from('box_items').update({quantity:src.quantity}).eq('id',src.id),ins('activity_log',{action_type:'checkout',item_type_id:tid,color_id:cid,size:sz,quantity:qtyCount,created_by:U.id}).select()]);
 if(ur.error){toast(ur.error.message,'error');src.quantity+=qtyCount;return}
 lastUndo={bid:src.id,lid:lr.data?.[0]?.id,oq:src.quantity+qtyCount};$('undoBtn').classList.add('show');clearTimeout(window._ut);window._ut=setTimeout(()=>$('undoBtn').classList.remove('show'),10000);
 if(lr.data?.[0])D.logs.unshift(lr.data[0]);
@@ -495,11 +563,11 @@ async function undoLast(){if(!lastUndo)return;const l=lastUndo;lastUndo=null;$('
 const src=D.items.find(i=>i.id===l.bid);if(src)src.quantity=l.oq;
 if(l.lid)D.logs=D.logs.filter(x=>x.id!==l.lid);
 toast('Undone');renderCO()}
- 
+
 // HISTORY
 function renderHistory(){try{const af=$('histAction').value;const df=$('histDate').value;let logs=[...D.logs];if(af)logs=logs.filter(l=>l.action_type===af);if(df)logs=logs.filter(l=>l.created_at&&l.created_at.startsWith(df));
 $('historyList').innerHTML=logs.length?`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>Action</th><th>Item</th><th>Color</th><th>Size</th><th>Qty</th><th>By</th><th>Date</th></tr></thead><tbody>${logs.slice(0,200).map(l=>{const cls=l.action_type==='checkout'?'color:var(--red)':'color:var(--accent)';return`<tr><td><span style="${cls};font-weight:600;font-size:12px;text-transform:uppercase">${l.action_type.replace('_',' ')}</span></td><td>${esc(gtn(l.item_type_id))}</td><td><span class="color-dot" style="background:${gch(l.color_id)}"></span>${esc(gcn(l.color_id))}</td><td>${l.size||''}</td><td class="qty">${l.quantity}</td><td style="font-size:12px">${esc(getEmail(l.created_by))}</td><td style="font-size:12px">${new Date(l.created_at).toLocaleString()}</td></tr>`}).join('')}</tbody></table></div>`:'<div class="empty-state"><p>No activity yet</p><p style="font-size:13px">Actions will appear here as you add items and check them out</p></div>'}catch(e){console.error('History error:',e);$('historyList').innerHTML='<div class="empty-state"><p>Error loading history</p></div>'}}
- 
+
 // SNAPSHOTS
 function renderSnaps(){const el=$('snapList');const cmp=$('snapCompare');
 if(!D.snaps.length){el.innerHTML='<div class="empty-state"><p>No snapshots yet</p><p style="font-size:13px">Take a snapshot to record your current inventory</p></div>';cmp.innerHTML='';return}
@@ -524,26 +592,26 @@ function openSnapModal(){$('snapName').value='';openModal('snapModal')}
 async function takeSnap(){const n=$('snapName').value.trim();if(!n){toast('Enter name','error');return}
 const agg={};D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}`;if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,qty:0};agg[k].qty+=i.quantity});
 const b=$('snapBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;
-const{data}=await SB.from('inventory_snapshots').insert({name:n,data:Object.values(agg),created_by:U.id}).select();
+const{data}=await ins('inventory_snapshots',{name:n,data:Object.values(agg),created_by:U.id}).select();
 if(data?.[0])D.snaps.unshift(data[0]);
 b.innerHTML='Save';b.disabled=0;toast('Snapshot saved');closeModal('snapModal');renderSnaps()}
 async function delSnap(id){pendConf=async()=>{await SB.from('inventory_snapshots').delete().eq('id',id);D.snaps=D.snaps.filter(s=>s.id!==id);toast('Deleted');closeModal('confirmModal');renderSnaps()};$('confirmText').textContent='Delete snapshot?';openModal('confirmModal')}
- 
+
 // SETTINGS
 function renderColors(){$('colorsList').innerHTML=D.colors.map(c=>`<div class="color-card"><div class="color-swatch" style="background:${c.hex_code}"></div><div class="color-names"><div class="en">${esc(c.name)}</div></div><button class="btn-icon" onclick="openEditColor('${c.id}')">✎</button><button class="btn-icon" onclick="delColor('${c.id}')">✕</button></div>`).join('')}
 function openAddColorModal(){editColor=null;$('colorModalTitle').textContent='Add';$('colorName').value='';$('colorHex').value='#3b82f6';openModal('colorModal')}
 function openEditColor(id){const c=D.colors.find(x=>x.id===id);if(!c)return;editColor=id;$('colorModalTitle').textContent='Edit';$('colorName').value=c.name;$('colorHex').value=c.hex_code;openModal('colorModal')}
-async function saveColor(){const nm=$('colorName').value.trim(),hx=$('colorHex').value;if(!nm){toast('Enter a name','error');return}const b=$('saveColorBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editColor)await SB.from('colors').update({name:nm,hex_code:hx}).eq('id',editColor);else await SB.from('colors').insert({name:nm,hex_code:hx});b.innerHTML='Save';b.disabled=0;toast('Saved');closeModal('colorModal');await loadData();renderColors()}
+async function saveColor(){const nm=$('colorName').value.trim(),hx=$('colorHex').value;if(!nm){toast('Enter a name','error');return}const b=$('saveColorBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editColor)await SB.from('colors').update({name:nm,hex_code:hx}).eq('id',editColor);else await ins('colors',{name:nm,hex_code:hx});b.innerHTML='Save';b.disabled=0;toast('Saved');closeModal('colorModal');await loadData();renderColors()}
 async function delColor(id){pendConf=async()=>{await SB.from('colors').delete().eq('id',id);toast('Deleted');closeModal('confirmModal');await loadData();renderColors()};$('confirmText').textContent='Delete color?';openModal('confirmModal')}
 function renderTypes(){$('typesList').innerHTML=D.types.map(t=>`<div class="type-card"><div class="type-name">${esc(t.name)}</div><div style="display:flex;gap:4px"><button class="btn-icon" onclick="openEditType('${t.id}')">✎</button><button class="btn-icon" onclick="delType('${t.id}')">✕</button></div></div>`).join('')}
 function openAddTypeModal(){editType=null;$('typeModalTitle').textContent='Add';$('typeName').value='';openModal('typeModal')}
 function openEditType(id){const t=D.types.find(x=>x.id===id);if(!t)return;editType=id;$('typeModalTitle').textContent='Edit';$('typeName').value=t.name;openModal('typeModal')}
-async function saveType(){const n=$('typeName').value.trim();if(!n){toast('Name','error');return}const b=$('saveTypeBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editType)await SB.from('item_types').update({name:n}).eq('id',editType);else await SB.from('item_types').insert({name:n});b.innerHTML='Save';b.disabled=0;toast('Saved');closeModal('typeModal');await loadData();renderTypes()}
+async function saveType(){const n=$('typeName').value.trim();if(!n){toast('Name','error');return}const b=$('saveTypeBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editType)await SB.from('item_types').update({name:n}).eq('id',editType);else await ins('item_types',{name:n});b.innerHTML='Save';b.disabled=0;toast('Saved');closeModal('typeModal');await loadData();renderTypes()}
 async function delType(id){pendConf=async()=>{await SB.from('item_types').delete().eq('id',id);toast('Deleted');closeModal('confirmModal');await loadData();renderTypes()};$('confirmText').textContent='Delete type?';openModal('confirmModal')}
 function renderLocs(){$('locList').innerHTML=D.locs.map(l=>`<div class="loc-card"><div class="loc-info"><div class="loc-name">${esc(l.name)}</div>${l.description?`<div class="loc-desc">${esc(l.description)}</div>`:''}</div><div style="display:flex;gap:4px"><button class="btn-icon" onclick="openEditLoc('${l.id}')">✎</button><button class="btn-icon" onclick="delLoc('${l.id}')">✕</button></div></div>`).join('')}
 function openAddLocModal(){editLoc=null;$('locModalTitle').textContent='Add';$('locName').value='';$('locDesc').value='';openModal('locModal')}
 function openEditLoc(id){const l=D.locs.find(x=>x.id===id);if(!l)return;editLoc=id;$('locModalTitle').textContent='Edit';$('locName').value=l.name;$('locDesc').value=l.description||'';openModal('locModal')}
-async function saveLoc(){const n=$('locName').value.trim(),d=$('locDesc').value.trim();if(!n){toast('Name','error');return}const b=$('saveLocBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editLoc)await SB.from('storage_locations').update({name:n,description:d||null}).eq('id',editLoc);else await SB.from('storage_locations').insert({name:n,description:d||null});b.innerHTML='Save';b.disabled=0;toast('Saved');closeModal('locModal');await loadData();renderLocs()}
+async function saveLoc(){const n=$('locName').value.trim(),d=$('locDesc').value.trim();if(!n){toast('Name','error');return}const b=$('saveLocBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editLoc)await SB.from('storage_locations').update({name:n,description:d||null}).eq('id',editLoc);else await ins('storage_locations',{name:n,description:d||null});b.innerHTML='Save';b.disabled=0;toast('Saved');closeModal('locModal');await loadData();renderLocs()}
 async function delLoc(id){pendConf=async()=>{await SB.from('storage_locations').delete().eq('id',id);toast('Deleted');closeModal('confirmModal');await loadData();renderLocs()};$('confirmText').textContent='Delete location?';openModal('confirmModal')}
 function renderUsers(){if(!isSA())return;const pend=D.profiles.filter(p=>p.role==='pending'),act=D.profiles.filter(p=>p.role!=='pending');
 $('pendingUsers').innerHTML=pend.length?`<div class="alert-banner" style="margin-bottom:14px"><h4>⏳ ${pend.length} pending</h4><div class="users-grid" style="margin-top:10px">${pend.map(p=>`<div class="user-card"><div class="user-info"><div class="user-email">${esc(p.email)}</div><span class="role-badge role-pending">Pending</span></div><div style="display:flex;gap:4px"><button class="btn btn-sm" style="background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,.2)" onclick="approveU('${p.id}')">✓</button><button class="btn btn-danger btn-sm" onclick="declineU('${p.id}')">✕</button></div></div>`).join('')}</div></div>`:'';
@@ -551,13 +619,14 @@ $('usersList').innerHTML=act.map(p=>`<div class="user-card"><div class="user-inf
 async function approveU(id){await SB.from('profiles').update({role:'admin'}).eq('id',id);toast('Approved');await loadData();renderUsers()}
 async function declineU(id){pendConf=async()=>{await SB.from('profiles').delete().eq('id',id);toast('Declined');closeModal('confirmModal');await loadData();renderUsers()};$('confirmText').textContent='Decline?';openModal('confirmModal')}
 async function removeU(id){pendConf=async()=>{await SB.from('profiles').delete().eq('id',id);toast('Removed');closeModal('confirmModal');await loadData();renderUsers()};$('confirmText').textContent='Remove user?';openModal('confirmModal')}
-async function saveSettings(){const updates=[SB.from('app_settings').update({value:$('sLogo').value.trim()}).eq('key','logo_url'),SB.from('app_settings').update({value:$('sThreshold').value}).eq('key','low_stock_threshold')];
-const cn=$('sClubName')?.value.trim();const ic=$('sIcon')?.value.trim();
-if(cn!==undefined)updates.push(SB.from('app_settings').upsert({key:'club_name',value:cn||'AS Blainville'}));
-if(ic!==undefined)updates.push(SB.from('app_settings').upsert({key:'app_icon',value:ic||''}));
-await Promise.all(updates);toast('Saved');await loadData()}
+async function saveSettings(){const cn=$('sClubName')?.value.trim()||'';const ic=$('sIcon')?.value.trim()||'';const logo=$('sLogo').value.trim();const thr=$('sThreshold').value;
+const rows=[{club_id:CID,key:'logo_url',value:logo},{club_id:CID,key:'low_stock_threshold',value:thr},{club_id:CID,key:'club_name',value:cn||CLUB?.name||'Club'},{club_id:CID,key:'app_icon',value:ic}];
+await SB.from('app_settings').upsert(rows,{onConflict:'club_id,key'});
+// Keep clubs.name in sync with the club_name setting
+if(cn)await SB.from('clubs').update({name:cn}).eq('id',CID);
+toast('Saved');await loadData()}
 function exportCSV(){let csv='Type,Color,Size,Quantity,Box,Location\n';D.items.forEach(i=>{const b=D.boxes.find(x=>x.id===i.box_id);csv+=`"${gtn(i.item_type_id)}","${gcn(i.color_id)}","${i.size}",${i.quantity},"${b?b.name:''}","${b?gln(b.location_id):''}" \n`});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`asb_inventory_${new Date().toISOString().split('T')[0]}.csv`;a.click();toast('Exported')}
- 
+
 // HELPERS
 function openModal(id){$(id).classList.add('show')}
 function closeModal(id){$(id).classList.remove('show')}
@@ -569,7 +638,5 @@ checkSession();
 // PWA service worker registration
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(e=>console.log('SW registration skipped:',e.message))}
 $('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')handleLogin()});
-$('signupPassword').addEventListener('keydown',e=>{if(e.key==='Enter')handleSignup()});
 </script>
 </body></html>
- 
