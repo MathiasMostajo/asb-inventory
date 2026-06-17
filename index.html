@@ -348,12 +348,40 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="toast" id="toast"></div>
 <script type="text/javascript">
 function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:'en,fr,es,pt,de,it,nl,ja,zh-CN,ko,ar',autoDisplay:false},'google_translate_element')}
-function setLang(code){if(!code)return;
+
+// Glossary of correct translations for key app terms (verified languages only).
+// After Google translates, we override these specific terms with the correct word.
+const GLOSSARY={
+fr:{'Clean':'Propre','Dirty':'Sale','Faire le ménage':'Propre','Ménage':'Propre','Dashboard':'Tableau de bord','Checkout':'Sortie','Checked Out':'Sortis','Low Stock':'Stock bas','Snapshots':'Captures','Take Snapshot':'Prendre une capture','Bulk Add':'Ajout groupé'},
+es:{'Clean':'Limpio','Dirty':'Sucio','Dashboard':'Panel','Checkout':'Salida','Checked Out':'Retirados','Low Stock':'Stock bajo','Snapshots':'Capturas','Take Snapshot':'Tomar captura','Bulk Add':'Añadir en lote'},
+pt:{'Clean':'Limpo','Dirty':'Sujo','Dashboard':'Painel','Checkout':'Saída','Checked Out':'Retirados','Low Stock':'Estoque baixo','Snapshots':'Capturas','Take Snapshot':'Tirar captura','Bulk Add':'Adicionar em lote'},
+it:{'Clean':'Pulito','Dirty':'Sporco','Dashboard':'Pannello','Checkout':'Uscita','Checked Out':'Ritirati','Low Stock':'Scorte basse','Snapshots':'Istantanee','Take Snapshot':'Scatta istantanea','Bulk Add':'Aggiunta multipla'},
+de:{'Clean':'Sauber','Dirty':'Schmutzig','Dashboard':'Übersicht','Checkout':'Ausgabe','Checked Out':'Ausgegeben','Low Stock':'Niedriger Bestand','Snapshots':'Aufnahmen','Take Snapshot':'Aufnahme erstellen','Bulk Add':'Sammelhinzufügung'},
+nl:{'Clean':'Schoon','Dirty':'Vuil','Dashboard':'Overzicht','Checkout':'Uitgifte','Checked Out':'Uitgegeven','Low Stock':'Lage voorraad','Snapshots':'Momentopnamen','Take Snapshot':'Momentopname maken','Bulk Add':'Bulk toevoegen'}
+};
+let curLang='en';
+function applyGlossary(){const g=GLOSSARY[curLang];if(!g)return;
+// Walk text nodes and replace any glossary term that Google mistranslated
+const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null);const nodes=[];let n;while(n=walker.nextNode())nodes.push(n);
+nodes.forEach(node=>{let txt=node.nodeValue;if(!txt||!txt.trim())return;let changed=false;
+for(const[en,correct]of Object.entries(g)){
+// match the mistranslated forms by checking if the node equals a known-bad output; we replace whole-word, case-insensitive
+const variants=[en];if(curLang==='fr'){if(en==='Clean')variants.push('Faire le ménage','faire le ménage','Ménage','ménage','Nettoyer','nettoyer')}
+variants.forEach(v=>{const re=new RegExp('\\b'+v.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','gi');if(re.test(txt)){txt=txt.replace(re,correct);changed=true}})}
+if(changed)node.nodeValue=txt})}
+
+function setLang(code){if(!code)return;curLang=code;
 let attempts=0;const maxAttempts=30;
 const tryIt=()=>{const combo=document.querySelector('select.goog-te-combo');
-if(combo&&combo.options.length>1){combo.value=code;combo.dispatchEvent(new Event('change'));setTimeout(()=>combo.dispatchEvent(new Event('change')),100);}
+if(combo&&combo.options.length>1){combo.value=code;combo.dispatchEvent(new Event('change'));
+// Apply glossary corrections repeatedly as Google finishes rendering
+setTimeout(applyGlossary,500);setTimeout(applyGlossary,1000);setTimeout(applyGlossary,1800);}
 else if(attempts++<maxAttempts)setTimeout(tryIt,200)};
 tryIt()}
+// Re-apply glossary whenever the DOM changes (new content rendered after translation)
+let glossaryTimer=null;
+const glossaryObserver=new MutationObserver(()=>{if(curLang==='en')return;clearTimeout(glossaryTimer);glossaryTimer=setTimeout(applyGlossary,300)});
+setTimeout(()=>glossaryObserver.observe(document.body,{childList:true,subtree:true,characterData:true}),2000);
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script>
