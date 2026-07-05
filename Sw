@@ -1,6 +1,6 @@
 // ASB Inventory Service Worker
 // Network-first strategy: always try live data, fall back to cache only when offline.
-const CACHE = 'asb-inv-v1';
+const CACHE = 'qajon-v1';
 const SHELL = ['./index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
