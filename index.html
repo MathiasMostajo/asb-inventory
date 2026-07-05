@@ -73,6 +73,9 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .chart-card canvas{max-height:240px}
 .alert-banner{background:var(--orange-dim);border:1px solid rgba(251,146,60,.3);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px}
 .alert-banner h4{color:var(--orange);font-size:13px;margin-bottom:6px}
+.trial-banner{background:var(--accent-dim);border:1px solid var(--accent-dim2);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.trial-banner .tb-text{font-size:13px;color:var(--accent);font-weight:600}
+.trial-banner.warn{background:var(--orange-dim);border-color:rgba(251,146,60,.3)}.trial-banner.warn .tb-text{color:var(--orange)}
 .alert-banner ul{list-style:none;padding:0}.alert-banner li{font-size:13px;color:var(--text2);padding:3px 0}
 .boxes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
 .box-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:all .2s}
@@ -215,6 +218,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="topbar-right"><select class="lang-select" id="langSel" onchange="setLang(this.value)"><option value="en">🌐 English</option><option value="fr">Français</option><option value="es">Español</option><option value="pt">Português</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="nl">Nederlands</option></select><button class="theme-toggle" onclick="toggleTheme()" title="Light/Dark">☀</button><span class="topbar-user" id="userEmail"></span><button class="topbar-logout" onclick="handleLogout()" id="btnLogout" data-i18n="out">Out</button></div></div>
 
 <div class="content">
+<div id="trialBanner"></div>
 <!-- DASHBOARD -->
 <div class="page active" id="page-dashboard">
 <div class="page-header"><h2 class="page-title" data-i18n="dashboard">Dashboard</h2><button class="btn btn-secondary btn-sm" onclick="exportCSV()">📥 <span data-i18n="exportCSV">Export</span></button></div>
@@ -284,7 +288,8 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="settings-section" id="settings-types"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="itemTypes">Item Types</h3><button class="btn btn-secondary btn-sm" onclick="openAddTypeModal()">+ <span data-i18n="add">Add</span></button></div><div class="types-grid" id="typesList"></div></div>
 <div class="settings-section" id="settings-locations"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="locations">Locations</h3><button class="btn btn-secondary btn-sm" onclick="openAddLocModal()">+ <span data-i18n="add">Add</span></button></div><div class="locations-grid" id="locList"></div></div>
 <div class="settings-section" id="settings-users"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="users">Users</h3></div><div id="pendingUsers"></div><div class="users-grid" id="usersList"></div></div>
-<div class="settings-section" id="settings-general"><div style="max-width:400px"><div class="form-group"><label data-i18n="clubName">Club Name</label><input type="text" id="sClubName" placeholder="AS Blainville"></div><div class="form-group"><label data-i18n="clubLogoUrl">Club Logo URL</label><input type="text" id="sLogo" placeholder="https://..."><p style="font-size:11px;color:var(--text3);margin-top:3px"><span data-i18n="logoHint">Shown in topbar & login screen</span></p></div><div class="form-group"><label data-i18n="appIconUrl">App Icon URL (home screen)</label><input type="text" id="sIcon" placeholder="https://... (512x512 PNG)"><p style="font-size:11px;color:var(--text3);margin-top:3px"><span data-i18n="iconHint">Icon when added to phone home screen</span></p></div><div class="form-group"><label data-i18n="lowStockThreshold">Low Stock Threshold</label><input type="number" id="sThreshold" min="1" value="5"></div><button class="btn btn-primary" onclick="saveSettings()" style="width:auto;margin-top:8px" data-i18n="save">Save</button></div></div></div>
+<div class="settings-section" id="settings-general"><div style="max-width:400px"><div class="form-group"><label data-i18n="clubName">Club Name</label><input type="text" id="sClubName" placeholder="AS Blainville"></div><div class="form-group"><label data-i18n="clubLogoUrl">Club Logo URL</label><input type="text" id="sLogo" placeholder="https://..."><p style="font-size:11px;color:var(--text3);margin-top:3px"><span data-i18n="logoHint">Shown in topbar & login screen</span></p></div><div class="form-group"><label data-i18n="appIconUrl">App Icon URL (home screen)</label><input type="text" id="sIcon" placeholder="https://... (512x512 PNG)"><p style="font-size:11px;color:var(--text3);margin-top:3px"><span data-i18n="iconHint">Icon when added to phone home screen</span></p></div><div class="form-group"><label data-i18n="lowStockThreshold">Low Stock Threshold</label><input type="number" id="sThreshold" min="1" value="5"></div><button class="btn btn-primary" onclick="saveSettings()" style="width:auto;margin-top:8px" data-i18n="save">Save</button>
+<div id="billingSection" style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)"></div></div></div></div>
 
 <div class="page" id="page-print"><div class="print-qr"><h2 id="printBoxName"></h2><canvas id="printQrCanvas" width="250" height="250"></canvas></div></div>
 </div></div>
@@ -337,6 +342,13 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="modal-overlay" id="confirmModal"><div class="modal"><h2 data-i18n="confirm">Confirm</h2><p style="color:var(--text2);font-size:14px" id="confirmText"></p>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('confirmModal')" data-i18n="cancel">Cancel</button><button class="btn btn-danger" onclick="confirmAction()" data-i18n="confirm">Confirm</button></div></div></div>
 
+<div id="paywallView" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:900;align-items:center;justify-content:center;padding:20px">
+<div class="pending-card" style="max-width:440px;margin:auto">
+<h2 id="paywallTitle" style="color:var(--accent);margin-bottom:12px"></h2>
+<p id="paywallMsg" style="color:var(--text2);font-size:15px;margin-bottom:20px"></p>
+<div id="paywallActions"></div>
+<button class="btn btn-secondary" onclick="handleLogout()" style="margin-top:10px" data-i18n="signOut">Sign Out</button>
+</div></div>
 <div class="toast" id="toast"></div>
 <script>
 const SB=supabase.createClient('https://iuepnofgpivqghcvdgnz.supabase.co','sb_publishable_H78FAZKcfoAdF1o6x2MOxA_VvFA2GDj');
@@ -488,7 +500,18 @@ roleAdmin:{en:"admin",fr:"administrateur",es:"administrador",pt:"administrador",
 noClubAssigned:{en:"Your account has no club assigned. Contact support.",fr:"Votre compte n'a aucun club assigné. Contactez le support.",es:"Tu cuenta no tiene club asignado. Contacta soporte.",pt:"Sua conta não tem clube atribuído. Contate o suporte.",de:"Ihrem Konto ist kein Verein zugewiesen. Kontaktieren Sie den Support.",it:"Il tuo account non ha un club assegnato. Contatta il supporto.",nl:"Je account heeft geen club toegewezen. Neem contact op met support."},
 addToItQ:{en:"Add",fr:"Ajouter",es:"Agregar",pt:"Adicionar",de:"Hinzufügen",it:"Aggiungi",nl:"Toevoegen"},
 errLoadHist:{en:"Error loading history",fr:"Erreur de chargement",es:"Error al cargar",pt:"Erro ao carregar",de:"Fehler beim Laden",it:"Errore di caricamento",nl:"Fout bij laden"},
-existsLbl:{en:"exists",fr:"existe",es:"existe",pt:"existe",de:"existiert",it:"esiste",nl:"bestaat"}
+existsLbl:{en:"exists",fr:"existe",es:"existe",pt:"existe",de:"existiert",it:"esiste",nl:"bestaat"},
+trialDaysLeft:{en:"days left in your free trial",fr:"jours restants dans votre essai gratuit",es:"días restantes de tu prueba gratis",pt:"dias restantes no seu teste grátis",de:"Tage verbleiben in Ihrer Testphase",it:"giorni rimanenti nella prova gratuita",nl:"dagen over in je gratis proefperiode"},
+trialLastDay:{en:"Last day of your free trial",fr:"Dernier jour de votre essai gratuit",es:"Último día de tu prueba gratis",pt:"Último dia do seu teste grátis",de:"Letzter Tag Ihrer Testphase",it:"Ultimo giorno della prova gratuita",nl:"Laatste dag van je proefperiode"},
+subscribeNow:{en:"Subscribe — $10/mo",fr:"S'abonner — 10 $/mois",es:"Suscribirse — $10/mes",pt:"Assinar — US$10/mês",de:"Abonnieren — 10 $/Monat",it:"Abbonati — 10 $/mese",nl:"Abonneren — $10/mnd"},
+trialExpiredTitle:{en:"Your free trial has ended",fr:"Votre essai gratuit est terminé",es:"Tu prueba gratis ha terminado",pt:"Seu teste grátis terminou",de:"Ihre Testphase ist abgelaufen",it:"La tua prova gratuita è terminata",nl:"Je proefperiode is afgelopen"},
+trialExpiredMsg:{en:"Subscribe to keep managing your inventory. Your data is safe and waiting.",fr:"Abonnez-vous pour continuer à gérer votre inventaire. Vos données sont en sécurité.",es:"Suscríbete para seguir gestionando tu inventario. Tus datos están seguros.",pt:"Assine para continuar gerenciando seu inventário. Seus dados estão seguros.",de:"Abonnieren Sie, um Ihr Inventar weiter zu verwalten. Ihre Daten sind sicher.",it:"Abbonati per continuare a gestire il tuo inventario. I tuoi dati sono al sicuro.",nl:"Abonneer om je inventaris te blijven beheren. Je gegevens zijn veilig."},
+askAdminSubscribe:{en:"Ask your club admin to subscribe.",fr:"Demandez à l'administrateur de votre club de s'abonner.",es:"Pide al administrador de tu club que se suscriba.",pt:"Peça ao administrador do seu clube para assinar.",de:"Bitten Sie Ihren Vereinsadministrator, zu abonnieren.",it:"Chiedi all'amministratore del club di abbonarsi.",nl:"Vraag je clubbeheerder om te abonneren."},
+pastDueMsg:{en:"Payment issue — please update your payment method.",fr:"Problème de paiement — veuillez mettre à jour votre moyen de paiement.",es:"Problema de pago — actualiza tu método de pago.",pt:"Problema de pagamento — atualize seu método de pagamento.",de:"Zahlungsproblem — bitte Zahlungsmethode aktualisieren.",it:"Problema di pagamento — aggiorna il metodo di pagamento.",nl:"Betalingsprobleem — werk je betaalmethode bij."},
+manageBilling:{en:"Manage Billing",fr:"Gérer la facturation",es:"Gestionar facturación",pt:"Gerenciar cobrança",de:"Abrechnung verwalten",it:"Gestisci fatturazione",nl:"Facturering beheren"},
+subActive:{en:"Subscription active",fr:"Abonnement actif",es:"Suscripción activa",pt:"Assinatura ativa",de:"Abonnement aktiv",it:"Abbonamento attivo",nl:"Abonnement actief"},
+billingSuccess:{en:"Subscription activated. Welcome aboard!",fr:"Abonnement activé. Bienvenue!",es:"Suscripción activada. ¡Bienvenido!",pt:"Assinatura ativada. Bem-vindo!",de:"Abonnement aktiviert. Willkommen!",it:"Abbonamento attivato. Benvenuto!",nl:"Abonnement geactiveerd. Welkom!"},
+billing:{en:"Billing",fr:"Facturation",es:"Facturación",pt:"Cobrança",de:"Abrechnung",it:"Fatturazione",nl:"Facturering"}
 };
 
 let LANG=localStorage.getItem('qajon_lang')||'en';
@@ -570,13 +593,47 @@ showApp()}
 async function handleLogout(){await SB.auth.signOut();U=null;UP=null;CID=null;CLUB=null;$('loginView').style.display='flex';showAuthMode('login');$('appView').style.display='none';$('pendingView').style.display='none'}
 function sErr(el,m){el.textContent=m;el.style.display='block';el.style.background='';el.style.color=''}
 function isSA(){return UP&&UP.role==='super_admin'}
-function showApp(){$('loginView').style.display='none';$('pendingView').style.display='none';$('appView').style.display='block';$('userEmail').textContent=U.email;if(!isSA())$('usersTabBtn').style.display='none';applyStaticLang();loadData()}
+function showApp(){$('loginView').style.display='none';$('pendingView').style.display='none';$('appView').style.display='block';$('userEmail').textContent=U.email;if(!isSA())$('usersTabBtn').style.display='none';applyStaticLang();handleBillingReturn();if(clubLocked()){showPaywall();return}renderTrialBanner();loadData()}
+
+// ===== BILLING =====
+function trialDaysLeft(){if(!CLUB?.trial_ends_at)return 0;const ms=new Date(CLUB.trial_ends_at)-Date.now();return Math.max(0,Math.ceil(ms/86400000))}
+function clubLocked(){if(!CLUB)return false;if(CLUB.is_free_forever||CLUB.subscription_status==='free_forever')return false;
+if(CLUB.subscription_status==='active'||CLUB.subscription_status==='past_due')return false;
+if(CLUB.subscription_status==='expired')return true;
+// trial: locked only when time ran out
+return trialDaysLeft()<=0}
+function renderTrialBanner(){const el=$('trialBanner');if(!el)return;el.innerHTML='';if(!CLUB)return;
+if(CLUB.is_free_forever||CLUB.subscription_status==='free_forever'||CLUB.subscription_status==='active')return;
+if(CLUB.subscription_status==='past_due'){el.innerHTML=`<div class="trial-banner warn"><span class="tb-text">⚠ ${t('pastDueMsg')}</span>${isSA()?`<button class="btn btn-primary btn-sm" onclick="openPortal()">${t('manageBilling')}</button>`:''}</div>`;return}
+const d=trialDaysLeft();const txt=d<=1?t('trialLastDay'):`${d} ${t('trialDaysLeft')}`;
+el.innerHTML=`<div class="trial-banner${d<=3?' warn':''}"><span class="tb-text">⏳ ${txt}</span>${isSA()?`<button class="btn btn-primary btn-sm" onclick="startCheckout()" id="subBtn">${t('subscribeNow')}</button>`:''}</div>`}
+function showPaywall(){const pv=$('paywallView');pv.style.display='flex';
+$('paywallTitle').textContent=t('trialExpiredTitle');
+$('paywallMsg').textContent=isSA()?t('trialExpiredMsg'):t('askAdminSubscribe');
+$('paywallActions').innerHTML=isSA()?`<button class="btn btn-primary" onclick="startCheckout()" id="pwSubBtn">${t('subscribeNow')}</button>`:'';
+applyStaticLang()}
+async function callEdge(fn){const{data:{session}}=await SB.auth.getSession();
+const r=await fetch('https://iuepnofgpivqghcvdgnz.supabase.co/functions/v1/'+fn,{method:'POST',headers:{'Authorization':'Bearer '+session.access_token,'Content-Type':'application/json'}});
+return r.json()}
+async function startCheckout(){const b=$('subBtn')||$('pwSubBtn');if(b){b.disabled=1;b.innerHTML='<span class="spinner"></span>'}
+try{const res=await callEdge('create-checkout');if(res.url)location.href=res.url;else{toast(res.error||'Error','error');if(b){b.disabled=0;b.textContent=t('subscribeNow')}}}
+catch(e){toast('Error','error');if(b){b.disabled=0;b.textContent=t('subscribeNow')}}}
+async function openPortal(){try{const res=await callEdge('create-portal');if(res.url)location.href=res.url;else toast(res.error||'Error','error')}catch(e){toast('Error','error')}}
+function handleBillingReturn(){const p=new URLSearchParams(location.search);const b=p.get('billing');if(!b)return;history.replaceState(null,'',location.pathname);
+if(b==='success')toast(t('billingSuccess'))}
 function toggleTheme(){document.body.classList.toggle('light');localStorage.setItem('asb_theme',document.body.classList.contains('light')?'light':'dark')}
 if(localStorage.getItem('asb_theme')==='light')document.body.classList.add('light');
 
 // NAV
 function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('page-'+p).classList.add('active');document.querySelectorAll('.topbar-nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p||(p==='detail'&&b.dataset.page==='boxes')));if(p==='dashboard')loadDash();if(p==='checkout')renderCO();if(p==='history')renderHistory();if(p==='snapshots')renderSnaps();if(p==='settings'){renderColors();renderTypes();renderLocs();if(isSA())renderUsers()}}
-function showSTab(t,b){document.querySelectorAll('.settings-section').forEach(s=>s.classList.remove('active'));$('settings-'+t).classList.add('active');document.querySelectorAll('.settings-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(t==='general'){$('sLogo').value=D.settings.logo_url||'';$('sThreshold').value=D.settings.low_stock_threshold||'5';$('sClubName').value=D.settings.club_name||'';$('sIcon').value=D.settings.app_icon||''}}
+function showSTab(tab,b){document.querySelectorAll('.settings-section').forEach(s=>s.classList.remove('active'));$('settings-'+tab).classList.add('active');document.querySelectorAll('.settings-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(tab==='general'){$('sLogo').value=D.settings.logo_url||'';$('sThreshold').value=D.settings.low_stock_threshold||'5';$('sClubName').value=D.settings.club_name||'';$('sIcon').value=D.settings.app_icon||'';renderBillingSection()}}
+
+function renderBillingSection(){const el=$('billingSection');if(!el)return;el.innerHTML='';if(!isSA()||!CLUB)return;
+if(CLUB.is_free_forever||CLUB.subscription_status==='free_forever')return;
+if(CLUB.subscription_status==='active'||CLUB.subscription_status==='past_due'){
+el.innerHTML=`<h4 style="font-size:13px;color:var(--text2);margin-bottom:10px">${t('billing')}</h4><p style="font-size:13px;color:var(--green);margin-bottom:10px">✓ ${t('subActive')}</p><button class="btn btn-secondary btn-sm" onclick="openPortal()">${t('manageBilling')}</button>`}
+else{const d=trialDaysLeft();
+el.innerHTML=`<h4 style="font-size:13px;color:var(--text2);margin-bottom:10px">${t('billing')}</h4><p style="font-size:13px;color:var(--text3);margin-bottom:10px">⏳ ${d<=1?t('trialLastDay'):d+' '+t('trialDaysLeft')}</p><button class="btn btn-primary btn-sm" onclick="startCheckout()" id="subBtn">${t('subscribeNow')}</button>`}}
 
 // DATA
 async function loadData(){const[bx,it,co,ty,lo,lg,pr,st,sn]=await Promise.all([SB.from('boxes').select('*').order('created_at',{ascending:false}),SB.from('box_items').select('*'),SB.from('colors').select('*').order('name'),SB.from('item_types').select('*').order('name'),SB.from('storage_locations').select('*').order('name'),SB.from('activity_log').select('*').order('created_at',{ascending:false}),SB.from('profiles').select('*').eq('club_id',CID).order('created_at'),SB.from('app_settings').select('*'),SB.from('inventory_snapshots').select('*').order('created_at',{ascending:false})]);
