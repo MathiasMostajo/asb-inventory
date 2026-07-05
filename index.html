@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>ASB Inventory</title>
+<title>Qajon</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#03306b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="ASB Inventory">
+<meta name="apple-mobile-web-app-title" content="Qajon">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -166,7 +166,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <body>
 
 <div class="login-wrap" id="loginView"><div class="login-card">
-<div class="logo"><div id="loginLogo"></div><h1>Boxtory</h1><p data-i18n="tagline">Club Equipment Inventory</p></div>
+<div class="logo"><div id="loginLogo"></div><h1>Qajon</h1><p data-i18n="tagline">Club Equipment Inventory</p></div>
 <div class="login-error" id="loginError"></div>
 
 <div id="loginForm">
@@ -203,7 +203,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 
 <div class="app-wrap" id="appView">
 <div class="topbar"><div class="topbar-left">
-<div class="topbar-brand"><img id="topbarLogo" src="" style="display:none"><span id="topbarClubName">Boxtory</span></div>
+<div class="topbar-brand"><img id="topbarLogo" src="" style="display:none"><span id="topbarClubName">Qajon</span></div>
 <nav class="topbar-nav">
 <button class="active" data-page="dashboard" onclick="showPage('dashboard')" data-i18n="dashboard">Dashboard</button>
 <button data-page="boxes" onclick="showPage('boxes')" data-i18n="boxes">Boxes</button>
@@ -491,13 +491,13 @@ errLoadHist:{en:"Error loading history",fr:"Erreur de chargement",es:"Error al c
 existsLbl:{en:"exists",fr:"existe",es:"existe",pt:"existe",de:"existiert",it:"esiste",nl:"bestaat"}
 };
 
-let LANG=localStorage.getItem('boxtory_lang')||'en';
+let LANG=localStorage.getItem('qajon_lang')||'en';
 function t(key){const e=I18N[key];if(!e)return key;return e[LANG]||e.en||key}
 function applyStaticLang(){
 document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.getAttribute('data-i18n'))});
 document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=t(el.getAttribute('data-i18n-ph'))});
 }
-function setLang(code){LANG=code;localStorage.setItem('boxtory_lang',code);document.documentElement.lang=code;const ls=$('langSel');if(ls)ls.value=code;applyStaticLang();
+function setLang(code){LANG=code;localStorage.setItem('qajon_lang',code);document.documentElement.lang=code;const ls=$('langSel');if(ls)ls.value=code;applyStaticLang();
 if(U&&UP&&UP.role!=='pending'){const active=document.querySelector('.page.active');const pid=active?active.id.replace('page-',''):'dashboard';applyLogo();
 if(pid==='dashboard')loadDash();else if(pid==='boxes')renderBoxes();else if(pid==='checkout')renderCO();else if(pid==='history')renderHistory();else if(pid==='snapshots')renderSnaps();else if(pid==='settings'){renderColors();renderTypes();renderLocs();if(isSA())renderUsers()}else if(pid==='detail'&&curBox)openDetail(curBox)}}
 
@@ -508,6 +508,10 @@ function ins(table,rows){const arr=Array.isArray(rows)?rows:[rows];const stamped
 let curBox=null,editBox=null,editItem=null,editColor=null,editType=null,editLoc=null;
 let pendConf=null,lastUndo=null,coFilter='all',boxLocF=null,boxView='cards',lastTID=null,lastCID=null,charts={};
 let qtyPending=null,qtyCount=1;
+// QR deep-linking: build the URL a box QR encodes, and capture ?box= on load
+function boxURL(id){return location.origin+location.pathname+'?box='+id}
+let pendingBoxLink=new URLSearchParams(location.search).get('box')||null;
+if(pendingBoxLink)history.replaceState(null,'',location.pathname); // clean the URL bar
 const $=id=>document.getElementById(id);
 
 // AUTH
@@ -576,7 +580,9 @@ function showSTab(t,b){document.querySelectorAll('.settings-section').forEach(s=
 
 // DATA
 async function loadData(){const[bx,it,co,ty,lo,lg,pr,st,sn]=await Promise.all([SB.from('boxes').select('*').order('created_at',{ascending:false}),SB.from('box_items').select('*'),SB.from('colors').select('*').order('name'),SB.from('item_types').select('*').order('name'),SB.from('storage_locations').select('*').order('name'),SB.from('activity_log').select('*').order('created_at',{ascending:false}),SB.from('profiles').select('*').eq('club_id',CID).order('created_at'),SB.from('app_settings').select('*'),SB.from('inventory_snapshots').select('*').order('created_at',{ascending:false})]);
-D.boxes=bx.data||[];D.items=it.data||[];D.colors=co.data||[];D.types=ty.data||[];D.locs=lo.data||[];D.logs=lg.data||[];D.profiles=pr.data||[];D.snaps=sn.data||[];D.settings={};(st.data||[]).forEach(s=>D.settings[s.key]=s.value);applyLogo();loadDash();renderBoxes()}
+D.boxes=bx.data||[];D.items=it.data||[];D.colors=co.data||[];D.types=ty.data||[];D.locs=lo.data||[];D.logs=lg.data||[];D.profiles=pr.data||[];D.snaps=sn.data||[];D.settings={};(st.data||[]).forEach(s=>D.settings[s.key]=s.value);applyLogo();loadDash();renderBoxes();
+// QR deep link: open the scanned box if it belongs to this club
+if(pendingBoxLink){const target=D.boxes.find(b=>b.id===pendingBoxLink);pendingBoxLink=null;if(target)openDetail(target.id)}}
 function gc(id){return D.colors.find(x=>x.id===id)||{name:'Unknown',hex_code:'#6b7280'}}
 function gcn(id){return gc(id).name}
 function gch(id){return gc(id).hex_code}
@@ -584,13 +590,13 @@ function gtn(id){const t=D.types.find(x=>x.id===id);return t?t.name:'Unknown'}
 function gln(id){const l=D.locs.find(x=>x.id===id);return l?l.name:''}
 function getEmail(uid){const p=D.profiles.find(x=>x.id===uid);return p?p.email:'?'}
 function applyLogo(){const u=D.settings.logo_url;const t=$('topbarLogo'),l=$('loginLogo');if(u){t.src=u;t.style.display='block'}else{t.style.display='none'}
-// Club name in topbar; login screen stays "Boxtory" branding
-const cn=D.settings.club_name||CLUB?.name||'Boxtory';
+// Club name in topbar; login screen stays "Qajon" branding
+const cn=D.settings.club_name||CLUB?.name||'Qajon';
 const tcn=$('topbarClubName');if(tcn)tcn.textContent=cn;
-document.title=cn+' · Boxtory';
+document.title=cn+' · Qajon';
 // Apply custom app icon (home screen) dynamically if provided
 const ic=D.settings.app_icon;if(ic){let appleIcon=document.querySelector('link[rel="apple-touch-icon"]');if(appleIcon)appleIcon.href=ic;
-const mani={name:cn+' · Boxtory',short_name:cn,description:'Club equipment inventory',start_url:'./index.html',display:'standalone',orientation:'portrait',background_color:'#03306b',theme_color:'#03306b',icons:[{src:ic,sizes:'192x192',type:'image/png',purpose:'any maskable'},{src:ic,sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
+const mani={name:cn+' · Qajon',short_name:cn,description:'Club equipment inventory',start_url:'./index.html',display:'standalone',orientation:'portrait',background_color:'#03306b',theme_color:'#03306b',icons:[{src:ic,sizes:'192x192',type:'image/png',purpose:'any maskable'},{src:ic,sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
 const blob=new Blob([JSON.stringify(mani)],{type:'application/json'});const url=URL.createObjectURL(blob);let ml=document.querySelector('link[rel="manifest"]');if(ml)ml.href=url}}
 
 // DASHBOARD
@@ -654,8 +660,8 @@ tids.forEach((tid,i)=>{const ti=items.filter(x=>x.item_type_id===tid);const cd={
 rChart('dSC'+i,'bar',{labels:sizes,datasets:Object.entries(cd).map(([n,d])=>({label:n,data:sizes.map(s=>d.s[s]||0),backgroundColor:d.hex,borderRadius:3,borderSkipped:false}))},{stacked:true});
 const bc={};ti.forEach(x=>{const n=gcn(x.color_id);bc[n]=(bc[n]||0)+x.quantity});
 rChart('dCB'+i,'doughnut',{labels:Object.keys(bc),datasets:[{data:Object.values(bc),backgroundColor:Object.keys(bc).map(n=>{const c=D.colors.find(x=>x.name===n);return c?c.hex_code:'#6b7280'}),borderWidth:0}]},{cut:55})})}else dpc.innerHTML='';
-new QRious({element:$('qrCanvas'),value:`ASB-BOX:${id}`,size:100,backgroundAlpha:0,foreground:'#38b6ff',level:'M'});renderItems();showPage('detail')}
-function printBoxQR(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;$('printBoxName').textContent=b.name;$('printBoxStatus').textContent=(b.status==='clean'?t('clean'):t('dirty')).toUpperCase();$('printBoxId').textContent=b.id;new QRious({element:$('printQrCanvas'),value:`ASB-BOX:${b.id}`,size:250,level:'M'});window.print()}
+new QRious({element:$('qrCanvas'),value:boxURL(id),size:100,backgroundAlpha:0,foreground:'#38b6ff',level:'M'});renderItems();showPage('detail')}
+function printBoxQR(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;$('printBoxName').textContent=b.name;$('printBoxStatus').textContent=(b.status==='clean'?t('clean'):t('dirty')).toUpperCase();$('printBoxId').textContent=b.id;new QRious({element:$('printQrCanvas'),value:boxURL(b.id),size:250,level:'M'});window.print()}
 function renderItems(){const items=D.items.filter(i=>i.box_id===curBox);$('itemsTable').innerHTML=items.length?`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('type')}</th><th>${t('color')}</th><th>${t('size')}</th><th>${t('qty')}</th><th style="width:80px"></th></tr></thead><tbody>${items.map(i=>`<tr><td>${esc(gtn(i.item_type_id))}</td><td><span class="color-dot" style="background:${gch(i.color_id)}"></span>${esc(gcn(i.color_id))}</td><td>${i.size}</td><td class="qty">${i.quantity}</td><td><div class="actions-cell"><button class="btn-icon" onclick="event.stopPropagation();openEditItem('${i.id}')">✎</button><button class="btn-icon" onclick="event.stopPropagation();delItem('${i.id}')">✕</button></div></td></tr>`).join('')}</tbody></table></div>` :`<div class="empty-state"><p>${t('noItems')}</p></div>`}
 
 // ITEMS
