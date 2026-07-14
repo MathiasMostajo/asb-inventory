@@ -21,7 +21,31 @@
 body.light{--bg:#f0f2f5;--bg2:#fff;--bg3:#e8ecf1;--bg4:#dce1e8;--border:#c8d0dc;--border2:#aeb9c8;--text:#111827;--text2:#4b5563;--text3:#6b7280;--accent:#03306b;--accent2:#0a4a9e;--accent-dim:rgba(3,48,107,.08);--accent-dim2:rgba(3,48,107,.15);--brand:#03306b;--red:#dc2626;--red-dim:rgba(220,38,38,.08);--orange:#ea580c;--orange-dim:rgba(234,88,12,.08);--green:#16a34a;--green-dim:rgba(22,163,74,.08);--shadow:0 2px 12px rgba(0,0,0,.08)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 30% 20%,rgba(3,48,107,.3) 0%,transparent 60%),var(--bg);padding:20px}
+.landing{display:none;min-height:100vh;background:var(--bg);overflow-y:auto}
+.landing.show{display:block}
+.ld-nav{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;max-width:1000px;margin:0 auto}
+.ld-brand{font-size:22px;font-weight:800;color:var(--accent);letter-spacing:-.5px}
+.ld-nav-right{display:flex;gap:10px;align-items:center}
+.ld-hero{text-align:center;padding:70px 24px 50px;max-width:760px;margin:0 auto}
+.ld-hero h1{font-size:clamp(30px,6vw,52px);font-weight:800;line-height:1.1;letter-spacing:-1px;margin-bottom:16px}
+.ld-hero h1 span{color:var(--accent)}
+.ld-hero p{font-size:17px;color:var(--text2);margin-bottom:28px;line-height:1.5}
+.ld-cta{display:inline-block;background:var(--accent);color:#04121f;font-weight:700;font-size:16px;padding:14px 32px;border-radius:12px;border:none;cursor:pointer;transition:.15s}
+.ld-cta:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.ld-hint{font-size:12px;color:var(--text3);margin-top:12px}
+.ld-feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;max-width:1000px;margin:0 auto;padding:20px 24px 50px}
+.ld-feat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 18px}
+.ld-feat .fi{font-size:26px;margin-bottom:10px}
+.ld-feat h3{font-size:15px;font-weight:700;margin-bottom:6px}
+.ld-feat p{font-size:13px;color:var(--text3);line-height:1.45}
+.ld-price{max-width:380px;margin:0 auto;padding:0 24px 60px;text-align:center}
+.ld-price-card{background:var(--card);border:1px solid var(--accent-dim2);border-radius:var(--radius);padding:30px 24px}
+.ld-price-card .amt{font-size:44px;font-weight:800;color:var(--accent)}
+.ld-price-card .amt small{font-size:15px;color:var(--text3);font-weight:500}
+.ld-price-card ul{list-style:none;margin:16px 0 22px;text-align:left}
+.ld-price-card li{font-size:13.5px;color:var(--text2);padding:5px 0}
+.ld-foot{text-align:center;padding:0 24px 40px;color:var(--text3);font-size:12px}
+.login-wrap{min-height:100vh;display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at 30% 20%,rgba(3,48,107,.3) 0%,transparent 60%),var(--bg);padding:20px}
 .login-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:48px 40px;width:100%;max-width:420px;box-shadow:var(--shadow)}
 .login-card .logo{text-align:center;margin-bottom:32px}
 .login-card .logo h1{font-size:28px;font-weight:800;letter-spacing:-.5px;color:var(--accent)}
@@ -170,6 +194,34 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 </head>
 <body>
 
+<div class="landing" id="landingView">
+<div class="ld-nav"><div class="ld-brand">Qajon</div><div class="ld-nav-right"><button class="btn btn-secondary btn-sm" onclick="openApp('login')" data-i18n="signIn">Sign In</button></div></div>
+<div class="ld-hero">
+<h1 data-i18n="ldTitle">Your club's equipment, <span>under control</span></h1>
+<p data-i18n="ldSub">Track every jersey, ball and cone with QR codes. Know what's in each box, who took what, and what's running low — from your phone.</p>
+<button class="ld-cta" onclick="openApp('create')" data-i18n="ldCta">Start free trial</button>
+<p class="ld-hint" data-i18n="ldHint">14 days free · No credit card required</p>
+</div>
+<div class="ld-feats">
+<div class="ld-feat"><div class="fi">📦</div><h3 data-i18n="ldF1t">QR on every box</h3><p data-i18n="ldF1d">Print a label, stick it on. Scan it and see exactly what's inside — no more digging.</p></div>
+<div class="ld-feat"><div class="fi">⚡</div><h3 data-i18n="ldF2t">One-tap checkout</h3><p data-i18n="ldF2d">Equipment pickup day? Tap what goes out. Stock updates instantly for the whole team.</p></div>
+<div class="ld-feat"><div class="fi">📊</div><h3 data-i18n="ldF3t">Live dashboard</h3><p data-i18n="ldF3d">Totals, sizes, colors and low-stock alerts. Know what to reorder before the season starts.</p></div>
+<div class="ld-feat"><div class="fi">🌍</div><h3 data-i18n="ldF4t">7 languages</h3><p data-i18n="ldF4d">English, French, Spanish, Portuguese, German, Italian and Dutch. Your whole staff can use it.</p></div>
+</div>
+<div class="ld-price">
+<div class="ld-price-card">
+<div class="amt">$10<small data-i18n="ldPerMonth">/month per club</small></div>
+<ul>
+<li data-i18n="ldP1">✓ Unlimited boxes & items</li>
+<li data-i18n="ldP2">✓ Unlimited team members</li>
+<li data-i18n="ldP3">✓ QR labels & history included</li>
+<li data-i18n="ldP4">✓ Cancel anytime</li>
+</ul>
+<button class="ld-cta" style="width:100%" onclick="openApp('create')" data-i18n="ldCta2">Try it free for 14 days</button>
+</div>
+</div>
+<div class="ld-foot">© 2026 Qajon</div>
+</div>
 <div class="login-wrap" id="loginView"><div class="login-card">
 <div class="logo"><div id="loginLogo"></div><h1>Qajon</h1><p data-i18n="tagline">Club Equipment Inventory</p></div>
 <div class="login-error" id="loginError"></div>
@@ -513,7 +565,25 @@ pastDueMsg:{en:"Payment issue — please update your payment method.",fr:"Probl�
 manageBilling:{en:"Manage Billing",fr:"Gérer la facturation",es:"Gestionar facturación",pt:"Gerenciar cobrança",de:"Abrechnung verwalten",it:"Gestisci fatturazione",nl:"Facturering beheren"},
 subActive:{en:"Subscription active",fr:"Abonnement actif",es:"Suscripción activa",pt:"Assinatura ativa",de:"Abonnement aktiv",it:"Abbonamento attivo",nl:"Abonnement actief"},
 billingSuccess:{en:"Subscription activated. Welcome aboard!",fr:"Abonnement activé. Bienvenue!",es:"Suscripción activada. ¡Bienvenido!",pt:"Assinatura ativada. Bem-vindo!",de:"Abonnement aktiviert. Willkommen!",it:"Abbonamento attivato. Benvenuto!",nl:"Abonnement geactiveerd. Welkom!"},
-billing:{en:"Billing",fr:"Facturation",es:"Facturación",pt:"Cobrança",de:"Abrechnung",it:"Fatturazione",nl:"Facturering"}
+billing:{en:"Billing",fr:"Facturation",es:"Facturación",pt:"Cobrança",de:"Abrechnung",it:"Fatturazione",nl:"Facturering"},
+ldTitle:{en:"Your club's equipment, under control",fr:"L'équipement de votre club, sous contrôle",es:"El equipamiento de tu club, bajo control",pt:"O equipamento do seu clube, sob controle",de:"Die Ausrüstung Ihres Vereins, unter Kontrolle",it:"L'attrezzatura del tuo club, sotto controllo",nl:"De uitrusting van je club, onder controle"},
+ldSub:{en:"Track every jersey, ball and cone with QR codes. Know what's in each box, who took what, and what's running low — from your phone.",fr:"Suivez chaque maillot, ballon et cône avec des codes QR. Sachez ce qu'il y a dans chaque boîte, qui a pris quoi, et ce qui manque — depuis votre téléphone.",es:"Rastrea cada camiseta, pelota y cono con códigos QR. Sabe qué hay en cada caja, quién sacó qué, y qué se está acabando — desde tu teléfono.",pt:"Rastreie cada camisa, bola e cone com códigos QR. Saiba o que há em cada caixa, quem pegou o quê, e o que está acabando — do seu telefone.",de:"Verfolgen Sie jedes Trikot, jeden Ball und jeden Kegel mit QR-Codes. Wissen Sie, was in jeder Box ist, wer was genommen hat und was zur Neige geht — von Ihrem Handy aus.",it:"Traccia ogni maglia, pallone e cono con codici QR. Sai cosa c'è in ogni scatola, chi ha preso cosa, e cosa sta finendo — dal tuo telefono.",nl:"Volg elk shirt, elke bal en elke pion met QR-codes. Weet wat er in elke doos zit, wie wat heeft meegenomen en wat bijna op is — vanaf je telefoon."},
+ldCta:{en:"Start free trial",fr:"Commencer l'essai gratuit",es:"Empezar prueba gratis",pt:"Começar teste grátis",de:"Kostenlos testen",it:"Inizia la prova gratuita",nl:"Start gratis proefperiode"},
+ldHint:{en:"14 days free · No credit card required",fr:"14 jours gratuits · Sans carte de crédit",es:"14 días gratis · Sin tarjeta de crédito",pt:"14 dias grátis · Sem cartão de crédito",de:"14 Tage kostenlos · Keine Kreditkarte nötig",it:"14 giorni gratis · Nessuna carta richiesta",nl:"14 dagen gratis · Geen creditcard nodig"},
+ldF1t:{en:"QR on every box",fr:"QR sur chaque boîte",es:"QR en cada caja",pt:"QR em cada caixa",de:"QR auf jeder Box",it:"QR su ogni scatola",nl:"QR op elke doos"},
+ldF1d:{en:"Print a label, stick it on. Scan it and see exactly what's inside — no more digging.",fr:"Imprimez une étiquette, collez-la. Scannez et voyez exactement ce qu'il y a dedans.",es:"Imprime una etiqueta, pégala. Escanéala y ve exactamente qué hay adentro — sin revolver.",pt:"Imprima uma etiqueta, cole. Escaneie e veja exatamente o que há dentro.",de:"Etikett drucken, aufkleben. Scannen und genau sehen, was drin ist.",it:"Stampa un'etichetta, attaccala. Scansiona e vedi esattamente cosa c'è dentro.",nl:"Print een label, plak het erop. Scan en zie precies wat erin zit."},
+ldF2t:{en:"One-tap checkout",fr:"Sortie en un geste",es:"Salida con un toque",pt:"Saída com um toque",de:"Ausgabe mit einem Tipp",it:"Uscita con un tocco",nl:"Uitgifte met één tik"},
+ldF2d:{en:"Equipment pickup day? Tap what goes out. Stock updates instantly for the whole team.",fr:"Jour de distribution? Touchez ce qui sort. Le stock se met à jour instantanément.",es:"¿Día de entrega de equipamiento? Toca lo que sale. El stock se actualiza al instante para todos.",pt:"Dia de entrega? Toque no que sai. O estoque atualiza na hora para toda a equipe.",de:"Ausgabetag? Tippen Sie an, was rausgeht. Der Bestand aktualisiert sich sofort.",it:"Giorno di consegna? Tocca ciò che esce. Le scorte si aggiornano all'istante.",nl:"Uitgiftedag? Tik aan wat eruit gaat. De voorraad wordt direct bijgewerkt."},
+ldF3t:{en:"Live dashboard",fr:"Tableau de bord en direct",es:"Panel en vivo",pt:"Painel ao vivo",de:"Live-Übersicht",it:"Pannello in tempo reale",nl:"Live overzicht"},
+ldF3d:{en:"Totals, sizes, colors and low-stock alerts. Know what to reorder before the season starts.",fr:"Totaux, tailles, couleurs et alertes de stock bas. Sachez quoi commander avant la saison.",es:"Totales, tallas, colores y alertas de stock bajo. Sabe qué pedir antes de que empiece la temporada.",pt:"Totais, tamanhos, cores e alertas de estoque baixo. Saiba o que pedir antes da temporada.",de:"Summen, Größen, Farben und Warnungen bei niedrigem Bestand. Wissen Sie, was nachzubestellen ist.",it:"Totali, taglie, colori e avvisi scorte basse. Sai cosa riordinare prima della stagione.",nl:"Totalen, maten, kleuren en lage-voorraad-meldingen. Weet wat je moet bijbestellen."},
+ldF4t:{en:"7 languages",fr:"7 langues",es:"7 idiomas",pt:"7 idiomas",de:"7 Sprachen",it:"7 lingue",nl:"7 talen"},
+ldF4d:{en:"English, French, Spanish, Portuguese, German, Italian and Dutch. Your whole staff can use it.",fr:"Anglais, français, espagnol, portugais, allemand, italien et néerlandais. Toute votre équipe peut l'utiliser.",es:"Inglés, francés, español, portugués, alemán, italiano y neerlandés. Todo tu staff puede usarla.",pt:"Inglês, francês, espanhol, português, alemão, italiano e holandês. Toda a sua equipe pode usar.",de:"Englisch, Französisch, Spanisch, Portugiesisch, Deutsch, Italienisch und Niederländisch.",it:"Inglese, francese, spagnolo, portoghese, tedesco, italiano e olandese. Tutto lo staff può usarla.",nl:"Engels, Frans, Spaans, Portugees, Duits, Italiaans en Nederlands. Je hele staf kan het gebruiken."},
+ldPerMonth:{en:"/month per club",fr:"/mois par club",es:"/mes por club",pt:"/mês por clube",de:"/Monat pro Verein",it:"/mese per club",nl:"/maand per club"},
+ldP1:{en:"✓ Unlimited boxes & items",fr:"✓ Boîtes et articles illimités",es:"✓ Cajas y artículos ilimitados",pt:"✓ Caixas e itens ilimitados",de:"✓ Unbegrenzte Boxen & Artikel",it:"✓ Scatole e articoli illimitati",nl:"✓ Onbeperkte dozen & artikelen"},
+ldP2:{en:"✓ Unlimited team members",fr:"✓ Membres d'équipe illimités",es:"✓ Miembros ilimitados",pt:"✓ Membros ilimitados",de:"✓ Unbegrenzte Teammitglieder",it:"✓ Membri illimitati",nl:"✓ Onbeperkt teamleden"},
+ldP3:{en:"✓ QR labels & history included",fr:"✓ Étiquettes QR et historique inclus",es:"✓ Etiquetas QR e historial incluidos",pt:"✓ Etiquetas QR e histórico incluídos",de:"✓ QR-Etiketten & Verlauf inklusive",it:"✓ Etichette QR e cronologia incluse",nl:"✓ QR-labels & geschiedenis inbegrepen"},
+ldP4:{en:"✓ Cancel anytime",fr:"✓ Annulez à tout moment",es:"✓ Cancela cuando quieras",pt:"✓ Cancele quando quiser",de:"✓ Jederzeit kündbar",it:"✓ Annulla in qualsiasi momento",nl:"✓ Op elk moment opzegbaar"},
+ldCta2:{en:"Try it free for 14 days",fr:"Essayez gratuitement pendant 14 jours",es:"Pruébalo gratis por 14 días",pt:"Experimente grátis por 14 dias",de:"14 Tage kostenlos testen",it:"Provalo gratis per 14 giorni",nl:"Probeer 14 dagen gratis"}
 };
 
 let LANG=localStorage.getItem('qajon_lang')||'en';
@@ -540,7 +610,9 @@ if(pendingBoxLink)history.replaceState(null,'',location.pathname); // clean the 
 const $=id=>document.getElementById(id);
 
 // AUTH
-async function checkSession(){const{data:{session}}=await SB.auth.getSession();if(session){U=session.user;await checkRole()}}
+async function checkSession(){const{data:{session}}=await SB.auth.getSession();if(session){U=session.user;await checkRole()}else if(pendingBoxLink){openApp('login')}else{showLanding()}}
+function openApp(mode){$('landingView').classList.remove('show');$('loginView').style.display='flex';showAuthMode(mode)}
+function showLanding(){$('landingView').classList.add('show');$('loginView').style.display='none';applyStaticLang()}
 function showAuthMode(mode){['loginForm','chooseForm','createForm','joinForm'].forEach(f=>$(f).style.display='none');$('loginError').style.display='none';applyStaticLang();
 const map={login:'loginForm',choose:'chooseForm',create:'createForm',join:'joinForm'};
 $(map[mode]||'loginForm').style.display='block';
@@ -596,7 +668,7 @@ async function handleLogout(){await SB.auth.signOut();U=null;UP=null;CID=null;CL
 // Clear previous club's identity so it never flashes for the next account
 const tcn=$('topbarClubName');if(tcn)tcn.textContent='Qajon';document.title='Qajon';
 const tl=$('topbarLogo');if(tl)tl.style.display='none';
-$('loginView').style.display='flex';showAuthMode('login');$('appView').style.display='none';$('pendingView').style.display='none'}
+$('appView').style.display='none';$('pendingView').style.display='none';showLanding()}
 function sErr(el,m){el.textContent=m;el.style.display='block';el.style.background='';el.style.color=''}
 function isSA(){return UP&&UP.role==='super_admin'}
 function showApp(){$('loginView').style.display='none';$('pendingView').style.display='none';$('appView').style.display='block';$('userEmail').textContent=U.email;
