@@ -590,10 +590,17 @@ if(data.role==='pending'){$('loginView').style.display='none';$('pendingView').s
 const{data:club}=await SB.from('clubs').select('*').eq('id',CID).single();CLUB=club;
 showApp()}
 
-async function handleLogout(){await SB.auth.signOut();U=null;UP=null;CID=null;CLUB=null;$('loginView').style.display='flex';showAuthMode('login');$('appView').style.display='none';$('pendingView').style.display='none'}
+async function handleLogout(){await SB.auth.signOut();U=null;UP=null;CID=null;CLUB=null;
+// Clear previous club's identity so it never flashes for the next account
+const tcn=$('topbarClubName');if(tcn)tcn.textContent='Qajon';document.title='Qajon';
+const tl=$('topbarLogo');if(tl)tl.style.display='none';
+$('loginView').style.display='flex';showAuthMode('login');$('appView').style.display='none';$('pendingView').style.display='none'}
 function sErr(el,m){el.textContent=m;el.style.display='block';el.style.background='';el.style.color=''}
 function isSA(){return UP&&UP.role==='super_admin'}
-function showApp(){$('loginView').style.display='none';$('pendingView').style.display='none';$('appView').style.display='block';$('userEmail').textContent=U.email;if(!isSA())$('usersTabBtn').style.display='none';applyStaticLang();handleBillingReturn();if(clubLocked()){showPaywall();return}renderTrialBanner();loadData()}
+function showApp(){$('loginView').style.display='none';$('pendingView').style.display='none';$('appView').style.display='block';$('userEmail').textContent=U.email;
+// Neutral identity until this club's data loads (prevents stale name from a previous session)
+const tcn=$('topbarClubName');if(tcn)tcn.textContent='Qajon';document.title='Qajon';
+if(!isSA())$('usersTabBtn').style.display='none';applyStaticLang();handleBillingReturn();if(clubLocked()){showPaywall();return}renderTrialBanner();loadData()}
 
 // ===== BILLING =====
 function trialDaysLeft(){if(!CLUB?.trial_ends_at)return 0;const ms=new Date(CLUB.trial_ends_at)-Date.now();return Math.max(0,Math.ceil(ms/86400000))}
