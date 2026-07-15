@@ -195,7 +195,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <body>
 
 <div class="landing" id="landingView">
-<div class="ld-nav"><div class="ld-brand">Qajon</div><div class="ld-nav-right"><button class="btn btn-secondary btn-sm" onclick="openApp('login')" data-i18n="signIn">Sign In</button></div></div>
+<div class="ld-nav"><div class="ld-brand">Qajon</div><div class="ld-nav-right"><select class="lang-select" id="langSelLd" onchange="setLang(this.value)"><option value="en">🌐 English</option><option value="fr">Français</option><option value="es">Español</option><option value="pt">Português</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="nl">Nederlands</option></select><button class="btn btn-secondary btn-sm" onclick="openApp('login')" data-i18n="signIn">Sign In</button></div></div>
 <div class="ld-hero">
 <h1 data-i18n="ldTitle">Your club's equipment, <span>under control</span></h1>
 <p data-i18n="ldSub">Track every jersey, ball and cone with QR codes. Know what's in each box, who took what, and what's running low — from your phone.</p>
@@ -592,7 +592,7 @@ function applyStaticLang(){
 document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.getAttribute('data-i18n'))});
 document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=t(el.getAttribute('data-i18n-ph'))});
 }
-function setLang(code){LANG=code;localStorage.setItem('qajon_lang',code);document.documentElement.lang=code;const ls=$('langSel');if(ls)ls.value=code;applyStaticLang();
+function setLang(code){LANG=code;localStorage.setItem('qajon_lang',code);document.documentElement.lang=code;const ls=$('langSel');if(ls)ls.value=code;const lsl=$('langSelLd');if(lsl)lsl.value=code;applyStaticLang();
 if(U&&UP&&UP.role!=='pending'){const active=document.querySelector('.page.active');const pid=active?active.id.replace('page-',''):'dashboard';applyLogo();
 if(pid==='dashboard')loadDash();else if(pid==='boxes')renderBoxes();else if(pid==='checkout')renderCO();else if(pid==='history')renderHistory();else if(pid==='snapshots')renderSnaps();else if(pid==='settings'){renderColors();renderTypes();renderLocs();if(isSA())renderUsers()}else if(pid==='detail'&&curBox)openDetail(curBox)}}
 
@@ -922,7 +922,7 @@ document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click
 function toast(m,t='success'){const e=$('toast');e.textContent=m;e.className='toast toast-'+t+' show';setTimeout(()=>e.classList.remove('show'),3000)}
 function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
 // Apply saved language to static UI + selector on load
-document.documentElement.lang=LANG;const _ls=$('langSel');if(_ls)_ls.value=LANG;applyStaticLang();
+document.documentElement.lang=LANG;const _ls=$('langSel');if(_ls)_ls.value=LANG;const _lsl=$('langSelLd');if(_lsl)_lsl.value=LANG;applyStaticLang();
 checkSession();
 // PWA service worker registration
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(e=>console.log('SW registration skipped:',e.message))}
