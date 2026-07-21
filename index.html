@@ -307,7 +307,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="stat-card"><div class="stat-label" data-i18n="boxes">Boxes</div><div class="stat-value" id="statBoxes">—</div></div>
 <div class="stat-card"><div class="stat-label" data-i18n="clean">Clean</div><div class="stat-value" id="statClean">—</div></div>
 <div class="stat-card"><div class="stat-label" data-i18n="checkedOut">Checked Out</div><div class="stat-value" id="statCheckout">—</div></div></div>
-<div class="charts-grid"><div class="chart-card"><h3 data-i18n="stockByType">Stock by Type</h3><canvas id="chartType"></canvas></div><div class="chart-card"><h3 data-i18n="totalSizeDistribution">Total Size Distribution</h3><canvas id="chartSize"></canvas></div></div>
+<div class="charts-grid"><div class="chart-card"><h3 data-i18n="stockByType">Stock by Type</h3><canvas id="chartType"></canvas></div><div class="chart-card"><h3 id="chartSizeTitle" data-i18n="totalSizeDistribution">Total Size Distribution</h3><canvas id="chartSize"></canvas></div></div>
 <div id="perTypeCharts"></div>
 <div class="charts-grid" style="margin-top:14px"><div class="chart-card"><h3 data-i18n="checkoutBreakdown">Checkout Breakdown</h3><canvas id="chartCheckout"></canvas></div><div class="chart-card"><h3 data-i18n="boxStatus">Box Status</h3><canvas id="chartStatus"></canvas></div></div></div>
 
@@ -610,6 +610,7 @@ ldP1:{en:"✓ Unlimited boxes & items",fr:"✓ Boîtes et articles illimités",e
 ldP2:{en:"✓ Unlimited team members",fr:"✓ Membres d'équipe illimités",es:"✓ Miembros ilimitados",pt:"✓ Membros ilimitados",de:"✓ Unbegrenzte Teammitglieder",it:"✓ Membri illimitati",nl:"✓ Onbeperkt teamleden"},
 ldP3:{en:"✓ QR labels & history included",fr:"✓ Étiquettes QR et historique inclus",es:"✓ Etiquetas QR e historial incluidos",pt:"✓ Etiquetas QR e histórico incluídos",de:"✓ QR-Etiketten & Verlauf inklusive",it:"✓ Etichette QR e cronologia incluse",nl:"✓ QR-labels & geschiedenis inbegrepen"},
 ldP4:{en:"✓ Cancel anytime",fr:"✓ Annulez à tout moment",es:"✓ Cancela cuando quieras",pt:"✓ Cancele quando quiser",de:"✓ Jederzeit kündbar",it:"✓ Annulla in qualsiasi momento",nl:"✓ Op elk moment opzegbaar"},
+qtyByColor:{en:"Quantity by Color",fr:"Quantité par couleur",es:"Cantidad por color",pt:"Quantidade por cor",de:"Menge nach Farbe",it:"Quantità per colore",nl:"Aantal per kleur"},
 photoLbl:{en:"Photo (optional)",fr:"Photo (facultatif)",es:"Foto (opcional)",pt:"Foto (opcional)",de:"Foto (optional)",it:"Foto (facoltativa)",nl:"Foto (optioneel)"},
 removePhoto:{en:"Remove",fr:"Retirer",es:"Quitar",pt:"Remover",de:"Entfernen",it:"Rimuovi",nl:"Verwijderen"},
 tImgOnly:{en:"Please choose an image file",fr:"Veuillez choisir un fichier image",es:"Elegí un archivo de imagen",pt:"Escolha um arquivo de imagem",de:"Bitte eine Bilddatei wählen",it:"Scegli un file immagine",nl:"Kies een afbeeldingsbestand"},
@@ -792,12 +793,21 @@ const low=Object.values(agg).filter(a=>a.qty>0&&a.qty<=thr);
 $('lowStockAlerts').innerHTML=low.length?`<div class="alert-banner"><h4>⚠ ${low.length} items below ${thr}</h4><ul>${low.map(a=>`<li>${gtn(a.tid)} — ${gcn(a.cid)} — ${a.size}: <strong>${a.qty}</strong></li>`).join('')}</ul></div>`:'';
 const byT={};D.items.forEach(i=>{const n=gtn(i.item_type_id);byT[n]=(byT[n]||0)+i.quantity});
 rChart('chartType','bar',{labels:Object.keys(byT),datasets:[{data:Object.values(byT),backgroundColor:['#38b6ff','#34d399','#fbbf24','#f87171','#a855f7','#fb923c','#ec4899'],borderRadius:5,borderSkipped:false}]},{pl:false});
-const sizes=['XXS','XS','S','M','L','XL','XXL'],byS={};sizes.forEach(s=>byS[s]=0);D.items.forEach(i=>{byS[i.size]=(byS[i.size]||0)+i.quantity});
-rChart('chartSize','bar',{labels:sizes,datasets:[{data:sizes.map(s=>byS[s]),backgroundColor:'#38b6ff66',borderColor:'#38b6ff',borderWidth:2,borderRadius:5,borderSkipped:false}]},{pl:false});
+const sizes=['XXS','XS','S','M','L','XL','XXL'],byS={};D.items.forEach(i=>{byS[i.size]=(byS[i.size]||0)+i.quantity});
+const shown=sizes.filter(s=>(byS[s]||0)>0);
+if(shown.length){$('chartSizeTitle').textContent=t('totalSizeDistribution');
+rChart('chartSize','bar',{labels:shown,datasets:[{data:shown.map(s=>byS[s]),backgroundColor:'#38b6ff66',borderColor:'#38b6ff',borderWidth:2,borderRadius:5,borderSkipped:false}]},{pl:false})}
+else{$('chartSizeTitle').textContent=t('qtyByColor');const bcA={};D.items.forEach(i=>{const n=gcn(i.color_id);bcA[n]=(bcA[n]||0)+i.quantity});
+rChart('chartSize','bar',{labels:Object.keys(bcA),datasets:[{data:Object.values(bcA),backgroundColor:Object.keys(bcA).map(n=>{const cc=D.colors.find(x=>x.name===n);return cc?cc.hex_code:'#6b7280'}),borderRadius:5,borderSkipped:false}]},{pl:false})}
 const typeIds=[...new Set(D.items.map(i=>i.item_type_id))];const ptEl=$('perTypeCharts');
-if(typeIds.length){ptEl.innerHTML=typeIds.map((tid,i)=>`<div class="charts-grid" style="margin-top:14px"><div class="chart-card"><h3>${esc(gtn(tid))} — Size by Color</h3><canvas id="ptSC${i}"></canvas></div><div class="chart-card"><h3>${esc(gtn(tid))} — Color Breakdown</h3><canvas id="ptCB${i}"></canvas></div></div>`).join('');
-typeIds.forEach((tid,i)=>{const ti=D.items.filter(x=>x.item_type_id===tid);const cd={};ti.forEach(x=>{const cn=gcn(x.color_id);if(!cd[cn])cd[cn]={hex:gch(x.color_id),s:{}};cd[cn].s[x.size]=(cd[cn].s[x.size]||0)+x.quantity});
-rChart('ptSC'+i,'bar',{labels:sizes,datasets:Object.entries(cd).map(([n,d])=>({label:n,data:sizes.map(s=>d.s[s]||0),backgroundColor:d.hex,borderRadius:3,borderSkipped:false}))},{stacked:true});
+if(typeIds.length){const ptm=typeIds.map(tid=>{const ti=D.items.filter(x=>x.item_type_id===tid);
+const pres=sizes.filter(s=>ti.some(x=>x.size===s&&x.quantity>0));return{tid,ti,sized:pres.length>0,sizes:pres}});
+ptEl.innerHTML=ptm.map((m,i)=>`<div class="charts-grid" style="margin-top:14px"><div class="chart-card"><h3>${esc(gtn(m.tid))} — ${m.sized?t('sizeByColor'):t('qtyByColor')}</h3><canvas id="ptSC${i}"></canvas></div><div class="chart-card"><h3>${esc(gtn(m.tid))} — ${t('colorBreakdown')}</h3><canvas id="ptCB${i}"></canvas></div></div>`).join('');
+ptm.forEach((m,i)=>{const ti=m.ti;
+if(m.sized){const cd={};ti.forEach(x=>{const cn=gcn(x.color_id);if(!cd[cn])cd[cn]={hex:gch(x.color_id),s:{}};cd[cn].s[x.size]=(cd[cn].s[x.size]||0)+x.quantity});
+rChart('ptSC'+i,'bar',{labels:m.sizes,datasets:Object.entries(cd).map(([n,d])=>({label:n,data:m.sizes.map(s=>d.s[s]||0),backgroundColor:d.hex,borderRadius:3,borderSkipped:false}))},{stacked:true})}
+else{const qc={};ti.forEach(x=>{const n=gcn(x.color_id);qc[n]=(qc[n]||0)+x.quantity});
+rChart('ptSC'+i,'bar',{labels:Object.keys(qc),datasets:[{data:Object.values(qc),backgroundColor:Object.keys(qc).map(n=>{const cc=D.colors.find(x=>x.name===n);return cc?cc.hex_code:'#6b7280'}),borderRadius:5,borderSkipped:false}]},{pl:false})}
 const bc={};ti.forEach(x=>{const n=gcn(x.color_id);bc[n]=(bc[n]||0)+x.quantity});
 rChart('ptCB'+i,'doughnut',{labels:Object.keys(bc),datasets:[{data:Object.values(bc),backgroundColor:Object.keys(bc).map(n=>{const c=D.colors.find(x=>x.name===n);return c?c.hex_code:'#6b7280'}),borderWidth:0}]},{cut:55})})}else ptEl.innerHTML='';
 const coLogs=D.logs.filter(l=>l.action_type==='checkout');const coB={};coLogs.forEach(i=>{const n=gtn(i.item_type_id);coB[n]=(coB[n]||0)+i.quantity});
@@ -842,12 +852,12 @@ if(tids.length){
 const tmeta=tids.map(tid=>{const ti=items.filter(x=>x.item_type_id===tid);
 const present=sizes.filter(s=>ti.some(x=>x.size===s&&x.quantity>0));
 return{tid,ti,sized:present.length>0,sizes:present}});
-dpc.innerHTML=tmeta.map((m,i)=>m.sized
-?`<div class="charts-grid"><div class="chart-card"><h3>${esc(gtn(m.tid))} — ${t('sizeByColor')}</h3><canvas id="dSC${i}"></canvas></div><div class="chart-card"><h3>${esc(gtn(m.tid))} — ${t('colorBreakdown')}</h3><canvas id="dCB${i}"></canvas></div></div>`
-:`<div class="charts-grid"><div class="chart-card"><h3>${esc(gtn(m.tid))} — ${t('colorBreakdown')}</h3><canvas id="dCB${i}"></canvas></div></div>`).join('');
+dpc.innerHTML=tmeta.map((m,i)=>`<div class="charts-grid"><div class="chart-card"><h3>${esc(gtn(m.tid))} — ${m.sized?t('sizeByColor'):t('qtyByColor')}</h3><canvas id="dSC${i}"></canvas></div><div class="chart-card"><h3>${esc(gtn(m.tid))} — ${t('colorBreakdown')}</h3><canvas id="dCB${i}"></canvas></div></div>`).join('');
 tmeta.forEach((m,i)=>{const ti=m.ti;
 if(m.sized){const cd={};ti.forEach(x=>{const cn=gcn(x.color_id);if(!cd[cn])cd[cn]={hex:gch(x.color_id),s:{}};cd[cn].s[x.size]=(cd[cn].s[x.size]||0)+x.quantity});
 rChart('dSC'+i,'bar',{labels:m.sizes,datasets:Object.entries(cd).map(([n,d])=>({label:n,data:m.sizes.map(s=>d.s[s]||0),backgroundColor:d.hex,borderRadius:3,borderSkipped:false}))},{stacked:true})}
+else{const qc={};ti.forEach(x=>{const n=gcn(x.color_id);qc[n]=(qc[n]||0)+x.quantity});
+rChart('dSC'+i,'bar',{labels:Object.keys(qc),datasets:[{data:Object.values(qc),backgroundColor:Object.keys(qc).map(n=>{const cc=D.colors.find(x=>x.name===n);return cc?cc.hex_code:'#6b7280'}),borderRadius:5,borderSkipped:false}]},{pl:false})}
 const bc={};ti.forEach(x=>{const n=gcn(x.color_id);bc[n]=(bc[n]||0)+x.quantity});
 rChart('dCB'+i,'doughnut',{labels:Object.keys(bc),datasets:[{data:Object.values(bc),backgroundColor:Object.keys(bc).map(n=>{const c=D.colors.find(x=>x.name===n);return c?c.hex_code:'#6b7280'}),borderWidth:0}]},{cut:55})})}else dpc.innerHTML='';
 new QRious({element:$('qrCanvas'),value:boxURL(id),size:100,backgroundAlpha:0,foreground:'#38b6ff',level:'M'});renderItems();showPage('detail')}
