@@ -113,6 +113,13 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .box-card-loc{font-size:12px;color:var(--text3);margin-bottom:6px}
 .box-card-stats{display:flex;gap:14px;margin-top:6px}.box-card-stat{font-size:13px;color:var(--text3)}.box-card-stat span{font-weight:600;color:var(--text2);font-family:'JetBrains Mono',monospace}
 .box-card-chart{margin-top:8px;height:5px;border-radius:3px;background:var(--bg3);overflow:hidden;display:flex}.box-card-chart div{height:100%}
+.qv-img{width:100%;height:76px;object-fit:contain;border-radius:8px;background:var(--bg3);margin-bottom:8px;display:block}
+.tp-prev{display:flex;align-items:center;gap:10px;margin-top:8px}
+.tp-prev img{width:56px;height:56px;object-fit:contain;border-radius:8px;background:var(--bg3);border:1px solid var(--border)}
+.tp-thumb{width:30px;height:30px;object-fit:contain;border-radius:6px;background:var(--bg3);margin-right:8px;flex-shrink:0}
+.inv-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:16px}
+.inv-row{display:flex;gap:8px;align-items:center;margin-top:8px}
+.inv-row input{flex:1;font-size:12px;font-family:'JetBrains Mono',monospace;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2)}
 .qv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
 .qv-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 10px;text-align:center;transition:border-color .15s}
 .qv-card.open{border-color:var(--accent-dim2)}
@@ -360,7 +367,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="settings-section active" id="settings-colors"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="colors">Colors</h3><button class="btn btn-secondary btn-sm" onclick="openAddColorModal()">+ <span data-i18n="add">Add</span></button></div><div class="colors-grid" id="colorsList"></div></div>
 <div class="settings-section" id="settings-types"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="itemTypes">Item Types</h3><button class="btn btn-secondary btn-sm" onclick="openAddTypeModal()">+ <span data-i18n="add">Add</span></button></div><div class="types-grid" id="typesList"></div></div>
 <div class="settings-section" id="settings-locations"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="locations">Locations</h3><button class="btn btn-secondary btn-sm" onclick="openAddLocModal()">+ <span data-i18n="add">Add</span></button></div><div class="locations-grid" id="locList"></div></div>
-<div class="settings-section" id="settings-users"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="users">Users</h3></div><div id="pendingUsers"></div><div class="users-grid" id="usersList"></div></div>
+<div class="settings-section" id="settings-users"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="users">Users</h3></div><div id="inviteBox"></div><div id="pendingUsers"></div><div class="users-grid" id="usersList"></div></div>
 <div class="settings-section" id="settings-general"><div style="max-width:400px"><div class="form-group"><label data-i18n="clubName">Club Name</label><input type="text" id="sClubName" placeholder="AS Blainville"></div><div class="form-group"><label data-i18n="clubLogoUrl">Club Logo URL</label><input type="text" id="sLogo" placeholder="https://..."><p style="font-size:11px;color:var(--text3);margin-top:3px"><span data-i18n="logoHint">Shown in topbar & login screen</span></p></div><div class="form-group"><label data-i18n="appIconUrl">App Icon URL (home screen)</label><input type="text" id="sIcon" placeholder="https://... (512x512 PNG)"><p style="font-size:11px;color:var(--text3);margin-top:3px"><span data-i18n="iconHint">Icon when added to phone home screen</span></p></div><div class="form-group"><label data-i18n="lowStockThreshold">Low Stock Threshold</label><input type="number" id="sThreshold" min="1" value="5"></div><button class="btn btn-primary" onclick="saveSettings()" style="width:auto;margin-top:8px" data-i18n="save">Save</button>
 <div id="billingSection" style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)"></div></div></div></div>
 
@@ -405,6 +412,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 
 <div class="modal-overlay" id="typeModal"><div class="modal"><h2 id="typeModalTitle">Add Type</h2>
 <div class="form-group"><label data-i18n="name">Name</label><input type="text" id="typeName" placeholder="Shin Guards"></div>
+<div class="form-group"><label data-i18n="photoLbl">Photo (optional)</label><input type="file" accept="image/*" id="typePhotoInput" onchange="typePhotoPick(this)" style="font-size:12px"><div id="typePhotoPrev"></div></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('typeModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveType()" id="saveTypeBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
 
 <div class="modal-overlay" id="locModal"><div class="modal"><h2 id="locModalTitle">Add Location</h2>
@@ -602,6 +610,13 @@ ldP1:{en:"✓ Unlimited boxes & items",fr:"✓ Boîtes et articles illimités",e
 ldP2:{en:"✓ Unlimited team members",fr:"✓ Membres d'équipe illimités",es:"✓ Miembros ilimitados",pt:"✓ Membros ilimitados",de:"✓ Unbegrenzte Teammitglieder",it:"✓ Membri illimitati",nl:"✓ Onbeperkt teamleden"},
 ldP3:{en:"✓ QR labels & history included",fr:"✓ Étiquettes QR et historique inclus",es:"✓ Etiquetas QR e historial incluidos",pt:"✓ Etiquetas QR e histórico incluídos",de:"✓ QR-Etiketten & Verlauf inklusive",it:"✓ Etichette QR e cronologia incluse",nl:"✓ QR-labels & geschiedenis inbegrepen"},
 ldP4:{en:"✓ Cancel anytime",fr:"✓ Annulez à tout moment",es:"✓ Cancela cuando quieras",pt:"✓ Cancele quando quiser",de:"✓ Jederzeit kündbar",it:"✓ Annulla in qualsiasi momento",nl:"✓ Op elk moment opzegbaar"},
+photoLbl:{en:"Photo (optional)",fr:"Photo (facultatif)",es:"Foto (opcional)",pt:"Foto (opcional)",de:"Foto (optional)",it:"Foto (facoltativa)",nl:"Foto (optioneel)"},
+removePhoto:{en:"Remove",fr:"Retirer",es:"Quitar",pt:"Remover",de:"Entfernen",it:"Rimuovi",nl:"Verwijderen"},
+tImgOnly:{en:"Please choose an image file",fr:"Veuillez choisir un fichier image",es:"Elegí un archivo de imagen",pt:"Escolha um arquivo de imagem",de:"Bitte eine Bilddatei wählen",it:"Scegli un file immagine",nl:"Kies een afbeeldingsbestand"},
+inviteLink:{en:"Invite link",fr:"Lien d'invitation",es:"Link de invitación",pt:"Link de convite",de:"Einladungslink",it:"Link di invito",nl:"Uitnodigingslink"},
+inviteHint:{en:"Send this to your staff. They sign up straight into your club — you still approve each request below.",fr:"Envoyez ceci à votre personnel. Ils s'inscrivent directement dans votre club — vous approuvez chaque demande ci-dessous.",es:"Mandá esto a tu equipo. Se registran directo en tu club — vos igual aprobás cada solicitud abajo.",pt:"Envie isto à sua equipe. Eles se cadastram direto no seu clube — você ainda aprova cada solicitação abaixo.",de:"Senden Sie dies an Ihr Team. Sie registrieren sich direkt in Ihrem Verein — Sie genehmigen weiterhin jede Anfrage unten.",it:"Invia questo al tuo staff. Si registrano direttamente nel tuo club — approvi comunque ogni richiesta qui sotto.",nl:"Stuur dit naar je team. Ze registreren zich direct bij je club — jij keurt elk verzoek hieronder nog steeds goed."},
+copyBtn:{en:"Copy",fr:"Copier",es:"Copiar",pt:"Copiar",de:"Kopieren",it:"Copia",nl:"Kopiëren"},
+tCopied:{en:"Link copied",fr:"Lien copié",es:"Link copiado",pt:"Link copiado",de:"Link kopiert",it:"Link copiato",nl:"Link gekopieerd"},
 cascadeTypeQ:{en:"This type is in use. Delete it ANYWAY along with ALL its items in every box and its history? This cannot be undone.",fr:"Ce type est utilisé. Le supprimer QUAND MÊME avec TOUS ses articles dans chaque boîte et son historique? Irréversible.",es:"Este tipo está en uso. ¿Eliminarlo IGUAL junto con TODOS sus artículos en todas las cajas y su historial? No se puede deshacer.",pt:"Este tipo está em uso. Excluir MESMO ASSIM junto com TODOS os seus itens em todas as caixas e seu histórico? Irreversível.",de:"Dieser Typ wird verwendet. TROTZDEM löschen samt ALLER Artikel in jeder Box und dem Verlauf? Nicht rückgängig machbar.",it:"Questo tipo è in uso. Eliminarlo COMUNQUE insieme a TUTTI i suoi articoli in ogni scatola e alla cronologia? Irreversibile.",nl:"Dit type is in gebruik. TOCH verwijderen samen met ALLE artikelen in elke doos en de geschiedenis? Onomkeerbaar."},
 cascadeColorQ:{en:"This color is in use. Delete it ANYWAY along with ALL its items in every box and its history? This cannot be undone.",fr:"Cette couleur est utilisée. La supprimer QUAND MÊME avec TOUS ses articles et son historique? Irréversible.",es:"Este color está en uso. ¿Eliminarlo IGUAL junto con TODOS sus artículos en todas las cajas y su historial? No se puede deshacer.",pt:"Esta cor está em uso. Excluir MESMO ASSIM junto com TODOS os seus itens e seu histórico? Irreversível.",de:"Diese Farbe wird verwendet. TROTZDEM löschen samt ALLER Artikel und dem Verlauf? Nicht rückgängig machbar.",it:"Questo colore è in uso. Eliminarlo COMUNQUE insieme a TUTTI i suoi articoli e alla cronologia? Irreversibile.",nl:"Deze kleur is in gebruik. TOCH verwijderen samen met ALLE artikelen en de geschiedenis? Onomkeerbaar."},
 noSize:{en:"— No size —",fr:"— Sans taille —",es:"— Sin talla —",pt:"— Sem tamanho —",de:"— Ohne Größe —",it:"— Senza taglia —",nl:"— Geen maat —"},
@@ -632,11 +647,12 @@ let qtyPending=null,qtyCount=1;
 // QR deep-linking: build the URL a box QR encodes, and capture ?box= on load
 function boxURL(id){return location.origin+location.pathname+'?box='+id}
 let pendingBoxLink=new URLSearchParams(location.search).get('box')||null;
+let pendingJoin=new URLSearchParams(location.search).get('join')||null;
 if(pendingBoxLink)history.replaceState(null,'',location.pathname); // clean the URL bar
 const $=id=>document.getElementById(id);
 
 // AUTH
-async function checkSession(){const{data:{session}}=await SB.auth.getSession();if(session){U=session.user;await checkRole()}else if(pendingBoxLink){openApp('login')}else{showLanding()}}
+async function checkSession(){const{data:{session}}=await SB.auth.getSession();if(session){U=session.user;await checkRole()}else if(pendingBoxLink){openApp('login')}else if(pendingJoin){openApp('join')}else{showLanding()}}
 function openApp(mode){$('landingView').classList.remove('show');$('loginView').style.display='flex';showAuthMode(mode)}
 function showLanding(){$('landingView').classList.add('show');$('loginView').style.display='none';applyStaticLang()}
 function showAuthMode(mode){['loginForm','chooseForm','createForm','joinForm'].forEach(f=>$(f).style.display='none');$('loginError').style.display='none';applyStaticLang();
@@ -676,7 +692,9 @@ b.innerHTML='Request to Join';b.disabled=0;
 if(pe){sErr(err,'Request failed: '+pe.message);return}
 await checkRole()}
 
-async function loadClubsForPicker(){const{data,error}=await SB.rpc('list_clubs');if(error)console.error('list_clubs:',error.message);allClubs=data||[];renderClubList()}
+async function loadClubsForPicker(){const{data,error}=await SB.rpc('list_clubs');if(error)console.error('list_clubs:',error.message);allClubs=data||[];renderClubList();
+if(pendingJoin){const cl=allClubs.find(x=>x.id===pendingJoin);pendingJoin=null;
+if(cl){$('joinSearch').value=cl.name;renderClubList();pickClub(cl.id,cl.name)}}}
 function renderClubList(){const q=($('joinSearch').value||'').toLowerCase().trim();let list=allClubs;if(q)list=allClubs.filter(c=>c.name.toLowerCase().includes(q));
 const el=$('clubList');if(!list.length){el.innerHTML='<p style="font-size:13px;color:var(--text3);padding:10px;text-align:center">No clubs found</p>';return}
 el.innerHTML=list.slice(0,50).map(c=>`<div onclick="pickClub('${c.id}','${esc(c.name).replace(/'/g,"\\'")}')" style="padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:6px;cursor:pointer;font-size:14px" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor=this.dataset.sel==='1'?'var(--accent)':'var(--border)'" data-cid="${c.id}">${esc(c.name)}</div>`).join('')}
@@ -801,7 +819,7 @@ if(!bx.length){el.innerHTML=`<div class="empty-state"><p>📦</p><p>${t('noBoxes
 if(boxView==='table'){
 el.innerHTML=`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('name')}</th><th>${t('location')}</th><th>${t('status')}</th><th>${t('items')}</th><th>${t('types')}</th>${D.types.map(ty=>`<th>${esc(ty.name)}</th>`).join('')}</tr></thead><tbody>${bx.map(b=>{
 const it=D.items.filter(i=>i.box_id===b.id);const tot=it.reduce((s,i)=>s+i.quantity,0);const tc=[...new Set(it.map(i=>i.item_type_id))].length;
-const perType=D.types.map(t=>{const q=it.filter(i=>i.item_type_id===t.id).reduce((s,i)=>s+i.quantity,0);return`<td class="qty">${q||'—'}</td>`}).join('');
+const perType=D.types.map(ty=>{const q=it.filter(i=>i.item_type_id===ty.id).reduce((s,i)=>s+i.quantity,0);return`<td class="qty">${q||'—'}</td>`}).join('');
 return`<tr style="cursor:pointer" onclick="openDetail('${b.id}')"><td style="font-weight:600">${esc(b.name)}</td><td>${esc(gln(b.location_id))}</td><td><span class="status-badge status-${b.status}">${b.status==='clean'?t('clean'):t('dirty')}</span></td><td class="qty">${tot}</td><td class="qty">${tc}</td>${perType}</tr>`}).join('')}</tbody></table></div>`;return}
 el.innerHTML='<div class="boxes-grid">'+bx.map(b=>{const it=D.items.filter(i=>i.box_id===b.id);const tot=it.reduce((s,i)=>s+i.quantity,0);const tc=[...new Set(it.map(i=>i.item_type_id))].length;const ct={};it.forEach(i=>{const h=gch(i.color_id);ct[h]=(ct[h]||0)+i.quantity});const bar=tot>0?Object.entries(ct).map(([h,q])=>`<div style="width:${(q/tot*100).toFixed(1)}%;background:${h}"></div>`).join(''):'';const loc=gln(b.location_id);
 return`<div class="box-card" onclick="openDetail('${b.id}')"><div class="box-card-header"><div class="box-card-name">${esc(b.name)}</div><span class="status-badge status-${b.status}">${b.status==='clean'?t('clean'):t('dirty')}</span></div>${loc?`<div class="box-card-loc">📍 ${esc(loc)}</div>`:''}<div class="box-card-stats"><div class="box-card-stat">${t('items')}: <span>${tot}</span></div><div class="box-card-stat">${t('types')}: <span>${tc}</span></div></div>${bar?`<div class="box-card-chart">${bar}</div>`:''}</div>`}).join('')+'</div>'}
@@ -819,9 +837,17 @@ $('detailLocBadge').innerHTML=gln(b.location_id)?`<span style="font-size:12px;co
 const items=D.items.filter(i=>i.box_id===id);const tot=items.reduce((s,i)=>s+i.quantity,0);
 $('detailStats').innerHTML=`<div class="detail-stat"><div class="ds-val">${tot}</div><div class="ds-label">${t('total')}</div></div><div class="detail-stat"><div class="ds-val">${[...new Set(items.map(i=>i.item_type_id))].length}</div><div class="ds-label">${t('types')}</div></div><div class="detail-stat"><div class="ds-val">${[...new Set(items.map(i=>i.color_id))].length}</div><div class="ds-label">${t('colors')}</div></div><div class="detail-stat"><div class="ds-val">${items.length}</div><div class="ds-label">${t('lines')}</div></div>`;
 const tids=[...new Set(items.map(i=>i.item_type_id))];const dpc=$('detailPerTypeCharts');const sizes=['XXS','XS','S','M','L','XL','XXL'];
-if(tids.length){dpc.innerHTML=tids.map((tid,i)=>`<div class="charts-grid"><div class="chart-card"><h3>${esc(gtn(tid))} — Size by Color</h3><canvas id="dSC${i}"></canvas></div><div class="chart-card"><h3>${esc(gtn(tid))} — Color</h3><canvas id="dCB${i}"></canvas></div></div>`).join('');
-tids.forEach((tid,i)=>{const ti=items.filter(x=>x.item_type_id===tid);const cd={};ti.forEach(x=>{const cn=gcn(x.color_id);if(!cd[cn])cd[cn]={hex:gch(x.color_id),s:{}};cd[cn].s[x.size]=(cd[cn].s[x.size]||0)+x.quantity});
-rChart('dSC'+i,'bar',{labels:sizes,datasets:Object.entries(cd).map(([n,d])=>({label:n,data:sizes.map(s=>d.s[s]||0),backgroundColor:d.hex,borderRadius:3,borderSkipped:false}))},{stacked:true});
+if(tids.length){
+// Only show the size chart for types that actually have sizes (medals & co. skip it)
+const tmeta=tids.map(tid=>{const ti=items.filter(x=>x.item_type_id===tid);
+const present=sizes.filter(s=>ti.some(x=>x.size===s&&x.quantity>0));
+return{tid,ti,sized:present.length>0,sizes:present}});
+dpc.innerHTML=tmeta.map((m,i)=>m.sized
+?`<div class="charts-grid"><div class="chart-card"><h3>${esc(gtn(m.tid))} — ${t('sizeByColor')}</h3><canvas id="dSC${i}"></canvas></div><div class="chart-card"><h3>${esc(gtn(m.tid))} — ${t('colorBreakdown')}</h3><canvas id="dCB${i}"></canvas></div></div>`
+:`<div class="charts-grid"><div class="chart-card"><h3>${esc(gtn(m.tid))} — ${t('colorBreakdown')}</h3><canvas id="dCB${i}"></canvas></div></div>`).join('');
+tmeta.forEach((m,i)=>{const ti=m.ti;
+if(m.sized){const cd={};ti.forEach(x=>{const cn=gcn(x.color_id);if(!cd[cn])cd[cn]={hex:gch(x.color_id),s:{}};cd[cn].s[x.size]=(cd[cn].s[x.size]||0)+x.quantity});
+rChart('dSC'+i,'bar',{labels:m.sizes,datasets:Object.entries(cd).map(([n,d])=>({label:n,data:m.sizes.map(s=>d.s[s]||0),backgroundColor:d.hex,borderRadius:3,borderSkipped:false}))},{stacked:true})}
 const bc={};ti.forEach(x=>{const n=gcn(x.color_id);bc[n]=(bc[n]||0)+x.quantity});
 rChart('dCB'+i,'doughnut',{labels:Object.keys(bc),datasets:[{data:Object.values(bc),backgroundColor:Object.keys(bc).map(n=>{const c=D.colors.find(x=>x.name===n);return c?c.hex_code:'#6b7280'}),borderWidth:0}]},{cut:55})})}else dpc.innerHTML='';
 new QRious({element:$('qrCanvas'),value:boxURL(id),size:100,backgroundAlpha:0,foreground:'#38b6ff',level:'M'});renderItems();showPage('detail')}
@@ -838,7 +864,9 @@ return Object.values(g).map(x=>{x.sizeList=Object.entries(x.sizes).sort((a,b)=>(
 .sort((a,b)=>gtn(a.tid).localeCompare(gtn(b.tid))||gcn(a.cid).localeCompare(gcn(b.cid)))}
 function qvToggle(k,mode){qvOpen.has(k)?qvOpen.delete(k):qvOpen.add(k);mode==='co'?renderCO():renderItems()}
 function qvCard(g,mode){const single=g.sizeList.length===1,open=qvOpen.has(g.k),sz=single?g.sizeList[0][0]:'';
+const ph=D.types.find(x=>x.id===g.tid)?.photo;
 return `<div class="qv-card${open?' open':''}">
+${ph?`<img class="qv-img" src="${ph}" alt="">`:''}
 <div class="qv-name">${esc(gtn(g.tid))}</div>
 <div class="qv-color"><span class="color-dot" style="background:${gch(g.cid)}"></span>${esc(gcn(g.cid))}</div>
 <div class="qv-total${g.total<=0?' zero':''}" onclick="${single?`qvNum('${mode}','${g.tid}','${g.cid}','${sz}')`:`qvToggle('${g.k}','${mode}')`}">${g.total}</div>
@@ -881,7 +909,7 @@ if(itemView==='quick'){$('itemsTable').innerHTML=`<div class="qv-grid">${groupIt
 $('itemsTable').innerHTML=`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('type')}</th><th>${t('color')}</th><th>${t('size')}</th><th>${t('qty')}</th><th style="width:80px"></th></tr></thead><tbody>${items.map(i=>`<tr><td>${esc(gtn(i.item_type_id))}</td><td><span class="color-dot" style="background:${gch(i.color_id)}"></span>${esc(gcn(i.color_id))}</td><td>${i.size}</td><td class="qty">${i.quantity}</td><td><div class="actions-cell"><button class="btn-icon" onclick="event.stopPropagation();openEditItem('${i.id}')">✎</button><button class="btn-icon" onclick="event.stopPropagation();delItem('${i.id}')">✕</button></div></td></tr>`).join('')}</tbody></table></div>`}
 
 // ITEMS
-function popTDD(s,v){$(s).innerHTML=D.types.map(t=>`<option value="${t.id}"${t.id===v?' selected':''}>${esc(t.name)}</option>`).join('')}
+function popTDD(s,v){$(s).innerHTML=D.types.map(ty=>`<option value="${ty.id}"${ty.id===v?' selected':''}>${esc(ty.name)}</option>`).join('')}
 function popCDD(s,v){$(s).innerHTML=D.colors.map(c=>`<option value="${c.id}"${c.id===v?' selected':''}>● ${esc(c.name)}</option>`).join('')}
 function updCP(){const c=D.colors.find(x=>x.id===$('itemColor').value);$('colorPreview').style.background=c?c.hex_code:'#6b7280'}
 function updBCP(){const c=D.colors.find(x=>x.id===$('bulkColor').value);$('bulkCP').style.background=c?c.hex_code:'#6b7280'}
@@ -978,10 +1006,24 @@ toast(t('tDeleted'));await loadData();renderColors()};
 $('confirmText').textContent=t('cascadeColorQ');openModal('confirmModal');return}
 if(error){toast(error.message,'error');return}
 toast(t('tDeleted'));await loadData();renderColors()};$('confirmText').textContent=t('deleteColorQ');openModal('confirmModal')}
-function renderTypes(){$('typesList').innerHTML=D.types.map(t=>`<div class="type-card"><div class="type-name">${esc(t.name)}</div><div style="display:flex;gap:4px"><button class="btn-icon" onclick="openEditType('${t.id}')">✎</button><button class="btn-icon" onclick="delType('${t.id}')">✕</button></div></div>`).join('')}
-function openAddTypeModal(){editType=null;$('typeModalTitle').textContent=t('addType');$('typeName').value='';openModal('typeModal')}
-function openEditType(id){const ty=D.types.find(x=>x.id===id);if(!ty)return;editType=id;$('typeModalTitle').textContent=t('edit');$('typeName').value=ty.name;openModal('typeModal')}
-async function saveType(){const n=$('typeName').value.trim();if(!n){toast(t('tEnterName'),'error');return}const b=$('saveTypeBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editType)await SB.from('item_types').update({name:n}).eq('id',editType);else await ins('item_types',{name:n});b.innerHTML='Save';b.disabled=0;toast(t('tSaved'));closeModal('typeModal');await loadData();renderTypes()}
+function renderTypes(){$('typesList').innerHTML=D.types.map(ty=>`<div class="type-card"><div class="type-name" style="display:flex;align-items:center">${ty.photo?`<img class="tp-thumb" src="${ty.photo}" alt="">`:''}${esc(ty.name)}</div><div style="display:flex;gap:4px"><button class="btn-icon" onclick="openEditType('${ty.id}')">✎</button><button class="btn-icon" onclick="delType('${ty.id}')">✕</button></div></div>`).join('')}
+let typePhoto=null;
+function renderTypePhotoPrev(){const el=$('typePhotoPrev');if(!el)return;
+el.innerHTML=typePhoto?`<div class="tp-prev"><img src="${typePhoto}" alt=""><button class="btn btn-secondary btn-sm" onclick="typePhoto=null;$('typePhotoInput').value='';renderTypePhotoPrev()">${t('removePhoto')}</button></div>`:''}
+function typePhotoPick(inp){const f=inp.files&&inp.files[0];if(!f)return;
+if(!f.type.startsWith('image/')){toast(t('tImgOnly'),'error');inp.value='';return}
+const rd=new FileReader();
+rd.onload=ev=>{const img=new Image();
+img.onload=()=>{const M=220;let w=img.width,h=img.height;const sc=Math.min(1,M/Math.max(w,h));w=Math.max(1,Math.round(w*sc));h=Math.max(1,Math.round(h*sc));
+const cv=document.createElement('canvas');cv.width=w;cv.height=h;const cx=cv.getContext('2d');
+cx.fillStyle='#ffffff';cx.fillRect(0,0,w,h);cx.drawImage(img,0,0,w,h);
+typePhoto=cv.toDataURL('image/jpeg',0.72);renderTypePhotoPrev()};
+img.onerror=()=>{toast(t('tImgOnly'),'error');inp.value=''};
+img.src=ev.target.result};
+rd.readAsDataURL(f)}
+function openAddTypeModal(){editType=null;typePhoto=null;$('typeModalTitle').textContent=t('addType');$('typeName').value='';const pi=$('typePhotoInput');if(pi)pi.value='';renderTypePhotoPrev();openModal('typeModal')}
+function openEditType(id){const ty=D.types.find(x=>x.id===id);if(!ty)return;editType=id;$('typeModalTitle').textContent=t('edit');$('typeName').value=ty.name;typePhoto=ty.photo||null;const pi=$('typePhotoInput');if(pi)pi.value='';renderTypePhotoPrev();openModal('typeModal')}
+async function saveType(){const n=$('typeName').value.trim();if(!n){toast(t('tEnterName'),'error');return}const b=$('saveTypeBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;const r=editType?await SB.from('item_types').update({name:n,photo:typePhoto}).eq('id',editType):await ins('item_types',{name:n,photo:typePhoto});b.innerHTML='Save';b.disabled=0;if(r.error){toast(r.error.message,'error');return}toast(t('tSaved'));closeModal('typeModal');await loadData();renderTypes()}
 async function delType(id){pendConf=async()=>{const{error}=await SB.from('item_types').delete().eq('id',id);closeModal('confirmModal');
 if(error&&error.code==='23503'){pendConf=async()=>{closeModal('confirmModal');
 await SB.from('box_items').delete().eq('item_type_id',id);
@@ -997,7 +1039,14 @@ function openAddLocModal(){editLoc=null;$('locModalTitle').textContent=t('addLoc
 function openEditLoc(id){const l=D.locs.find(x=>x.id===id);if(!l)return;editLoc=id;$('locModalTitle').textContent=t('edit');$('locName').value=l.name;$('locDesc').value=l.description||'';openModal('locModal')}
 async function saveLoc(){const n=$('locName').value.trim(),d=$('locDesc').value.trim();if(!n){toast(t('tEnterName'),'error');return}const b=$('saveLocBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editLoc)await SB.from('storage_locations').update({name:n,description:d||null}).eq('id',editLoc);else await ins('storage_locations',{name:n,description:d||null});b.innerHTML='Save';b.disabled=0;toast(t('tSaved'));closeModal('locModal');await loadData();renderLocs()}
 async function delLoc(id){pendConf=async()=>{const{error}=await SB.from('storage_locations').delete().eq('id',id);closeModal('confirmModal');if(error){toast(error.code==='23503'?t('tInUse'):error.message,'error');return}toast(t('tDeleted'));await loadData();renderLocs()};$('confirmText').textContent=t('deleteLocationQ');openModal('confirmModal')}
-function renderUsers(){if(!isSA())return;const pend=D.profiles.filter(p=>p.role==='pending'),act=D.profiles.filter(p=>p.role!=='pending');
+function inviteURL(){return location.origin+location.pathname+'?join='+CID}
+function copyInvite(){const i=$('inviteInput');if(!i)return;i.select();i.setSelectionRange(0,99999);
+navigator.clipboard?.writeText(i.value).then(()=>toast(t('tCopied'))).catch(()=>{try{document.execCommand('copy');toast(t('tCopied'))}catch(e){toast(i.value)}})}
+function renderInvite(){const el=$('inviteBox');if(!el)return;if(!isSA()||!CID){el.innerHTML='';return}
+el.innerHTML=`<div class="inv-box"><div style="font-size:13px;font-weight:600;color:var(--text2)">${t('inviteLink')}</div>
+<div style="font-size:11.5px;color:var(--text3);margin-top:3px">${t('inviteHint')}</div>
+<div class="inv-row"><input type="text" id="inviteInput" readonly value="${inviteURL()}"><button class="btn btn-primary btn-sm" onclick="copyInvite()">${t('copyBtn')}</button></div></div>`}
+function renderUsers(){if(!isSA())return;renderInvite();const pend=D.profiles.filter(p=>p.role==='pending'),act=D.profiles.filter(p=>p.role!=='pending');
 $('pendingUsers').innerHTML=pend.length?`<div class="alert-banner" style="margin-bottom:14px"><h4>⏳ ${pend.length} ${t('pendingLabel')}</h4><div class="users-grid" style="margin-top:10px">${pend.map(p=>`<div class="user-card"><div class="user-info"><div class="user-email">${esc(p.email)}</div><span class="role-badge role-pending">${t('pending')}</span></div><div style="display:flex;gap:4px"><button class="btn btn-sm" style="background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,.2)" onclick="approveU('${p.id}')">✓</button><button class="btn btn-danger btn-sm" onclick="declineU('${p.id}')">✕</button></div></div>`).join('')}</div></div>`:'';
 $('usersList').innerHTML=act.map(p=>`<div class="user-card"><div class="user-info"><div class="user-email">${esc(p.email)}</div><span class="role-badge role-${p.role==='super_admin'?'super':'admin'}">${p.role==='super_admin'?t('roleSuper'):t('roleAdmin')}</span></div>${p.id!==U.id&&p.role!=='super_admin'?`<button class="btn-icon" onclick="removeU('${p.id}')">✕</button>`:''}</div>`).join('')}
 async function approveU(id){await SB.from('profiles').update({role:'admin'}).eq('id',id);toast(t('tApproved'));await loadData();renderUsers()}
