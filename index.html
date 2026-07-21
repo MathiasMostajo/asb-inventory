@@ -113,6 +113,24 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .box-card-loc{font-size:12px;color:var(--text3);margin-bottom:6px}
 .box-card-stats{display:flex;gap:14px;margin-top:6px}.box-card-stat{font-size:13px;color:var(--text3)}.box-card-stat span{font-weight:600;color:var(--text2);font-family:'JetBrains Mono',monospace}
 .box-card-chart{margin-top:8px;height:5px;border-radius:3px;background:var(--bg3);overflow:hidden;display:flex}.box-card-chart div{height:100%}
+.qv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
+.qv-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 10px;text-align:center;transition:border-color .15s}
+.qv-card.open{border-color:var(--accent-dim2)}
+.qv-name{font-size:13px;font-weight:700;line-height:1.2;margin-bottom:3px}
+.qv-color{font-size:11px;color:var(--text3);display:flex;align-items:center;justify-content:center;gap:5px;margin-bottom:8px}
+.qv-total{font-size:30px;font-weight:800;color:var(--accent);line-height:1;cursor:pointer;font-family:'JetBrains Mono',monospace}
+.qv-total.zero{color:var(--text3)}
+.qv-ctrl{display:flex;gap:8px;justify-content:center;margin-top:10px}
+.qv-btn{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:17px;font-weight:700;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;padding:0}
+.qv-btn:active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.qv-btn:disabled{opacity:.35;cursor:default}
+.qv-more{font-size:11px;color:var(--text3);margin-top:9px;cursor:pointer;user-select:none}
+.qv-sizes{display:none;margin-top:9px;border-top:1px solid var(--border);padding-top:7px}
+.qv-card.open .qv-sizes{display:block}
+.qv-card.open .qv-more{color:var(--accent)}
+.qv-srow{display:flex;align-items:center;justify-content:space-between;gap:5px;padding:4px 0}
+.qv-sname{font-size:12px;font-weight:600;color:var(--text2);min-width:30px;text-align:left}
+.qv-sqty{font-size:15px;font-weight:700;min-width:26px;cursor:pointer;font-family:'JetBrains Mono',monospace}
 .view-toggle{display:flex;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:16px}
 .view-toggle button{padding:8px 16px;background:var(--bg3);border:none;color:var(--text2);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer}.view-toggle button.active{background:var(--accent-dim);color:var(--accent)}
 .detail-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap}
@@ -302,6 +320,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div id="detailPerTypeCharts"></div>
 <div class="qr-section"><canvas id="qrCanvas" width="100" height="100"></canvas><div><h4 style="font-size:13px;color:var(--text2)" data-i18n="boxQR">Box QR</h4><p style="font-size:11px;color:var(--text3)" data-i18n="printAttach">Print and attach</p><button class="btn btn-secondary btn-sm" style="margin-top:6px" onclick="printBoxQR()" data-i18n="print">Print</button></div></div>
 <div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="items">Items</h3><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm" onclick="openBulkModal()" data-i18n="bulk">Bulk</button><button class="btn btn-secondary btn-sm" onclick="openAddItemModal()">+ <span data-i18n="add">Add</span></button></div></div>
+<div class="view-toggle" style="max-width:260px"><button class="active" id="ivQuick" onclick="setItemView('quick')" data-i18n="quickView">Quick view</button><button id="ivList" onclick="setItemView('list')" data-i18n="listView">List</button></div>
 <div id="itemsTable"></div></div>
 
 <!-- CHECKOUT -->
@@ -359,7 +378,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="modal-overlay" id="itemModal"><div class="modal"><h2 id="itemModalTitle">Add Item</h2>
 <div class="form-group"><label data-i18n="type">Type</label><select id="itemType"></select></div>
 <div class="form-group"><label data-i18n="color">Color</label><div class="color-select-wrap"><select id="itemColor" onchange="updCP()"></select><div class="color-preview" id="colorPreview"></div></div></div>
-<div class="form-group"><label data-i18n="size">Size</label><select id="itemSize"><option>XXS</option><option>XS</option><option>S</option><option selected>M</option><option>L</option><option>XL</option><option>XXL</option></select></div>
+<div class="form-group"><label data-i18n="size">Size</label><select id="itemSize"><option>—</option><option>XXS</option><option>XS</option><option>S</option><option selected>M</option><option>L</option><option>XL</option><option>XXL</option></select></div>
 <div class="form-group"><label data-i18n="quantity">Quantity</label><input type="number" id="itemQty" min="0" value="1"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('itemModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveItem()" id="saveItemBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
 
@@ -583,6 +602,9 @@ ldP1:{en:"✓ Unlimited boxes & items",fr:"✓ Boîtes et articles illimités",e
 ldP2:{en:"✓ Unlimited team members",fr:"✓ Membres d'équipe illimités",es:"✓ Miembros ilimitados",pt:"✓ Membros ilimitados",de:"✓ Unbegrenzte Teammitglieder",it:"✓ Membri illimitati",nl:"✓ Onbeperkt teamleden"},
 ldP3:{en:"✓ QR labels & history included",fr:"✓ Étiquettes QR et historique inclus",es:"✓ Etiquetas QR e historial incluidos",pt:"✓ Etiquetas QR e histórico incluídos",de:"✓ QR-Etiketten & Verlauf inklusive",it:"✓ Etichette QR e cronologia incluse",nl:"✓ QR-labels & geschiedenis inbegrepen"},
 ldP4:{en:"✓ Cancel anytime",fr:"✓ Annulez à tout moment",es:"✓ Cancela cuando quieras",pt:"✓ Cancele quando quiser",de:"✓ Jederzeit kündbar",it:"✓ Annulla in qualsiasi momento",nl:"✓ Op elk moment opzegbaar"},
+quickView:{en:"Quick view",fr:"Vue rapide",es:"Vista rápida",pt:"Vista rápida",de:"Schnellansicht",it:"Vista rapida",nl:"Snelweergave"},
+listView:{en:"List",fr:"Liste",es:"Lista",pt:"Lista",de:"Liste",it:"Elenco",nl:"Lijst"},
+sizesLbl:{en:"sizes",fr:"tailles",es:"tallas",pt:"tamanhos",de:"Größen",it:"taglie",nl:"maten"},
 ldCta2:{en:"Try it free for 14 days",fr:"Essayez gratuitement pendant 14 jours",es:"Pruébalo gratis por 14 días",pt:"Experimente grátis por 14 dias",de:"14 Tage kostenlos testen",it:"Provalo gratis per 14 giorni",nl:"Probeer 14 dagen gratis"}
 };
 
@@ -800,7 +822,59 @@ const bc={};ti.forEach(x=>{const n=gcn(x.color_id);bc[n]=(bc[n]||0)+x.quantity})
 rChart('dCB'+i,'doughnut',{labels:Object.keys(bc),datasets:[{data:Object.values(bc),backgroundColor:Object.keys(bc).map(n=>{const c=D.colors.find(x=>x.name===n);return c?c.hex_code:'#6b7280'}),borderWidth:0}]},{cut:55})})}else dpc.innerHTML='';
 new QRious({element:$('qrCanvas'),value:boxURL(id),size:100,backgroundAlpha:0,foreground:'#38b6ff',level:'M'});renderItems();showPage('detail')}
 function printBoxQR(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;$('printBoxName').textContent=b.name;new QRious({element:$('printQrCanvas'),value:boxURL(b.id),size:250,level:'M'});window.print()}
-function renderItems(){const items=D.items.filter(i=>i.box_id===curBox);$('itemsTable').innerHTML=items.length?`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('type')}</th><th>${t('color')}</th><th>${t('size')}</th><th>${t('qty')}</th><th style="width:80px"></th></tr></thead><tbody>${items.map(i=>`<tr><td>${esc(gtn(i.item_type_id))}</td><td><span class="color-dot" style="background:${gch(i.color_id)}"></span>${esc(gcn(i.color_id))}</td><td>${i.size}</td><td class="qty">${i.quantity}</td><td><div class="actions-cell"><button class="btn-icon" onclick="event.stopPropagation();openEditItem('${i.id}')">✎</button><button class="btn-icon" onclick="event.stopPropagation();delItem('${i.id}')">✕</button></div></td></tr>`).join('')}</tbody></table></div>` :`<div class="empty-state"><p>${t('noItems')}</p></div>`}
+// ===== QUICK VIEW: cards grouped by type+color, sizes collapsed inside =====
+let itemView='quick',qvOpen=new Set(),qvBusy=false;
+const QVSO={'—':-1,XXS:0,XS:1,S:2,M:3,L:4,XL:5,XXL:6};
+function setItemView(v){itemView=v;$('ivQuick').classList.toggle('active',v==='quick');$('ivList').classList.toggle('active',v==='list');renderItems()}
+function groupItems(items,includeZero){const g={};
+items.forEach(i=>{if(!includeZero&&i.quantity<=0)return;const k=i.item_type_id+'|'+i.color_id;
+if(!g[k])g[k]={k,tid:i.item_type_id,cid:i.color_id,total:0,sizes:{}};
+g[k].total+=i.quantity;g[k].sizes[i.size]=(g[k].sizes[i.size]||0)+i.quantity});
+return Object.values(g).map(x=>{x.sizeList=Object.entries(x.sizes).sort((a,b)=>(QVSO[a[0]]??50)-(QVSO[b[0]]??50));return x})
+.sort((a,b)=>gtn(a.tid).localeCompare(gtn(b.tid))||gcn(a.cid).localeCompare(gcn(b.cid)))}
+function qvToggle(k,mode){qvOpen.has(k)?qvOpen.delete(k):qvOpen.add(k);mode==='co'?renderCO():renderItems()}
+function qvCard(g,mode){const single=g.sizeList.length===1,open=qvOpen.has(g.k),sz=single?g.sizeList[0][0]:'';
+return `<div class="qv-card${open?' open':''}">
+<div class="qv-name">${esc(gtn(g.tid))}</div>
+<div class="qv-color"><span class="color-dot" style="background:${gch(g.cid)}"></span>${esc(gcn(g.cid))}</div>
+<div class="qv-total${g.total<=0?' zero':''}" onclick="${single?`qvNum('${mode}','${g.tid}','${g.cid}','${sz}')`:`qvToggle('${g.k}','${mode}')`}">${g.total}</div>
+${single
+?`<div class="qv-ctrl"><button class="qv-btn"${g.total>0?'':' disabled'} onclick="qvAdj('${mode}','${g.tid}','${g.cid}','${sz}',-1)">−</button><button class="qv-btn" onclick="qvAdj('${mode}','${g.tid}','${g.cid}','${sz}',1)">+</button></div>`
+:`<div class="qv-more" onclick="qvToggle('${g.k}','${mode}')">${g.sizeList.length} ${t('sizesLbl')} ${open?'▴':'▾'}</div>
+<div class="qv-sizes">${g.sizeList.map(([s,q])=>`<div class="qv-srow"><span class="qv-sname">${s}</span><button class="qv-btn"${q>0?'':' disabled'} onclick="qvAdj('${mode}','${g.tid}','${g.cid}','${s}',-1)">−</button><span class="qv-sqty" onclick="qvNum('${mode}','${g.tid}','${g.cid}','${s}')">${q}</span><button class="qv-btn" onclick="qvAdj('${mode}','${g.tid}','${g.cid}','${s}',1)">+</button></div>`).join('')}</div>`}
+</div>`}
+function qvNum(mode,tid,cid,sz){
+if(mode==='co'){const tot=D.items.filter(i=>i.item_type_id===tid&&i.color_id===cid&&i.size===sz).reduce((a,b)=>a+b.quantity,0);
+if(tot<=0){toast(t('tNotEnough'),'error');return}openQtyModal(tid,cid,sz,tot)}
+else{const src=D.items.find(i=>i.box_id===curBox&&i.item_type_id===tid&&i.color_id===cid&&i.size===sz);if(src)openEditItem(src.id)}}
+async function qvAdj(mode,tid,cid,sz,d){
+if(qvBusy)return;qvBusy=true;
+try{
+if(mode==='co'){
+const src=d<0?D.items.find(i=>i.item_type_id===tid&&i.color_id===cid&&i.size===sz&&i.quantity>0)
+:D.items.find(i=>i.item_type_id===tid&&i.color_id===cid&&i.size===sz);
+if(!src){toast(t('tNotEnough'),'error');return}
+src.quantity+=d;
+const[ur,lr]=await Promise.all([SB.from('box_items').update({quantity:src.quantity}).eq('id',src.id),
+ins('activity_log',{action_type:d<0?'checkout':'item_added',item_type_id:tid,color_id:cid,size:sz,quantity:1,box_id:src.box_id,created_by:U.id}).select()]);
+if(ur.error){src.quantity-=d;toast(ur.error.message,'error');return}
+if(lr.data?.[0])D.logs.unshift(lr.data[0]);
+if(d<0){lastUndo={bid:src.id,lid:lr.data?.[0]?.id,oq:src.quantity+1};$('undoBtn').classList.add('show');clearTimeout(window._ut);window._ut=setTimeout(()=>$('undoBtn').classList.remove('show'),10000)}
+renderCO()}
+else{
+const src=D.items.find(i=>i.box_id===curBox&&i.item_type_id===tid&&i.color_id===cid&&i.size===sz);
+if(!src||(d<0&&src.quantity<=0))return;
+src.quantity+=d;
+const[ur,lr]=await Promise.all([SB.from('box_items').update({quantity:src.quantity}).eq('id',src.id),
+ins('activity_log',{action_type:d>0?'item_added':'item_removed',item_type_id:tid,color_id:cid,size:sz,quantity:1,box_id:curBox,created_by:U.id}).select()]);
+if(ur.error){src.quantity-=d;toast(ur.error.message,'error');return}
+if(lr.data?.[0])D.logs.unshift(lr.data[0]);
+openDetail(curBox)}
+}finally{qvBusy=false}}
+function renderItems(){const items=D.items.filter(i=>i.box_id===curBox);
+if(!items.length){$('itemsTable').innerHTML=`<div class="empty-state"><p>${t('noItems')}</p></div>`;return}
+if(itemView==='quick'){$('itemsTable').innerHTML=`<div class="qv-grid">${groupItems(items,true).map(g=>qvCard(g,'box')).join('')}</div>`;return}
+$('itemsTable').innerHTML=`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('type')}</th><th>${t('color')}</th><th>${t('size')}</th><th>${t('qty')}</th><th style="width:80px"></th></tr></thead><tbody>${items.map(i=>`<tr><td>${esc(gtn(i.item_type_id))}</td><td><span class="color-dot" style="background:${gch(i.color_id)}"></span>${esc(gcn(i.color_id))}</td><td>${i.size}</td><td class="qty">${i.quantity}</td><td><div class="actions-cell"><button class="btn-icon" onclick="event.stopPropagation();openEditItem('${i.id}')">✎</button><button class="btn-icon" onclick="event.stopPropagation();delItem('${i.id}')">✕</button></div></td></tr>`).join('')}</tbody></table></div>`}
 
 // ITEMS
 function popTDD(s,v){$(s).innerHTML=D.types.map(t=>`<option value="${t.id}"${t.id===v?' selected':''}>${esc(t.name)}</option>`).join('')}
@@ -827,25 +901,25 @@ lastTID=tid;lastCID=cid;b.innerHTML='Add All';b.disabled=0;toast(`Added ${entrie
 
 // CHECKOUT
 function renderCO(){
-$('checkoutFilters').innerHTML=`<button class="${coFilter==='all'?'active':''}" onclick="coFilter='all';renderCO()">All</button>`+D.types.map(t=>`<button class="${coFilter===t.id?'active':''}" onclick="coFilter='${t.id}';renderCO()">${esc(t.name)}</button>`).join('');
+$('checkoutFilters').innerHTML=`<button class="${coFilter==='all'?'active':''}" onclick="coFilter='all';renderCO()">${t('all')}</button>`+D.types.map(ty=>`<button class="${coFilter===ty.id?'active':''}" onclick="coFilter='${ty.id}';renderCO()">${esc(ty.name)}</button>`).join('');
 const search=($('coSearch').value||'').toLowerCase();
-const agg={};D.items.forEach(i=>{if(i.quantity<=0)return;const k=`${i.item_type_id}|${i.color_id}|${i.size}`;if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,qty:0};agg[k].qty+=i.quantity});
-let ent=Object.values(agg);if(coFilter!=='all')ent=ent.filter(e=>e.tid===coFilter);
-if(search)ent=ent.filter(e=>{const str=`${gtn(e.tid)} ${gcn(e.cid)} ${e.size}`.toLowerCase();return str.includes(search)});
-const so={XXS:0,XS:1,S:2,M:3,L:4,XL:5,XXL:6};ent.sort((a,b)=>gtn(a.tid).localeCompare(gtn(b.tid))||gcn(a.cid).localeCompare(gcn(b.cid))||(so[a.size]||0)-(so[b.size]||0));
-$('checkoutGrid').innerHTML=ent.length?ent.map(e=>`<div class="checkout-card${e.qty<=0?' out-of-stock':''}" onclick="openQtyModal('${e.tid}','${e.cid}','${e.size}',${e.qty},this)"><div class="cc-flash"></div><div class="cc-type">${gtn(e.tid)}</div><div class="cc-color"><span class="color-dot" style="background:${gch(e.cid)}"></span>${gcn(e.cid)}</div><div class="cc-size">${e.size}</div><div class="cc-qty">${t('stock')}: <span>${e.qty}</span></div></div>`).join(''):`<div class="empty-state"><p>${t('noItems')}</p></div>`}
+let cit=D.items.filter(i=>i.quantity>0);
+if(coFilter!=='all')cit=cit.filter(i=>i.item_type_id===coFilter);
+if(search)cit=cit.filter(i=>`${gtn(i.item_type_id)} ${gcn(i.color_id)} ${i.size}`.toLowerCase().includes(search));
+const gs=groupItems(cit,false);
+$('checkoutGrid').innerHTML=gs.length?`<div class="qv-grid">${gs.map(g=>qvCard(g,'co')).join('')}</div>`:`<div class="empty-state"><p>${t('noItems')}</p></div>`}
 
-function openQtyModal(tid,cid,sz,stock,el){qtyCount=1;qtyPending={tid,cid,sz,el};$('qtyVal').textContent=1;$('qtyModalTitle').textContent=`${gtn(tid)} ${gcn(cid)} ${sz}`;openModal('qtyModal')}
+function openQtyModal(tid,cid,sz,stock){qtyCount=1;qtyPending={tid,cid,sz};$('qtyVal').textContent=1;$('qtyModalTitle').textContent=`${gtn(tid)} ${gcn(cid)} ${sz}`;openModal('qtyModal')}
 function adjQty(d){qtyCount=Math.max(1,qtyCount+d);$('qtyVal').textContent=qtyCount}
-async function confirmQty(){if(!qtyPending)return;const{tid,cid,sz,el}=qtyPending;closeModal('qtyModal');
+async function confirmQty(){if(!qtyPending)return;const{tid,cid,sz}=qtyPending;closeModal('qtyModal');
 const src=D.items.find(i=>i.item_type_id===tid&&i.color_id===cid&&i.size===sz&&i.quantity>0);
 if(!src||src.quantity<qtyCount){toast(t('tNotEnough'),'error');return}
-el.classList.add('flashing');setTimeout(()=>el.classList.remove('flashing'),300);src.quantity-=qtyCount;
+src.quantity-=qtyCount;
 const[ur,lr]=await Promise.all([SB.from('box_items').update({quantity:src.quantity}).eq('id',src.id),ins('activity_log',{action_type:'checkout',item_type_id:tid,color_id:cid,size:sz,quantity:qtyCount,created_by:U.id}).select()]);
 if(ur.error){toast(ur.error.message,'error');src.quantity+=qtyCount;return}
 lastUndo={bid:src.id,lid:lr.data?.[0]?.id,oq:src.quantity+qtyCount};$('undoBtn').classList.add('show');clearTimeout(window._ut);window._ut=setTimeout(()=>$('undoBtn').classList.remove('show'),10000);
 if(lr.data?.[0])D.logs.unshift(lr.data[0]);
-el.querySelector('.cc-qty span').textContent=src.quantity;if(src.quantity<=0)el.classList.add('out-of-stock');qtyPending=null}
+renderCO();qtyPending=null}
 async function undoLast(){if(!lastUndo)return;const l=lastUndo;lastUndo=null;$('undoBtn').classList.remove('show');await Promise.all([SB.from('box_items').update({quantity:l.oq}).eq('id',l.bid),l.lid?SB.from('activity_log').delete().eq('id',l.lid):Promise.resolve()]);
 const src=D.items.find(i=>i.id===l.bid);if(src)src.quantity=l.oq;
 if(l.lid)D.logs=D.logs.filter(x=>x.id!==l.lid);
