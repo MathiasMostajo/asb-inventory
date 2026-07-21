@@ -114,6 +114,14 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .box-card-stats{display:flex;gap:14px;margin-top:6px}.box-card-stat{font-size:13px;color:var(--text3)}.box-card-stat span{font-weight:600;color:var(--text2);font-family:'JetBrains Mono',monospace}
 .box-card-chart{margin-top:8px;height:5px;border-radius:3px;background:var(--bg3);overflow:hidden;display:flex}.box-card-chart div{height:100%}
 .qv-img{width:100%;height:76px;object-fit:contain;border-radius:8px;background:var(--bg3);margin-bottom:8px;display:block}
+.ph-modes{display:flex;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:10px}
+.ph-modes button{flex:1;padding:8px 6px;background:var(--bg3);border:none;color:var(--text2);font-family:'Outfit',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;line-height:1.25}
+.ph-modes button.active{background:var(--accent-dim);color:var(--accent)}
+.pc-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border)}
+.pc-row:last-child{border-bottom:none}
+.pc-img{width:42px;height:42px;object-fit:contain;border-radius:7px;background:var(--bg3);border:1px solid var(--border);flex-shrink:0}
+.pc-ph{width:42px;height:42px;border-radius:7px;background:var(--bg3);border:1px dashed var(--border);flex-shrink:0}
+.pc-name{flex:1;font-size:12.5px;display:flex;align-items:center;gap:6px;min-width:0}
 .tp-prev{display:flex;align-items:center;gap:10px;margin-top:8px}
 .tp-prev img{width:56px;height:56px;object-fit:contain;border-radius:8px;background:var(--bg3);border:1px solid var(--border)}
 .tp-thumb{width:30px;height:30px;object-fit:contain;border-radius:6px;background:var(--bg3);margin-right:8px;flex-shrink:0}
@@ -412,7 +420,10 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 
 <div class="modal-overlay" id="typeModal"><div class="modal"><h2 id="typeModalTitle">Add Type</h2>
 <div class="form-group"><label data-i18n="name">Name</label><input type="text" id="typeName" placeholder="Shin Guards"></div>
-<div class="form-group"><label data-i18n="photoLbl">Photo (optional)</label><input type="file" accept="image/*" id="typePhotoInput" onchange="typePhotoPick(this)" style="font-size:12px"><div id="typePhotoPrev"></div></div>
+<div class="form-group"><label data-i18n="photoLbl">Photo (optional)</label>
+<div class="ph-modes"><button type="button" id="phModeSingle" class="active" onclick="setPhotoMode('single')" data-i18n="photoOneAll">One photo for all colors</button><button type="button" id="phModePer" onclick="setPhotoMode('per_color')" data-i18n="photoPerColor">One photo per color</button></div>
+<div id="phSingleWrap"><input type="file" accept="image/*" id="typePhotoInput" onchange="typePhotoPick(this)" style="font-size:12px"><div id="typePhotoPrev"></div></div>
+<div id="phPerWrap" style="display:none"></div></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('typeModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveType()" id="saveTypeBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
 
 <div class="modal-overlay" id="locModal"><div class="modal"><h2 id="locModalTitle">Add Location</h2>
@@ -611,6 +622,11 @@ ldP2:{en:"✓ Unlimited team members",fr:"✓ Membres d'équipe illimités",es:"
 ldP3:{en:"✓ QR labels & history included",fr:"✓ Étiquettes QR et historique inclus",es:"✓ Etiquetas QR e historial incluidos",pt:"✓ Etiquetas QR e histórico incluídos",de:"✓ QR-Etiketten & Verlauf inklusive",it:"✓ Etichette QR e cronologia incluse",nl:"✓ QR-labels & geschiedenis inbegrepen"},
 ldP4:{en:"✓ Cancel anytime",fr:"✓ Annulez à tout moment",es:"✓ Cancela cuando quieras",pt:"✓ Cancele quando quiser",de:"✓ Jederzeit kündbar",it:"✓ Annulla in qualsiasi momento",nl:"✓ Op elk moment opzegbaar"},
 qtyByColor:{en:"Quantity by Color",fr:"Quantité par couleur",es:"Cantidad por color",pt:"Quantidade por cor",de:"Menge nach Farbe",it:"Quantità per colore",nl:"Aantal per kleur"},
+photoOneAll:{en:"One photo for all colors",fr:"Une photo pour toutes les couleurs",es:"Una foto para todos los colores",pt:"Uma foto para todas as cores",de:"Ein Foto für alle Farben",it:"Una foto per tutti i colori",nl:"Eén foto voor alle kleuren"},
+photoPerColor:{en:"One photo per color",fr:"Une photo par couleur",es:"Una foto por color",pt:"Uma foto por cor",de:"Ein Foto pro Farbe",it:"Una foto per colore",nl:"Eén foto per kleur"},
+uploadBtn:{en:"Upload",fr:"Téléverser",es:"Subir",pt:"Enviar",de:"Hochladen",it:"Carica",nl:"Uploaden"},
+changeBtn:{en:"Change",fr:"Changer",es:"Cambiar",pt:"Trocar",de:"Ändern",it:"Cambia",nl:"Wijzigen"},
+noColorsYet:{en:"No colors available yet — add colors first.",fr:"Aucune couleur disponible — ajoutez d'abord des couleurs.",es:"Todavía no hay colores — agregá colores primero.",pt:"Ainda não há cores — adicione cores primeiro.",de:"Noch keine Farben — fügen Sie zuerst Farben hinzu.",it:"Nessun colore disponibile — aggiungi prima i colori.",nl:"Nog geen kleuren — voeg eerst kleuren toe."},
 photoLbl:{en:"Photo (optional)",fr:"Photo (facultatif)",es:"Foto (opcional)",pt:"Foto (opcional)",de:"Foto (optional)",it:"Foto (facoltativa)",nl:"Foto (optioneel)"},
 removePhoto:{en:"Remove",fr:"Retirer",es:"Quitar",pt:"Remover",de:"Entfernen",it:"Rimuovi",nl:"Verwijderen"},
 tImgOnly:{en:"Please choose an image file",fr:"Veuillez choisir un fichier image",es:"Elegí un archivo de imagen",pt:"Escolha um arquivo de imagem",de:"Bitte eine Bilddatei wählen",it:"Scegli un file immagine",nl:"Kies een afbeeldingsbestand"},
@@ -874,7 +890,7 @@ return Object.values(g).map(x=>{x.sizeList=Object.entries(x.sizes).sort((a,b)=>(
 .sort((a,b)=>gtn(a.tid).localeCompare(gtn(b.tid))||gcn(a.cid).localeCompare(gcn(b.cid)))}
 function qvToggle(k,mode){qvOpen.has(k)?qvOpen.delete(k):qvOpen.add(k);mode==='co'?renderCO():renderItems()}
 function qvCard(g,mode){const single=g.sizeList.length===1,open=qvOpen.has(g.k),sz=single?g.sizeList[0][0]:'';
-const ph=D.types.find(x=>x.id===g.tid)?.photo;
+const ty0=D.types.find(x=>x.id===g.tid);const ph=ty0?(ty0.photo_mode==='per_color'?(ty0.photos||{})[g.cid]:ty0.photo):null;
 return `<div class="qv-card${open?' open':''}">
 ${ph?`<img class="qv-img" src="${ph}" alt="">`:''}
 <div class="qv-name">${esc(gtn(g.tid))}</div>
@@ -1016,24 +1032,51 @@ toast(t('tDeleted'));await loadData();renderColors()};
 $('confirmText').textContent=t('cascadeColorQ');openModal('confirmModal');return}
 if(error){toast(error.message,'error');return}
 toast(t('tDeleted'));await loadData();renderColors()};$('confirmText').textContent=t('deleteColorQ');openModal('confirmModal')}
-function renderTypes(){$('typesList').innerHTML=D.types.map(ty=>`<div class="type-card"><div class="type-name" style="display:flex;align-items:center">${ty.photo?`<img class="tp-thumb" src="${ty.photo}" alt="">`:''}${esc(ty.name)}</div><div style="display:flex;gap:4px"><button class="btn-icon" onclick="openEditType('${ty.id}')">✎</button><button class="btn-icon" onclick="delType('${ty.id}')">✕</button></div></div>`).join('')}
-let typePhoto=null;
-function renderTypePhotoPrev(){const el=$('typePhotoPrev');if(!el)return;
-el.innerHTML=typePhoto?`<div class="tp-prev"><img src="${typePhoto}" alt=""><button class="btn btn-secondary btn-sm" onclick="typePhoto=null;$('typePhotoInput').value='';renderTypePhotoPrev()">${t('removePhoto')}</button></div>`:''}
-function typePhotoPick(inp){const f=inp.files&&inp.files[0];if(!f)return;
-if(!f.type.startsWith('image/')){toast(t('tImgOnly'),'error');inp.value='';return}
+function renderTypes(){$('typesList').innerHTML=D.types.map(ty=>`<div class="type-card"><div class="type-name" style="display:flex;align-items:center">${(()=>{const p=ty.photo_mode==='per_color'?Object.values(ty.photos||{})[0]:ty.photo;return p?`<img class="tp-thumb" src="${p}" alt="">`:''})()}${esc(ty.name)}</div><div style="display:flex;gap:4px"><button class="btn-icon" onclick="openEditType('${ty.id}')">✎</button><button class="btn-icon" onclick="delType('${ty.id}')">✕</button></div></div>`).join('')}
+let typePhoto=null,typePhotos={},typeMode='single';
+// Shared: shrink + compress an image file to a small data URL
+function shrinkImg(f,inp,cb){if(!f.type.startsWith('image/')){toast(t('tImgOnly'),'error');if(inp)inp.value='';return}
 const rd=new FileReader();
 rd.onload=ev=>{const img=new Image();
 img.onload=()=>{const M=220;let w=img.width,h=img.height;const sc=Math.min(1,M/Math.max(w,h));w=Math.max(1,Math.round(w*sc));h=Math.max(1,Math.round(h*sc));
 const cv=document.createElement('canvas');cv.width=w;cv.height=h;const cx=cv.getContext('2d');
 cx.fillStyle='#ffffff';cx.fillRect(0,0,w,h);cx.drawImage(img,0,0,w,h);
-typePhoto=cv.toDataURL('image/jpeg',0.72);renderTypePhotoPrev()};
-img.onerror=()=>{toast(t('tImgOnly'),'error');inp.value=''};
+cb(cv.toDataURL('image/jpeg',0.72))};
+img.onerror=()=>{toast(t('tImgOnly'),'error');if(inp)inp.value=''};
 img.src=ev.target.result};
 rd.readAsDataURL(f)}
-function openAddTypeModal(){editType=null;typePhoto=null;$('typeModalTitle').textContent=t('addType');$('typeName').value='';const pi=$('typePhotoInput');if(pi)pi.value='';renderTypePhotoPrev();openModal('typeModal')}
-function openEditType(id){const ty=D.types.find(x=>x.id===id);if(!ty)return;editType=id;$('typeModalTitle').textContent=t('edit');$('typeName').value=ty.name;typePhoto=ty.photo||null;const pi=$('typePhotoInput');if(pi)pi.value='';renderTypePhotoPrev();openModal('typeModal')}
-async function saveType(){const n=$('typeName').value.trim();if(!n){toast(t('tEnterName'),'error');return}const b=$('saveTypeBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;const r=editType?await SB.from('item_types').update({name:n,photo:typePhoto}).eq('id',editType):await ins('item_types',{name:n,photo:typePhoto});b.innerHTML='Save';b.disabled=0;if(r.error){toast(r.error.message,'error');return}toast(t('tSaved'));closeModal('typeModal');await loadData();renderTypes()}
+// Colors relevant to the type being edited (fall back to all when it has no items yet)
+function typeColors(){const used=[...new Set(D.items.filter(i=>i.item_type_id===editType).map(i=>i.color_id))];
+const list=used.length?D.colors.filter(c=>used.includes(c.id)):D.colors;
+return list.slice().sort((a,b)=>a.name.localeCompare(b.name))}
+function setPhotoMode(m){typeMode=m;
+$('phModeSingle').classList.toggle('active',m==='single');$('phModePer').classList.toggle('active',m==='per_color');
+$('phSingleWrap').style.display=m==='single'?'block':'none';
+$('phPerWrap').style.display=m==='per_color'?'block':'none';
+renderTypePhotoPrev();renderPerColorPhotos()}
+function renderTypePhotoPrev(){const el=$('typePhotoPrev');if(!el)return;
+el.innerHTML=typePhoto?`<div class="tp-prev"><img src="${typePhoto}" alt=""><button class="btn btn-secondary btn-sm" onclick="typePhoto=null;$('typePhotoInput').value='';renderTypePhotoPrev()">${t('removePhoto')}</button></div>`:''}
+function renderPerColorPhotos(){const el=$('phPerWrap');if(!el)return;
+const cols=typeColors();
+if(!cols.length){el.innerHTML=`<p style="font-size:12px;color:var(--text3)">${t('noColorsYet')}</p>`;return}
+el.innerHTML=cols.map(c=>{const p=typePhotos[c.id];
+return `<div class="pc-row">${p?`<img class="pc-img" src="${p}" alt="">`:'<div class="pc-ph"></div>'}
+<div class="pc-name"><span class="color-dot" style="background:${c.hex_code}"></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.name)}</span></div>
+<input type="file" accept="image/*" id="tpc_${c.id}" onchange="typeColorPhotoPick('${c.id}',this)" style="display:none">
+<button type="button" class="btn btn-secondary btn-sm" onclick="$('tpc_${c.id}').click()">${p?t('changeBtn'):t('uploadBtn')}</button>
+${p?`<button type="button" class="btn-icon" onclick="delete typePhotos['${c.id}'];renderPerColorPhotos()">✕</button>`:''}</div>`}).join('')}
+function typeColorPhotoPick(cid,inp){const f=inp.files&&inp.files[0];if(!f)return;
+shrinkImg(f,inp,d=>{typePhotos[cid]=d;inp.value='';renderPerColorPhotos()})}
+function typePhotoPick(inp){const f=inp.files&&inp.files[0];if(!f)return;
+shrinkImg(f,inp,d=>{typePhoto=d;renderTypePhotoPrev()})}
+function openAddTypeModal(){editType=null;typePhoto=null;typePhotos={};typeMode='single';
+$('typeModalTitle').textContent=t('addType');$('typeName').value='';const pi=$('typePhotoInput');if(pi)pi.value='';
+setPhotoMode('single');openModal('typeModal')}
+function openEditType(id){const ty=D.types.find(x=>x.id===id);if(!ty)return;editType=id;$('typeModalTitle').textContent=t('edit');$('typeName').value=ty.name;
+typePhoto=ty.photo||null;typePhotos=ty.photos&&typeof ty.photos==='object'?{...ty.photos}:{};typeMode=ty.photo_mode==='per_color'?'per_color':'single';
+const pi=$('typePhotoInput');if(pi)pi.value='';setPhotoMode(typeMode);openModal('typeModal')}
+async function saveType(){const n=$('typeName').value.trim();if(!n){toast(t('tEnterName'),'error');return}const b=$('saveTypeBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;const payload={name:n,photo:typePhoto,photo_mode:typeMode,photos:typePhotos};
+const r=editType?await SB.from('item_types').update(payload).eq('id',editType):await ins('item_types',payload);b.innerHTML='Save';b.disabled=0;if(r.error){toast(r.error.message,'error');return}toast(t('tSaved'));closeModal('typeModal');await loadData();renderTypes()}
 async function delType(id){pendConf=async()=>{const{error}=await SB.from('item_types').delete().eq('id',id);closeModal('confirmModal');
 if(error&&error.code==='23503'){pendConf=async()=>{closeModal('confirmModal');
 await SB.from('box_items').delete().eq('item_type_id',id);
