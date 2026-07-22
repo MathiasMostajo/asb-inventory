@@ -423,7 +423,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="settings-section" id="settings-types"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="itemTypes">Item Types</h3><button class="btn btn-secondary btn-sm" onclick="openAddTypeModal()">+ <span data-i18n="add">Add</span></button></div><div class="types-grid" id="typesList"></div></div>
 <div class="settings-section" id="settings-locations"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="locations">Locations</h3><button class="btn btn-secondary btn-sm" onclick="openAddLocModal()">+ <span data-i18n="add">Add</span></button></div><div class="locations-grid" id="locList"></div></div>
 <div class="settings-section" id="settings-users"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="users">Users</h3></div><div id="inviteBox"></div><div id="pendingUsers"></div><div class="users-grid" id="usersList"></div></div>
-<div class="settings-section" id="settings-general"><div style="max-width:400px"><div class="form-group"><label data-i18n="clubName">Club Name</label><input type="text" id="sClubName" placeholder="AS Blainville"></div><div class="form-group"><label data-i18n="clubLogoUrl">Club Logo URL</label><input type="text" id="sLogo" placeholder="https://..."><p style="font-size:11px;color:var(--text3);margin-top:3px"><span data-i18n="logoHint">Shown in topbar & login screen</span></p></div><div class="form-group"><label data-i18n="appIconUrl">App Icon URL (home screen)</label><input type="text" id="sIcon" placeholder="https://... (512x512 PNG)"><p style="font-size:11px;color:var(--text3);margin-top:3px"><span data-i18n="iconHint">Icon when added to phone home screen</span></p></div><div class="form-group"><label data-i18n="lowStockThreshold">Low Stock Threshold</label><input type="number" id="sThreshold" min="1" value="5"></div><button class="btn btn-primary" onclick="saveSettings()" style="width:auto;margin-top:8px" data-i18n="save">Save</button>
+<div class="settings-section" id="settings-general"><div style="max-width:400px"><div class="form-group"><label data-i18n="clubName">Club Name</label><input type="text" id="sClubName" placeholder="AS Blainville"></div><div class="form-group"><label data-i18n="clubLogoUrl">Club Logo</label><input type="file" accept="image/*" id="sLogoFile" onchange="logoPick(this)" style="font-size:12px"><div id="sLogoPrev"></div><p style="font-size:11px;color:var(--text3);margin-top:3px"><span data-i18n="logoHint">Shown in topbar & login screen</span></p></div><div class="form-group"><label data-i18n="lowStockThreshold">Low Stock Threshold</label><input type="number" id="sThreshold" min="1" value="5"></div><button class="btn btn-primary" onclick="saveSettings()" style="width:auto;margin-top:8px" data-i18n="save">Save</button>
 <div id="billingSection" style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)"></div></div></div></div>
 
 <div class="page" id="page-print"><div class="print-qr"><h2 id="printBoxName"></h2><canvas id="printQrCanvas" width="250" height="250"></canvas></div></div>
@@ -597,7 +597,7 @@ statusNA:{en:"Not applicable",fr:"Sans objet",es:"No aplica",pt:"Não aplicável
 locations:{en:"Locations",fr:"Emplacements",es:"Ubicaciones",pt:"Locais",de:"Standorte",it:"Posizioni",nl:"Locaties"},
 users:{en:"Users",fr:"Utilisateurs",es:"Usuarios",pt:"Usuários",de:"Benutzer",it:"Utenti",nl:"Gebruikers"},
 general:{en:"General",fr:"Général",es:"General",pt:"Geral",de:"Allgemein",it:"Generale",nl:"Algemeen"},
-clubLogoUrl:{en:"Club Logo URL",fr:"URL du logo du club",es:"URL del logo del club",pt:"URL do logo do clube",de:"Vereinslogo-URL",it:"URL logo del club",nl:"Clublogo-URL"},
+clubLogoUrl:{en:"Club Logo",fr:"Logo du club",es:"Logo del club",pt:"Logo do clube",de:"Vereinslogo",it:"Logo del club",nl:"Clublogo"},
 logoHint:{en:"Shown in topbar & login screen",fr:"Affiché dans la barre du haut et l'écran de connexion",es:"Se muestra en la barra superior y la pantalla de inicio",pt:"Exibido na barra superior e tela de login",de:"Wird in der oberen Leiste und im Anmeldebildschirm angezeigt",it:"Mostrato nella barra superiore e schermata di accesso",nl:"Getoond in bovenbalk en inlogscherm"},
 appIconUrl:{en:"App Icon URL (home screen)",fr:"URL de l'icône de l'app (écran d'accueil)",es:"URL del ícono de la app (pantalla de inicio)",pt:"URL do ícone do app (tela inicial)",de:"App-Icon-URL (Startbildschirm)",it:"URL icona app (schermata home)",nl:"App-pictogram-URL (startscherm)"},
 iconHint:{en:"Icon when added to phone home screen",fr:"Icône lors de l'ajout à l'écran d'accueil du téléphone",es:"Ícono al agregar a la pantalla de inicio del teléfono",pt:"Ícone ao adicionar à tela inicial do telefone",de:"Icon beim Hinzufügen zum Startbildschirm",it:"Icona quando aggiunta alla schermata home",nl:"Pictogram bij toevoegen aan startscherm"},
@@ -817,7 +817,7 @@ if(localStorage.getItem('asb_theme')==='light')document.body.classList.add('ligh
 
 // NAV
 function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('page-'+p).classList.add('active');document.querySelectorAll('.topbar-nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p||(p==='detail'&&b.dataset.page==='boxes')));if(p==='dashboard')loadDash();if(p==='checkout')renderCO();if(p==='history')renderHistory();if(p==='snapshots')renderSnaps();if(p==='settings'){renderColors();renderTypes();renderLocs();if(isSA())renderUsers()}}
-function showSTab(tab,b){document.querySelectorAll('.settings-section').forEach(s=>s.classList.remove('active'));$('settings-'+tab).classList.add('active');document.querySelectorAll('.settings-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(tab==='general'){$('sLogo').value=D.settings.logo_url||'';$('sThreshold').value=D.settings.low_stock_threshold||'5';$('sClubName').value=D.settings.club_name||'';$('sIcon').value=D.settings.app_icon||'';renderBillingSection()}}
+function showSTab(tab,b){document.querySelectorAll('.settings-section').forEach(s=>s.classList.remove('active'));$('settings-'+tab).classList.add('active');document.querySelectorAll('.settings-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(tab==='general'){clubLogo=D.settings.logo_url||null;renderLogoPrev();$('sThreshold').value=D.settings.low_stock_threshold||'5';$('sClubName').value=D.settings.club_name||'';renderBillingSection()}}
 
 function renderBillingSection(){const el=$('billingSection');if(!el)return;el.innerHTML='';if(!isSA()||!CLUB)return;
 if(CLUB.is_free_forever||CLUB.subscription_status==='free_forever')return;
@@ -842,10 +842,7 @@ function applyLogo(){const u=D.settings.logo_url;const t=$('topbarLogo'),l=$('lo
 const cn=D.settings.club_name||CLUB?.name||'Qajon';
 const tcn=$('topbarClubName');if(tcn)tcn.textContent=cn;
 document.title=cn+' · Qajon';
-// Apply custom app icon (home screen) dynamically if provided
-const ic=D.settings.app_icon;if(ic){let appleIcon=document.querySelector('link[rel="apple-touch-icon"]');if(appleIcon)appleIcon.href=ic;
-const mani={name:cn+' · Qajon',short_name:cn,description:'Club equipment inventory',start_url:'./index.html',display:'standalone',orientation:'portrait',background_color:'#03306b',theme_color:'#03306b',icons:[{src:ic,sizes:'192x192',type:'image/png',purpose:'any maskable'},{src:ic,sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
-const blob=new Blob([JSON.stringify(mani)],{type:'application/json'});const url=URL.createObjectURL(blob);let ml=document.querySelector('link[rel="manifest"]');if(ml)ml.href=url}}
+}
 
 // DASHBOARD
 function loadDash(){
@@ -1142,6 +1139,19 @@ function openAddLocModal(){editLoc=null;$('locModalTitle').textContent=t('addLoc
 function openEditLoc(id){const l=D.locs.find(x=>x.id===id);if(!l)return;editLoc=id;$('locModalTitle').textContent=t('edit');$('locName').value=l.name;$('locDesc').value=l.description||'';openModal('locModal')}
 async function saveLoc(){const n=$('locName').value.trim(),d=$('locDesc').value.trim();if(!n){toast(t('tEnterName'),'error');return}const b=$('saveLocBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editLoc)await SB.from('storage_locations').update({name:n,description:d||null}).eq('id',editLoc);else await ins('storage_locations',{name:n,description:d||null});b.innerHTML='Save';b.disabled=0;toast(t('tSaved'));closeModal('locModal');await loadData();renderLocs()}
 async function delLoc(id){pendConf=async()=>{const{error}=await SB.from('storage_locations').delete().eq('id',id);closeModal('confirmModal');if(error){toast(error.code==='23503'?t('tInUse'):error.message,'error');return}toast(t('tDeleted'));await loadData();renderLocs()};$('confirmText').textContent=t('deleteLocationQ');openModal('confirmModal')}
+let clubLogo=null;
+function shrinkLogo(f,inp,cb){if(!f.type.startsWith('image/')){toast(t('tImgOnly'),'error');if(inp)inp.value='';return}
+const rd=new FileReader();
+rd.onload=ev=>{const img=new Image();
+img.onload=()=>{const M=160;let w=img.width,h=img.height;const sc=Math.min(1,M/Math.max(w,h));w=Math.max(1,Math.round(w*sc));h=Math.max(1,Math.round(h*sc));
+const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);
+cb(cv.toDataURL('image/png'))};
+img.onerror=()=>{toast(t('tImgOnly'),'error');if(inp)inp.value=''};
+img.src=ev.target.result};
+rd.readAsDataURL(f)}
+function logoPick(inp){const f=inp.files&&inp.files[0];if(!f)return;shrinkLogo(f,inp,d=>{clubLogo=d;inp.value='';renderLogoPrev()})}
+function renderLogoPrev(){const el=$('sLogoPrev');if(!el)return;
+el.innerHTML=clubLogo?`<div class="tp-prev"><img src="${clubLogo}" alt="" style="background:var(--brand)"><button class="btn btn-secondary btn-sm" onclick="clubLogo=null;renderLogoPrev()">${t('removePhoto')}</button></div>`:''}
 function inviteURL(){return location.origin+location.pathname+'?join='+CID}
 function copyInvite(){const i=$('inviteInput');if(!i)return;i.select();i.setSelectionRange(0,99999);
 navigator.clipboard?.writeText(i.value).then(()=>toast(t('tCopied'))).catch(()=>{try{document.execCommand('copy');toast(t('tCopied'))}catch(e){toast(i.value)}})}
@@ -1155,8 +1165,8 @@ $('usersList').innerHTML=act.map(p=>`<div class="user-card"><div class="user-inf
 async function approveU(id){await SB.from('profiles').update({role:'admin'}).eq('id',id);toast(t('tApproved'));await loadData();renderUsers()}
 async function declineU(id){pendConf=async()=>{await SB.from('profiles').delete().eq('id',id);toast(t('tDeclined'));closeModal('confirmModal');await loadData();renderUsers()};$('confirmText').textContent=t('declineQ');openModal('confirmModal')}
 async function removeU(id){pendConf=async()=>{await SB.from('profiles').delete().eq('id',id);toast(t('tRemoved'));closeModal('confirmModal');await loadData();renderUsers()};$('confirmText').textContent=t('removeUserQ');openModal('confirmModal')}
-async function saveSettings(){const cn=$('sClubName')?.value.trim()||'';const ic=$('sIcon')?.value.trim()||'';const logo=$('sLogo').value.trim();const thr=$('sThreshold').value;
-const rows=[{club_id:CID,key:'logo_url',value:logo},{club_id:CID,key:'low_stock_threshold',value:thr},{club_id:CID,key:'club_name',value:cn||CLUB?.name||'Club'},{club_id:CID,key:'app_icon',value:ic}];
+async function saveSettings(){const cn=$('sClubName')?.value.trim()||'';const thr=$('sThreshold').value;
+const rows=[{club_id:CID,key:'logo_url',value:clubLogo||''},{club_id:CID,key:'low_stock_threshold',value:thr},{club_id:CID,key:'club_name',value:cn||CLUB?.name||'Club'}];
 await SB.from('app_settings').upsert(rows,{onConflict:'club_id,key'});
 // Keep clubs.name in sync with the club_name setting
 if(cn)await SB.from('clubs').update({name:cn}).eq('id',CID);
