@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Privacy Policy · Qajon</title>
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+:root{--bg:#0a0f1e;--card:#111827;--border:#1f2937;--text:#f3f4f6;--text2:#d1d5db;--text3:#9ca3af;--accent:#38b6ff;--radius:14px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.65}
+.wrap{max-width:820px;margin:0 auto;padding:28px 20px 60px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;flex-wrap:wrap;gap:10px}
+.brand{font-size:20px;font-weight:800;color:var(--accent);text-decoration:none;letter-spacing:-.5px}
+.langs{display:flex;gap:6px}
+.langs button{padding:6px 12px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text3);font-size:12px;font-weight:600;cursor:pointer}
+.langs button.active{background:rgba(56,182,255,.12);border-color:var(--accent);color:var(--accent)}
+h1{font-size:26px;margin-bottom:4px;letter-spacing:-.5px}
+.upd{font-size:12px;color:var(--text3);margin-bottom:26px}
+h2{font-size:16px;color:var(--accent);margin:26px 0 8px}
+p,li{font-size:14px;color:var(--text2);margin-bottom:10px}
+ul{padding-left:20px;margin-bottom:10px}
+.doc{display:none}.doc.active{display:block}
+a{color:var(--accent)}
+.foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--text3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><a class="brand" href="./index.html">Qajon</a>
+<div class="langs"><button id="b-en" onclick="setL('en')">English</button><button id="b-fr" onclick="setL('fr')">Français</button><button id="b-es" onclick="setL('es')">Español</button></div></div>
+
+<!-- ================= ENGLISH ================= -->
+<div class="doc" id="d-en">
+<h1>Privacy Policy</h1>
+<p class="upd">Last updated: July 22, 2026</p>
+
+<p>This policy explains what personal information Qajon collects, why, and how it is handled. Qajon is operated by Edwin Mathias Mostajo Rosas, based in Quebec, Canada, who acts as the person in charge of the protection of personal information. Contact: <a href="mailto:support@qajon.com">support@qajon.com</a>.</p>
+
+<h2>1. Information we collect</h2>
+<ul>
+<li><strong>Account information:</strong> your email address and password (stored in hashed form by our authentication provider).</li>
+<li><strong>Club data:</strong> club name, inventory data (boxes, items, quantities, photos of equipment types), activity history and settings entered by your club.</li>
+<li><strong>Billing information:</strong> subscription status. Payments are processed by Stripe; we never see or store your full card details.</li>
+<li><strong>Technical data:</strong> basic logs needed to operate and secure the Service. We store your language and interface preferences in your browser's local storage.</li>
+</ul>
+
+<h2>2. What we use it for</h2>
+<p>We use this information solely to provide, secure, bill and improve the Service. We do not sell personal information, do not use it for advertising, and do not share it with third parties except the service providers listed below.</p>
+
+<h2>3. Service providers</h2>
+<ul>
+<li><strong>Supabase</strong> — database, authentication and hosting of application data.</li>
+<li><strong>Stripe</strong> — payment processing and billing portal.</li>
+<li><strong>Vercel</strong> — web hosting of the application.</li>
+<li><strong>Cloudflare</strong> — domain and network services.</li>
+</ul>
+<p>These providers process data on our behalf under their own security and privacy commitments. Data may be stored on servers located outside Quebec or Canada (for example, in the United States); by using the Service you acknowledge this transfer.</p>
+
+<h2>4. Cookies and local storage</h2>
+<p>We do not use advertising or tracking cookies. We use browser local storage strictly for functional purposes: keeping your session, your language choice and interface preferences.</p>
+
+<h2>5. Retention</h2>
+<p>We keep your data while your club account exists. If a subscription lapses, data is retained so you can return. You can request deletion of your club and all its data at any time; we will delete it within 30 days, except minimal records we must keep for legal, tax or billing purposes.</p>
+
+<h2>6. Your rights</h2>
+<p>Under Quebec's Act respecting the protection of personal information in the private sector (Law 25) and Canada's PIPEDA, you have the right to access the personal information we hold about you, to have it corrected, and to request its deletion. To exercise these rights, contact <a href="mailto:support@qajon.com">support@qajon.com</a>. You may also file a complaint with the Commission d'accès à l'information du Québec or the Office of the Privacy Commissioner of Canada.</p>
+
+<h2>7. Security</h2>
+<p>Data is transmitted over encrypted connections (HTTPS) and stored with role-based access controls that isolate each club's data. No system is perfectly secure; in the event of a confidentiality incident involving your personal information, we will notify affected users and authorities as required by law.</p>
+
+<h2>8. Children</h2>
+<p>The Service is intended for club staff and administrators, not for children. We do not knowingly collect personal information from minors under 14. Inventory records do not need to include personal information about players.</p>
+
+<h2>9. Changes</h2>
+<p>We may update this policy. Material changes will be announced with reasonable notice. The English version prevails in case of discrepancy between translations, to the extent permitted by law.</p>
+</div>
+
+<!-- ================= FRANÇAIS ================= -->
+<div class="doc" id="d-fr">
+<h1>Politique de confidentialité</h1>
+<p class="upd">Dernière mise à jour : 22 juillet 2026</p>
+
+<p>La présente politique explique quels renseignements personnels Qajon recueille, pourquoi, et comment ils sont traités. Qajon est exploité par Edwin Mathias Mostajo Rosas, établi au Québec, Canada, qui agit à titre de responsable de la protection des renseignements personnels. Contact : <a href="mailto:support@qajon.com">support@qajon.com</a>.</p>
+
+<h2>1. Renseignements recueillis</h2>
+<ul>
+<li><strong>Renseignements de compte :</strong> votre adresse courriel et votre mot de passe (conservé sous forme hachée par notre fournisseur d'authentification).</li>
+<li><strong>Données du club :</strong> nom du club, données d'inventaire (boîtes, articles, quantités, photos des types d'équipement), historique d'activité et réglages saisis par votre club.</li>
+<li><strong>Renseignements de facturation :</strong> état de l'abonnement. Les paiements sont traités par Stripe; nous ne voyons ni ne conservons jamais vos données de carte complètes.</li>
+<li><strong>Données techniques :</strong> journaux de base nécessaires à l'exploitation et à la sécurité du Service. Vos préférences de langue et d'interface sont conservées dans le stockage local de votre navigateur.</li>
+</ul>
+
+<h2>2. Finalités</h2>
+<p>Nous utilisons ces renseignements uniquement pour fournir, sécuriser, facturer et améliorer le Service. Nous ne vendons pas de renseignements personnels, ne les utilisons pas à des fins publicitaires et ne les partageons pas avec des tiers, à l'exception des fournisseurs énumérés ci-dessous.</p>
+
+<h2>3. Fournisseurs de services</h2>
+<ul>
+<li><strong>Supabase</strong> — base de données, authentification et hébergement des données de l'application.</li>
+<li><strong>Stripe</strong> — traitement des paiements et portail de facturation.</li>
+<li><strong>Vercel</strong> — hébergement web de l'application.</li>
+<li><strong>Cloudflare</strong> — services de domaine et de réseau.</li>
+</ul>
+<p>Ces fournisseurs traitent les données pour notre compte selon leurs propres engagements de sécurité et de confidentialité. Les données peuvent être conservées sur des serveurs situés à l'extérieur du Québec ou du Canada (par exemple aux États-Unis); en utilisant le Service, vous reconnaissez ce transfert.</p>
+
+<h2>4. Témoins et stockage local</h2>
+<p>Nous n'utilisons pas de témoins publicitaires ni de suivi. Le stockage local du navigateur sert strictement à des fins fonctionnelles : maintenir votre session, votre choix de langue et vos préférences d'interface.</p>
+
+<h2>5. Conservation</h2>
+<p>Nous conservons vos données tant que le compte de votre club existe. Si un abonnement prend fin, les données sont conservées pour vous permettre de revenir. Vous pouvez demander en tout temps la suppression de votre club et de toutes ses données; nous procéderons dans les 30 jours, sauf les registres minimaux que nous devons conserver à des fins légales, fiscales ou de facturation.</p>
+
+<h2>6. Vos droits</h2>
+<p>En vertu de la Loi sur la protection des renseignements personnels dans le secteur privé du Québec (Loi 25) et de la LPRPDE fédérale, vous avez le droit d'accéder aux renseignements personnels que nous détenons à votre sujet, de les faire rectifier et d'en demander la suppression. Pour exercer ces droits, écrivez à <a href="mailto:support@qajon.com">support@qajon.com</a>. Vous pouvez également déposer une plainte auprès de la Commission d'accès à l'information du Québec ou du Commissariat à la protection de la vie privée du Canada.</p>
+
+<h2>7. Sécurité</h2>
+<p>Les données sont transmises par connexions chiffrées (HTTPS) et conservées avec des contrôles d'accès qui isolent les données de chaque club. Aucun système n'est parfaitement sécuritaire; en cas d'incident de confidentialité impliquant vos renseignements personnels, nous aviserons les personnes concernées et les autorités conformément à la loi.</p>
+
+<h2>8. Enfants</h2>
+<p>Le Service s'adresse au personnel et aux administrateurs de clubs, non aux enfants. Nous ne recueillons pas sciemment de renseignements personnels de mineurs de moins de 14 ans. Les registres d'inventaire n'ont pas à contenir de renseignements personnels sur les joueurs.</p>
+
+<h2>9. Modifications</h2>
+<p>Nous pouvons mettre à jour la présente politique. Les changements importants seront annoncés avec un préavis raisonnable. En cas de divergence entre les traductions, la version anglaise prévaut dans la mesure permise par la loi.</p>
+</div>
+
+<!-- ================= ESPAÑOL ================= -->
+<div class="doc" id="d-es">
+<h1>Política de Privacidad</h1>
+<p class="upd">Última actualización: 22 de julio de 2026</p>
+
+<p>Esta política explica qué información personal recopila Qajon, para qué, y cómo se maneja. Qajon es operado por Edwin Mathias Mostajo Rosas, con base en Quebec, Canadá, quien actúa como responsable de la protección de la información personal. Contacto: <a href="mailto:support@qajon.com">support@qajon.com</a>.</p>
+
+<h2>1. Información que recopilamos</h2>
+<ul>
+<li><strong>Información de cuenta:</strong> tu correo electrónico y contraseña (almacenada en forma cifrada por nuestro proveedor de autenticación).</li>
+<li><strong>Datos del club:</strong> nombre del club, datos de inventario (cajas, artículos, cantidades, fotos de tipos de equipamiento), historial de actividad y configuración ingresada por tu club.</li>
+<li><strong>Información de facturación:</strong> estado de la suscripción. Los pagos los procesa Stripe; nunca vemos ni almacenamos los datos completos de tu tarjeta.</li>
+<li><strong>Datos técnicos:</strong> registros básicos necesarios para operar y proteger el Servicio. Tus preferencias de idioma e interfaz se guardan en el almacenamiento local de tu navegador.</li>
+</ul>
+
+<h2>2. Para qué la usamos</h2>
+<p>Usamos esta información únicamente para proveer, proteger, facturar y mejorar el Servicio. No vendemos información personal, no la usamos para publicidad, y no la compartimos con terceros salvo los proveedores listados abajo.</p>
+
+<h2>3. Proveedores de servicios</h2>
+<ul>
+<li><strong>Supabase</strong> — base de datos, autenticación y alojamiento de los datos de la aplicación.</li>
+<li><strong>Stripe</strong> — procesamiento de pagos y portal de facturación.</li>
+<li><strong>Vercel</strong> — alojamiento web de la aplicación.</li>
+<li><strong>Cloudflare</strong> — servicios de dominio y red.</li>
+</ul>
+<p>Estos proveedores procesan datos en nuestro nombre bajo sus propios compromisos de seguridad y privacidad. Los datos pueden almacenarse en servidores fuera de Quebec o Canadá (por ejemplo, en Estados Unidos); al usar el Servicio reconocés esta transferencia.</p>
+
+<h2>4. Cookies y almacenamiento local</h2>
+<p>No usamos cookies publicitarias ni de rastreo. El almacenamiento local del navegador se usa estrictamente con fines funcionales: mantener tu sesión, tu idioma y tus preferencias de interfaz.</p>
+
+<h2>5. Retención</h2>
+<p>Conservamos tus datos mientras exista la cuenta de tu club. Si una suscripción vence, los datos se conservan para que puedas volver. Podés solicitar la eliminación de tu club y todos sus datos en cualquier momento; lo haremos dentro de 30 días, salvo los registros mínimos que debamos conservar por razones legales, fiscales o de facturación.</p>
+
+<h2>6. Tus derechos</h2>
+<p>Bajo la Ley 25 de Quebec sobre protección de información personal en el sector privado y la ley federal PIPEDA de Canadá, tenés derecho a acceder a la información personal que tenemos sobre vos, corregirla y solicitar su eliminación. Para ejercer estos derechos, escribí a <a href="mailto:support@qajon.com">support@qajon.com</a>. También podés presentar una queja ante la Commission d'accès à l'information du Québec o el Comisionado de Privacidad de Canadá.</p>
+
+<h2>7. Seguridad</h2>
+<p>Los datos se transmiten por conexiones cifradas (HTTPS) y se almacenan con controles de acceso que aíslan los datos de cada club. Ningún sistema es perfectamente seguro; ante un incidente de confidencialidad que involucre tu información personal, notificaremos a los afectados y a las autoridades según exija la ley.</p>
+
+<h2>8. Menores</h2>
+<p>El Servicio está dirigido al personal y administradores de clubes, no a niños. No recopilamos a sabiendas información personal de menores de 14 años. Los registros de inventario no necesitan incluir información personal de jugadores.</p>
+
+<h2>9. Cambios</h2>
+<p>Podemos actualizar esta política. Los cambios importantes se anunciarán con aviso razonable. En caso de discrepancia entre traducciones, prevalece la versión en inglés en la medida permitida por la ley.</p>
+</div>
+
+<div class="foot">© 2026 Qajon · <a href="./terms.html" id="footTerms">Terms of Service</a> · <a href="./index.html">qajon.com</a></div>
+</div>
+<script>
+function setL(l){localStorage.setItem('qajon_lang_docs',l);
+['en','fr','es'].forEach(x=>{document.getElementById('d-'+x).classList.toggle('active',x===l);document.getElementById('b-'+x).classList.toggle('active',x===l)});
+document.documentElement.lang=l;
+document.getElementById('footTerms').textContent=l==='fr'?'Conditions d\u2019utilisation':l==='es'?'Términos de Servicio':'Terms of Service';
+document.title=(l==='fr'?'Politique de confidentialité':l==='es'?'Política de Privacidad':'Privacy Policy')+' · Qajon'}
+const saved=localStorage.getItem('qajon_lang_docs')||localStorage.getItem('qajon_lang')||'en';
+setL(['en','fr','es'].includes(saved)?saved:'en');
+</script>
+</body>
+</html>
