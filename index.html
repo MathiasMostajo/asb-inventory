@@ -109,7 +109,8 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .box-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px}
 .box-card-name{font-size:15px;font-weight:600;color:var(--text);flex:1}
 .status-badge{padding:3px 8px;border-radius:16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-.status-clean{background:var(--green-dim);color:var(--green)}.status-dirty{background:var(--orange-dim);color:var(--orange)}
+.status-clean{background:var(--green-dim);color:var(--green)}.status-na{background:rgba(148,163,184,.15);color:#94a3b8}
+.status-dirty{background:var(--orange-dim);color:var(--orange)}
 .box-card-loc{font-size:12px;color:var(--text3);margin-bottom:6px}
 .box-card-stats{display:flex;gap:14px;margin-top:6px}.box-card-stat{font-size:13px;color:var(--text3)}.box-card-stat span{font-weight:600;color:var(--text2);font-family:'JetBrains Mono',monospace}
 .box-card-chart{margin-top:8px;height:5px;border-radius:3px;background:var(--bg3);overflow:hidden;display:flex}.box-card-chart div{height:100%}
@@ -218,8 +219,54 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 .toast-success{background:var(--accent-dim2);color:var(--accent);border:1px solid rgba(56,182,255,.3)}
 .toast-error{background:var(--red-dim);color:var(--red);border:1px solid rgba(248,113,113,.3)}
 @media print{@page{margin:0}body{background:#fff!important}.topbar,.toast,.modal-overlay,.checkout-undo{display:none!important}.content{padding:0}.page{display:none!important}#page-print{display:block!important}.print-qr{text-align:center;padding:60px 40px}.print-qr h2{color:#000}.print-qr p{color:#333}}
-@media(max-width:768px){.topbar{padding:0 10px;flex-wrap:wrap;height:auto;min-height:52px;padding:6px 10px}.topbar-left{gap:6px}.topbar-nav button{padding:5px 7px;font-size:11px}.topbar-user{display:none}.lang-select{font-size:11px;padding:4px 5px;max-width:90px}.content{padding:14px}.page-title{font-size:18px}.stat-card .stat-value{font-size:20px}.charts-grid,.boxes-grid{grid-template-columns:1fr}.login-card{padding:28px 20px}.items-table th,.items-table td{padding:8px 10px;font-size:12px}.detail-actions{width:100%}.detail-actions .btn{flex:1}.checkout-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}.qr-section{flex-direction:column;text-align:center}}
-@media(max-width:480px){.topbar-brand{font-size:14px}.topbar-brand span{display:none}.stats-row{grid-template-columns:repeat(2,1fr)}.checkout-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){
+/* Header: row 1 = brand + controls, row 2 = nav that scrolls sideways */
+.topbar{height:auto;padding:8px 12px;flex-wrap:wrap;row-gap:6px;align-items:center}
+.topbar-left{display:contents}
+.topbar-brand{order:1;flex:1 1 auto;min-width:0;font-size:15px}
+.topbar-brand span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topbar-brand img{max-height:26px}
+.topbar-right{order:2;flex:0 0 auto;gap:6px}
+.topbar-nav{order:3;flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;gap:4px;padding-bottom:2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.topbar-nav::-webkit-scrollbar{display:none}
+.topbar-nav button{flex:0 0 auto;padding:7px 11px;font-size:12.5px}
+.topbar-user{display:none}
+.lang-select{font-size:11px;padding:6px 4px;max-width:64px}
+.theme-toggle,.topbar-logout{padding:6px 9px;font-size:12px}
+/* Content density */
+.content{padding:14px 12px}
+.page-title{font-size:18px}
+.stat-card .stat-value{font-size:20px}
+.charts-grid,.boxes-grid{grid-template-columns:1fr}
+.login-card{padding:28px 20px}
+.items-table th,.items-table td{padding:8px 10px;font-size:12px}
+.detail-actions{width:100%}.detail-actions .btn{flex:1}
+.checkout-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+.qr-section{flex-direction:column;text-align:center}
+/* Tabs and filters scroll instead of wrapping into tall blocks */
+.settings-tabs,.checkout-filters{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.settings-tabs::-webkit-scrollbar,.checkout-filters::-webkit-scrollbar{display:none}
+.settings-tabs button,.checkout-filters button{flex:0 0 auto}
+/* Touch-friendly controls */
+.qv-btn{width:38px;height:38px;font-size:18px}
+.btn{padding:11px 16px}
+.page-header{gap:10px}
+.trial-banner{padding:10px 12px}
+.modal{padding:20px 16px;max-height:88vh}
+.ph-modes button{font-size:11px;padding:9px 5px}
+}
+@media(max-width:480px){
+.topbar-brand{font-size:14px;max-width:46%}
+.stats-row{grid-template-columns:repeat(2,1fr)}
+.checkout-grid{grid-template-columns:repeat(2,1fr)}
+.qv-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+.qv-img{height:64px}
+.qv-total{font-size:26px}
+.lang-select{max-width:54px}
+.inv-row{flex-wrap:wrap}.inv-row input{flex:1 1 100%}
+.ld-hero{padding:44px 18px 34px}
+.ld-feats{padding:16px 18px 36px}
+}
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
@@ -368,7 +415,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="page-header"><h2 class="page-title" data-i18n="settings">Settings</h2></div>
 <div class="settings-tabs">
 <button class="active" onclick="showSTab('colors',this)" data-i18n="colors">Colors</button>
-<button onclick="showSTab('types',this)" data-i18n="types">Types</button>
+<button onclick="showSTab('types',this)" data-i18n="itemsTab">Items</button>
 <button onclick="showSTab('locations',this)" data-i18n="locations">Locations</button>
 <button onclick="showSTab('users',this)" id="usersTabBtn" data-i18n="users">Users</button>
 <button onclick="showSTab('general',this)" data-i18n="general">General</button></div>
@@ -386,7 +433,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="modal-overlay" id="boxModal"><div class="modal"><h2 id="boxModalTitle">Add Box</h2>
 <div class="form-group"><label data-i18n="name">Name</label><input type="text" id="boxName" placeholder="Shed 1 - U6 Blue"></div>
 <div class="form-group"><label data-i18n="location">Location</label><select id="boxLocation"><option value="" data-i18n="none">— None —</option></select></div>
-<div class="form-group"><label data-i18n="status">Status</label><select id="boxStatus"><option value="clean" data-i18n="clean">Clean</option><option value="dirty" data-i18n="dirty">Dirty</option></select></div>
+<div class="form-group"><label data-i18n="status">Status</label><select id="boxStatus"><option value="clean" data-i18n="clean">Clean</option><option value="dirty" data-i18n="dirty">Dirty</option><option value="na" data-i18n="statusNA">Not applicable</option></select></div>
 <div class="form-group"><label data-i18n="notes">Notes</label><input type="text" id="boxNotes"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('boxModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveBox()" id="saveBoxBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
 
@@ -512,7 +559,7 @@ qty:{en:"Qty",fr:"Qté",es:"Cant",pt:"Qtd",de:"Anz",it:"Qtà",nl:"Aant"},
 addItem:{en:"Add Item",fr:"Ajouter un article",es:"Agregar artículo",pt:"Adicionar item",de:"Artikel hinzufügen",it:"Aggiungi articolo",nl:"Artikel toevoegen"},
 addColor:{en:"Add Color",fr:"Ajouter une couleur",es:"Agregar color",pt:"Adicionar cor",de:"Farbe hinzufügen",it:"Aggiungi colore",nl:"Kleur toevoegen"},
 colorNameLbl:{en:"Color Name",fr:"Nom de la couleur",es:"Nombre del color",pt:"Nome da cor",de:"Farbname",it:"Nome colore",nl:"Kleurnaam"},
-addType:{en:"Add Type",fr:"Ajouter un type",es:"Agregar tipo",pt:"Adicionar tipo",de:"Typ hinzufügen",it:"Aggiungi tipo",nl:"Type toevoegen"},
+addType:{en:"Add Item",fr:"Ajouter un article",es:"Agregar artículo",pt:"Adicionar item",de:"Artikel hinzufügen",it:"Aggiungi articolo",nl:"Artikel toevoegen"},
 addLocation:{en:"Add Location",fr:"Ajouter un emplacement",es:"Agregar ubicación",pt:"Adicionar local",de:"Ort hinzufügen",it:"Aggiungi posizione",nl:"Locatie toevoegen"},
 description:{en:"Description",fr:"Description",es:"Descripción",pt:"Descrição",de:"Beschreibung",it:"Descrizione",nl:"Beschrijving"},
 bulkAddItems:{en:"Bulk Add Items",fr:"Ajouter des articles en lot",es:"Agregar artículos en lote",pt:"Adicionar itens em lote",de:"Artikel sammeln hinzufügen",it:"Aggiungi articoli in blocco",nl:"Artikelen in bulk toevoegen"},
@@ -544,7 +591,9 @@ noDifferences:{en:"No differences found",fr:"Aucune différence trouvée",es:"No
 diff:{en:"Diff",fr:"Diff.",es:"Dif.",pt:"Dif.",de:"Diff.",it:"Diff.",nl:"Versch."},
 fromLbl:{en:"From:",fr:"De:",es:"De:",pt:"De:",de:"Von:",it:"Da:",nl:"Van:"},
 toLbl:{en:"To:",fr:"À:",es:"A:",pt:"Para:",de:"Bis:",it:"A:",nl:"Tot:"},
-itemTypes:{en:"Item Types",fr:"Types d'articles",es:"Tipos de artículos",pt:"Tipos de itens",de:"Artikeltypen",it:"Tipi di articoli",nl:"Artikeltypes"},
+itemTypes:{en:"Items",fr:"Articles",es:"Artículos",pt:"Itens",de:"Artikel",it:"Articoli",nl:"Artikelen"},
+itemsTab:{en:"Items",fr:"Articles",es:"Artículos",pt:"Itens",de:"Artikel",it:"Articoli",nl:"Artikelen"},
+statusNA:{en:"Not applicable",fr:"Sans objet",es:"No aplica",pt:"Não aplicável",de:"Nicht zutreffend",it:"Non applicabile",nl:"Niet van toepassing"},
 locations:{en:"Locations",fr:"Emplacements",es:"Ubicaciones",pt:"Locais",de:"Standorte",it:"Posizioni",nl:"Locaties"},
 users:{en:"Users",fr:"Utilisateurs",es:"Usuarios",pt:"Usuários",de:"Benutzer",it:"Utenti",nl:"Gebruikers"},
 general:{en:"General",fr:"Général",es:"General",pt:"Geral",de:"Allgemein",it:"Generale",nl:"Algemeen"},
@@ -580,7 +629,7 @@ tNoLocations:{en:"No locations",fr:"Aucun emplacement",es:"Sin ubicaciones",pt:"
 deleteBoxQ:{en:"Delete this box?",fr:"Supprimer cette boîte?",es:"¿Eliminar esta caja?",pt:"Excluir esta caixa?",de:"Diese Box löschen?",it:"Eliminare questa scatola?",nl:"Deze doos verwijderen?"},
 deleteItemQ:{en:"Delete this item?",fr:"Supprimer cet article?",es:"¿Eliminar este artículo?",pt:"Excluir este item?",de:"Diesen Artikel löschen?",it:"Eliminare questo articolo?",nl:"Dit artikel verwijderen?"},
 deleteColorQ:{en:"Delete color?",fr:"Supprimer la couleur?",es:"¿Eliminar color?",pt:"Excluir cor?",de:"Farbe löschen?",it:"Eliminare colore?",nl:"Kleur verwijderen?"},
-deleteTypeQ:{en:"Delete type?",fr:"Supprimer le type?",es:"¿Eliminar tipo?",pt:"Excluir tipo?",de:"Typ löschen?",it:"Eliminare tipo?",nl:"Type verwijderen?"},
+deleteTypeQ:{en:"Delete this item?",fr:"Supprimer cet article?",es:"¿Eliminar este artículo?",pt:"Excluir este item?",de:"Diesen Artikel löschen?",it:"Eliminare questo articolo?",nl:"Dit artikel verwijderen?"},
 deleteLocationQ:{en:"Delete location?",fr:"Supprimer l'emplacement?",es:"¿Eliminar ubicación?",pt:"Excluir local?",de:"Standort löschen?",it:"Eliminare posizione?",nl:"Locatie verwijderen?"},
 deleteSnapQ:{en:"Delete snapshot?",fr:"Supprimer la capture?",es:"¿Eliminar captura?",pt:"Excluir captura?",de:"Aufnahme löschen?",it:"Eliminare istantanea?",nl:"Momentopname verwijderen?"},
 declineQ:{en:"Decline?",fr:"Refuser?",es:"¿Rechazar?",pt:"Recusar?",de:"Ablehnen?",it:"Rifiutare?",nl:"Weigeren?"},
@@ -634,7 +683,7 @@ inviteLink:{en:"Invite link",fr:"Lien d'invitation",es:"Link de invitación",pt:
 inviteHint:{en:"Send this to your staff. They sign up straight into your club — you still approve each request below.",fr:"Envoyez ceci à votre personnel. Ils s'inscrivent directement dans votre club — vous approuvez chaque demande ci-dessous.",es:"Mandá esto a tu equipo. Se registran directo en tu club — vos igual aprobás cada solicitud abajo.",pt:"Envie isto à sua equipe. Eles se cadastram direto no seu clube — você ainda aprova cada solicitação abaixo.",de:"Senden Sie dies an Ihr Team. Sie registrieren sich direkt in Ihrem Verein — Sie genehmigen weiterhin jede Anfrage unten.",it:"Invia questo al tuo staff. Si registrano direttamente nel tuo club — approvi comunque ogni richiesta qui sotto.",nl:"Stuur dit naar je team. Ze registreren zich direct bij je club — jij keurt elk verzoek hieronder nog steeds goed."},
 copyBtn:{en:"Copy",fr:"Copier",es:"Copiar",pt:"Copiar",de:"Kopieren",it:"Copia",nl:"Kopiëren"},
 tCopied:{en:"Link copied",fr:"Lien copié",es:"Link copiado",pt:"Link copiado",de:"Link kopiert",it:"Link copiato",nl:"Link gekopieerd"},
-cascadeTypeQ:{en:"This type is in use. Delete it ANYWAY along with ALL its items in every box and its history? This cannot be undone.",fr:"Ce type est utilisé. Le supprimer QUAND MÊME avec TOUS ses articles dans chaque boîte et son historique? Irréversible.",es:"Este tipo está en uso. ¿Eliminarlo IGUAL junto con TODOS sus artículos en todas las cajas y su historial? No se puede deshacer.",pt:"Este tipo está em uso. Excluir MESMO ASSIM junto com TODOS os seus itens em todas as caixas e seu histórico? Irreversível.",de:"Dieser Typ wird verwendet. TROTZDEM löschen samt ALLER Artikel in jeder Box und dem Verlauf? Nicht rückgängig machbar.",it:"Questo tipo è in uso. Eliminarlo COMUNQUE insieme a TUTTI i suoi articoli in ogni scatola e alla cronologia? Irreversibile.",nl:"Dit type is in gebruik. TOCH verwijderen samen met ALLE artikelen in elke doos en de geschiedenis? Onomkeerbaar."},
+cascadeTypeQ:{en:"This item is in use. Delete it ANYWAY along with ALL its stock in every box and its history? This cannot be undone.",fr:"Cet article est utilisé. Le supprimer QUAND MÊME avec TOUT son stock dans chaque boîte et son historique? Irréversible.",es:"Este artículo está en uso. ¿Eliminarlo IGUAL junto con TODO su stock en todas las cajas y su historial? No se puede deshacer.",pt:"Este item está em uso. Excluir MESMO ASSIM junto com TODO o seu estoque em todas as caixas e seu histórico? Irreversível.",de:"Dieser Artikel wird verwendet. TROTZDEM löschen samt GESAMTEM Bestand in jeder Box und dem Verlauf? Nicht rückgängig machbar.",it:"Questo articolo è in uso. Eliminarlo COMUNQUE insieme a TUTTE le scorte in ogni scatola e alla cronologia? Irreversibile.",nl:"Dit artikel is in gebruik. TOCH verwijderen samen met ALLE voorraad in elke doos en de geschiedenis? Onomkeerbaar."},
 cascadeColorQ:{en:"This color is in use. Delete it ANYWAY along with ALL its items in every box and its history? This cannot be undone.",fr:"Cette couleur est utilisée. La supprimer QUAND MÊME avec TOUS ses articles et son historique? Irréversible.",es:"Este color está en uso. ¿Eliminarlo IGUAL junto con TODOS sus artículos en todas las cajas y su historial? No se puede deshacer.",pt:"Esta cor está em uso. Excluir MESMO ASSIM junto com TODOS os seus itens e seu histórico? Irreversível.",de:"Diese Farbe wird verwendet. TROTZDEM löschen samt ALLER Artikel und dem Verlauf? Nicht rückgängig machbar.",it:"Questo colore è in uso. Eliminarlo COMUNQUE insieme a TUTTI i suoi articoli e alla cronologia? Irreversibile.",nl:"Deze kleur is in gebruik. TOCH verwijderen samen met ALLE artikelen en de geschiedenis? Onomkeerbaar."},
 noSize:{en:"— No size —",fr:"— Sans taille —",es:"— Sin talla —",pt:"— Sem tamanho —",de:"— Ohne Größe —",it:"— Senza taglia —",nl:"— Geen maat —"},
 tInUse:{en:"Can't delete — it's used by existing items",fr:"Impossible de supprimer — utilisé par des articles existants",es:"No se puede eliminar — está en uso por artículos existentes",pt:"Não é possível excluir — em uso por itens existentes",de:"Löschen nicht möglich — wird von Artikeln verwendet",it:"Impossibile eliminare — usato da articoli esistenti",nl:"Kan niet verwijderen — in gebruik door artikelen"},
@@ -800,8 +849,8 @@ const blob=new Blob([JSON.stringify(mani)],{type:'application/json'});const url=
 
 // DASHBOARD
 function loadDash(){
-const tot=D.items.reduce((s,i)=>s+i.quantity,0);const coTot=D.logs.filter(l=>l.action_type==='checkout').reduce((s,i)=>s+i.quantity,0);const clean=D.boxes.filter(b=>b.status==='clean').length;
-$('statTotal').textContent=tot.toLocaleString();$('statBoxes').textContent=D.boxes.length;$('statClean').textContent=clean+'/'+D.boxes.length;$('statCheckout').textContent=coTot.toLocaleString();
+const tot=D.items.reduce((s,i)=>s+i.quantity,0);const coTot=D.logs.filter(l=>l.action_type==='checkout').reduce((s,i)=>s+i.quantity,0);const clean=D.boxes.filter(b=>b.status==='clean').length,dirty=D.boxes.filter(b=>b.status==='dirty').length,naB=D.boxes.filter(b=>b.status==='na').length,trackable=clean+dirty;
+$('statTotal').textContent=tot.toLocaleString();$('statBoxes').textContent=D.boxes.length;$('statClean').textContent=trackable?clean+'/'+trackable:'—';$('statCheckout').textContent=coTot.toLocaleString();
 Chart.defaults.color=getComputedStyle(document.body).getPropertyValue('--text3').trim()||'#7a8a9a';Chart.defaults.borderColor='rgba(30,42,90,.4)';Chart.defaults.font.family='Outfit';
 const thr=parseInt(D.settings.low_stock_threshold)||5;const agg={};
 D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}`;if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,qty:0};agg[k].qty+=i.quantity});
@@ -830,7 +879,8 @@ const coLogs=D.logs.filter(l=>l.action_type==='checkout');const coB={};coLogs.fo
 const ccCanvas=document.getElementById('chartCheckout');if(ccCanvas)ccCanvas.style.display=Object.keys(coB).length?'block':'none';
 const ccMsg=ccCanvas?.parentElement?.querySelector('.empty-msg');if(ccMsg)ccMsg.remove();
 if(Object.keys(coB).length>0){rChart('chartCheckout','bar',{labels:Object.keys(coB),datasets:[{data:Object.values(coB),backgroundColor:['#f87171','#fb923c','#fbbf24','#34d399','#38b6ff','#a855f7'],borderRadius:5,borderSkipped:false}]},{horiz:true,pl:false})}else{if(charts['chartCheckout']){charts['chartCheckout'].destroy();delete charts['chartCheckout']}ccCanvas?.parentElement?.insertAdjacentHTML('beforeend','<p class="empty-msg" style="color:var(--text3);font-size:13px;text-align:center;padding:30px 0">No checkouts yet</p>')}
-rChart('chartStatus','doughnut',{labels:[t('clean'),t('dirty')],datasets:[{data:[clean,D.boxes.length-clean],backgroundColor:['#34d399','#fb923c'],borderWidth:0}]},{cut:60})}
+const stL=[t('clean'),t('dirty')],stD=[clean,dirty],stC=['#34d399','#fb923c'];if(naB){stL.push(t('statusNA'));stD.push(naB);stC.push('#94a3b8')}
+rChart('chartStatus','doughnut',{labels:stL,datasets:[{data:stD,backgroundColor:stC,borderWidth:0}]},{cut:60})}
 
 function rChart(id,type,data,o={}){const c=document.getElementById(id);if(!c)return;if(charts[id])charts[id].destroy();
 const scl=type==='bar'?(o.horiz?{x:{beginAtZero:true,grid:{color:'rgba(30,42,90,.3)'}},y:{grid:{display:false}}}:o.stacked?{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,grid:{color:'rgba(30,42,90,.3)'}}}:{y:{beginAtZero:true,grid:{color:'rgba(30,42,90,.3)'}},x:{grid:{display:false}}}):undefined;
@@ -846,9 +896,9 @@ if(boxView==='table'){
 el.innerHTML=`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('name')}</th><th>${t('location')}</th><th>${t('status')}</th><th>${t('items')}</th><th>${t('types')}</th>${D.types.map(ty=>`<th>${esc(ty.name)}</th>`).join('')}</tr></thead><tbody>${bx.map(b=>{
 const it=D.items.filter(i=>i.box_id===b.id);const tot=it.reduce((s,i)=>s+i.quantity,0);const tc=[...new Set(it.map(i=>i.item_type_id))].length;
 const perType=D.types.map(ty=>{const q=it.filter(i=>i.item_type_id===ty.id).reduce((s,i)=>s+i.quantity,0);return`<td class="qty">${q||'—'}</td>`}).join('');
-return`<tr style="cursor:pointer" onclick="openDetail('${b.id}')"><td style="font-weight:600">${esc(b.name)}</td><td>${esc(gln(b.location_id))}</td><td><span class="status-badge status-${b.status}">${b.status==='clean'?t('clean'):t('dirty')}</span></td><td class="qty">${tot}</td><td class="qty">${tc}</td>${perType}</tr>`}).join('')}</tbody></table></div>`;return}
+return`<tr style="cursor:pointer" onclick="openDetail('${b.id}')"><td style="font-weight:600">${esc(b.name)}</td><td>${esc(gln(b.location_id))}</td><td><span class="status-badge status-${b.status}">${b.status==='na'?t('statusNA'):b.status==='clean'?t('clean'):t('dirty')}</span></td><td class="qty">${tot}</td><td class="qty">${tc}</td>${perType}</tr>`}).join('')}</tbody></table></div>`;return}
 el.innerHTML='<div class="boxes-grid">'+bx.map(b=>{const it=D.items.filter(i=>i.box_id===b.id);const tot=it.reduce((s,i)=>s+i.quantity,0);const tc=[...new Set(it.map(i=>i.item_type_id))].length;const ct={};it.forEach(i=>{const h=gch(i.color_id);ct[h]=(ct[h]||0)+i.quantity});const bar=tot>0?Object.entries(ct).map(([h,q])=>`<div style="width:${(q/tot*100).toFixed(1)}%;background:${h}"></div>`).join(''):'';const loc=gln(b.location_id);
-return`<div class="box-card" onclick="openDetail('${b.id}')"><div class="box-card-header"><div class="box-card-name">${esc(b.name)}</div><span class="status-badge status-${b.status}">${b.status==='clean'?t('clean'):t('dirty')}</span></div>${loc?`<div class="box-card-loc">📍 ${esc(loc)}</div>`:''}<div class="box-card-stats"><div class="box-card-stat">${t('items')}: <span>${tot}</span></div><div class="box-card-stat">${t('types')}: <span>${tc}</span></div></div>${bar?`<div class="box-card-chart">${bar}</div>`:''}</div>`}).join('')+'</div>'}
+return`<div class="box-card" onclick="openDetail('${b.id}')"><div class="box-card-header"><div class="box-card-name">${esc(b.name)}</div><span class="status-badge status-${b.status}">${b.status==='na'?t('statusNA'):b.status==='clean'?t('clean'):t('dirty')}</span></div>${loc?`<div class="box-card-loc">📍 ${esc(loc)}</div>`:''}<div class="box-card-stats"><div class="box-card-stat">${t('items')}: <span>${tot}</span></div><div class="box-card-stat">${t('types')}: <span>${tc}</span></div></div>${bar?`<div class="box-card-chart">${bar}</div>`:''}</div>`}).join('')+'</div>'}
 function openFilterLocModal(){if(!D.locs.length){toast(t('tNoLocations'),'error');return}pendConf=null;$('confirmText').innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn btn-secondary btn-sm" onclick="boxLocF=null;renderBoxes();closeModal('confirmModal')">${t('all')}</button>${D.locs.map(l=>`<button class="btn btn-secondary btn-sm" onclick="boxLocF='${l.id}';renderBoxes();closeModal('confirmModal')">${esc(l.name)}</button>`).join('')}</div>`;openModal('confirmModal')}
 function popLocDD(v){$('boxLocation').innerHTML='<option value="">— None —</option>'+D.locs.map(l=>`<option value="${l.id}"${l.id===v?' selected':''}>${esc(l.name)}</option>`).join('')}
 function openAddBoxModal(){editBox=null;$('boxModalTitle').textContent=t('addBox');$('boxName').value='';$('boxStatus').value='clean';$('boxNotes').value='';popLocDD('');openModal('boxModal')}
