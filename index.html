@@ -102,6 +102,11 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .trial-banner{background:var(--accent-dim);border:1px solid var(--accent-dim2);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .trial-banner .tb-text{font-size:13px;color:var(--accent);font-weight:600}
 .trial-banner.warn{background:var(--orange-dim);border-color:rgba(251,146,60,.3)}.trial-banner.warn .tb-text{color:var(--orange)}
+.welcome-card{background:linear-gradient(135deg,rgba(56,182,255,.09),rgba(3,48,107,.25));border:1px solid var(--accent-dim2);border-radius:var(--radius);padding:22px 20px;margin-bottom:18px}
+.welcome-card h3{font-size:18px;font-weight:700;margin-bottom:6px}
+.welcome-card p{font-size:13.5px;color:var(--text2);margin-bottom:14px}
+.wc-steps{margin:0 0 16px 18px;padding:0}
+.wc-steps li{font-size:13px;color:var(--text2);padding:3px 0}
 .alert-banner ul{list-style:none;padding:0}.alert-banner li{font-size:13px;color:var(--text2);padding:3px 0}
 .boxes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
 .box-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:all .2s}
@@ -118,6 +123,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .ph-modes{display:flex;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:10px}
 .ph-modes button{flex:1;padding:8px 6px;background:var(--bg3);border:none;color:var(--text2);font-family:'Outfit',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;line-height:1.25}
 .ph-modes button.active{background:var(--accent-dim);color:var(--accent)}
+.pc-sep{font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--text3);padding:10px 0 4px;border-top:1px solid var(--border);margin-top:6px}
 .pc-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border)}
 .pc-row:last-child{border-bottom:none}
 .pc-img{width:42px;height:42px;object-fit:contain;border-radius:7px;background:var(--bg3);border:1px solid var(--border);flex-shrink:0}
@@ -356,6 +362,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <!-- DASHBOARD -->
 <div class="page active" id="page-dashboard">
 <div class="page-header"><h2 class="page-title" data-i18n="dashboard">Dashboard</h2><button class="btn btn-secondary btn-sm" onclick="exportCSV()">📥 <span data-i18n="exportCSV">Export</span></button></div>
+<div id="dashWelcome"></div>
 <div id="lowStockAlerts"></div>
 <div class="stats-row">
 <div class="stat-card"><div class="stat-label" data-i18n="totalItems">Total Items</div><div class="stat-value" id="statTotal">—</div></div>
@@ -379,11 +386,11 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="detail-actions"><button class="btn btn-secondary btn-sm" onclick="printBoxQR()">🖨 QR</button><button class="btn btn-secondary btn-sm" onclick="openEditBoxModal()" data-i18n="edit">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteBox()" data-i18n="del">Delete</button></div></div>
 <div id="detailLocBadge" style="margin-bottom:12px"></div>
 <div class="detail-stats" id="detailStats"></div>
-<div id="detailPerTypeCharts"></div>
-<div class="qr-section"><canvas id="qrCanvas" width="100" height="100"></canvas><div><h4 style="font-size:13px;color:var(--text2)" data-i18n="boxQR">Box QR</h4><p style="font-size:11px;color:var(--text3)" data-i18n="printAttach">Print and attach</p><button class="btn btn-secondary btn-sm" style="margin-top:6px" onclick="printBoxQR()" data-i18n="print">Print</button></div></div>
 <div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="items">Items</h3><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm" onclick="openBulkModal()" data-i18n="bulk">Bulk</button><button class="btn btn-secondary btn-sm" onclick="openAddItemModal()">+ <span data-i18n="add">Add</span></button></div></div>
 <div class="view-toggle" style="max-width:260px"><button class="active" id="ivQuick" onclick="setItemView('quick')" data-i18n="quickView">Quick view</button><button id="ivList" onclick="setItemView('list')" data-i18n="listView">List</button></div>
-<div id="itemsTable"></div></div>
+<div id="itemsTable"></div>
+<div class="qr-section"><canvas id="qrCanvas" width="100" height="100"></canvas><div><h4 style="font-size:13px;color:var(--text2)" data-i18n="boxQR">Box QR</h4><p style="font-size:11px;color:var(--text3)" data-i18n="printAttach">Print and attach</p><button class="btn btn-secondary btn-sm" style="margin-top:6px" onclick="printBoxQR()" data-i18n="print">Print</button></div></div>
+<div id="detailPerTypeCharts"></div></div>
 
 <!-- CHECKOUT -->
 <div class="page" id="page-checkout">
@@ -675,6 +682,14 @@ photoOneAll:{en:"One photo for all colors",fr:"Une photo pour toutes les couleur
 photoPerColor:{en:"One photo per color",fr:"Une photo par couleur",es:"Una foto por color",pt:"Uma foto por cor",de:"Ein Foto pro Farbe",it:"Una foto per colore",nl:"Eén foto per kleur"},
 uploadBtn:{en:"Upload",fr:"Téléverser",es:"Subir",pt:"Enviar",de:"Hochladen",it:"Carica",nl:"Uploaden"},
 changeBtn:{en:"Change",fr:"Changer",es:"Cambiar",pt:"Trocar",de:"Ändern",it:"Cambia",nl:"Wijzigen"},
+lowStockAlert:{en:"items at or below",fr:"articles à ou sous",es:"artículos en o bajo",pt:"itens em ou abaixo de",de:"Artikel bei oder unter",it:"articoli pari o sotto",nl:"artikelen op of onder"},
+welcomeTitle:{en:"Welcome to Qajon 👋",fr:"Bienvenue sur Qajon 👋",es:"Bienvenido a Qajon 👋",pt:"Bem-vindo ao Qajon 👋",de:"Willkommen bei Qajon 👋",it:"Benvenuto su Qajon 👋",nl:"Welkom bij Qajon 👋"},
+welcomeSub:{en:"Your club is set up. Here's how to get your inventory running in a few minutes:",fr:"Votre club est prêt. Voici comment lancer votre inventaire en quelques minutes :",es:"Tu club está listo. Así podés poner tu inventario en marcha en pocos minutos:",pt:"Seu clube está pronto. Veja como colocar seu inventário para funcionar em poucos minutos:",de:"Ihr Verein ist eingerichtet. So bringen Sie Ihr Inventar in wenigen Minuten zum Laufen:",it:"Il tuo club è pronto. Ecco come avviare il tuo inventario in pochi minuti:",nl:"Je club is klaar. Zo krijg je je inventaris in een paar minuten draaiend:"},
+welcomeS1:{en:"Create a box for each physical container you store equipment in.",fr:"Créez une boîte pour chaque contenant physique où vous rangez l'équipement.",es:"Creá una caja por cada contenedor físico donde guardás equipamiento.",pt:"Crie uma caixa para cada recipiente físico onde guarda equipamento.",de:"Erstellen Sie eine Box für jeden physischen Behälter, in dem Sie Ausrüstung lagern.",it:"Crea una scatola per ogni contenitore fisico in cui conservi l'attrezzatura.",nl:"Maak een doos voor elke fysieke container waarin je uitrusting bewaart."},
+welcomeS2:{en:"Open the box and add what's inside — use Bulk to load many sizes at once.",fr:"Ouvrez la boîte et ajoutez son contenu — utilisez En lot pour charger plusieurs tailles d'un coup.",es:"Abrí la caja y agregá lo que hay adentro — usá En lote para cargar muchas tallas de una vez.",pt:"Abra a caixa e adicione o que há dentro — use Em lote para carregar vários tamanhos de uma vez.",de:"Öffnen Sie die Box und fügen Sie den Inhalt hinzu — nutzen Sie Sammeln für viele Größen auf einmal.",it:"Apri la scatola e aggiungi il contenuto — usa In blocco per caricare più taglie insieme.",nl:"Open de doos en voeg de inhoud toe — gebruik Bulk om veel maten tegelijk te laden."},
+welcomeS3:{en:"Print the QR label and stick it on the box. Scanning it opens the box here.",fr:"Imprimez l'étiquette QR et collez-la sur la boîte. La scanner ouvre la boîte ici.",es:"Imprimí la etiqueta QR y pegala en la caja. Escanearla abre la caja acá.",pt:"Imprima a etiqueta QR e cole na caixa. Escaneá-la abre a caixa aqui.",de:"Drucken Sie das QR-Etikett und kleben Sie es auf die Box. Beim Scannen öffnet sich die Box hier.",it:"Stampa l'etichetta QR e attaccala alla scatola. Scansionandola si apre la scatola qui.",nl:"Print het QR-label en plak het op de doos. Scannen opent de doos hier."},
+welcomeCta:{en:"Create my first box",fr:"Créer ma première boîte",es:"Crear mi primera caja",pt:"Criar minha primeira caixa",de:"Erste Box erstellen",it:"Crea la mia prima scatola",nl:"Maak mijn eerste doos"},
+otherColors:{en:"Other colors",fr:"Autres couleurs",es:"Otros colores",pt:"Outras cores",de:"Weitere Farben",it:"Altri colori",nl:"Andere kleuren"},
 noColorsYet:{en:"No colors available yet — add colors first.",fr:"Aucune couleur disponible — ajoutez d'abord des couleurs.",es:"Todavía no hay colores — agregá colores primero.",pt:"Ainda não há cores — adicione cores primeiro.",de:"Noch keine Farben — fügen Sie zuerst Farben hinzu.",it:"Nessun colore disponibile — aggiungi prima i colori.",nl:"Nog geen kleuren — voeg eerst kleuren toe."},
 photoLbl:{en:"Photo (optional)",fr:"Photo (facultatif)",es:"Foto (opcional)",pt:"Foto (opcional)",de:"Foto (optional)",it:"Foto (facoltativa)",nl:"Foto (optioneel)"},
 removePhoto:{en:"Remove",fr:"Retirer",es:"Quitar",pt:"Remover",de:"Entfernen",it:"Rimuovi",nl:"Verwijderen"},
@@ -851,10 +866,18 @@ function loadDash(){
 const tot=D.items.reduce((s,i)=>s+i.quantity,0);const coTot=D.logs.filter(l=>l.action_type==='checkout').reduce((s,i)=>s+i.quantity,0);const clean=D.boxes.filter(b=>b.status==='clean').length,dirty=D.boxes.filter(b=>b.status==='dirty').length,naB=D.boxes.filter(b=>b.status==='na').length,trackable=clean+dirty;
 $('statTotal').textContent=tot.toLocaleString();$('statBoxes').textContent=D.boxes.length;$('statClean').textContent=trackable?clean+'/'+trackable:'—';$('statCheckout').textContent=coTot.toLocaleString();
 Chart.defaults.color=getComputedStyle(document.body).getPropertyValue('--text3').trim()||'#7a8a9a';Chart.defaults.borderColor='rgba(30,42,90,.4)';Chart.defaults.font.family='Outfit';
+// First-run guidance: a brand-new club sees what to do instead of empty charts
+const dw=$('dashWelcome');
+if(dw){dw.innerHTML=!D.boxes.length?`<div class="welcome-card">
+<h3>${t('welcomeTitle')}</h3>
+<p>${t('welcomeSub')}</p>
+<ol class="wc-steps"><li>${t('welcomeS1')}</li><li>${t('welcomeS2')}</li><li>${t('welcomeS3')}</li></ol>
+<button class="btn btn-primary" style="width:auto" onclick="showPage('boxes');openAddBoxModal()">${t('welcomeCta')}</button>
+</div>`:''}
 const thr=parseInt(D.settings.low_stock_threshold)||5;const agg={};
 D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}`;if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,qty:0};agg[k].qty+=i.quantity});
 const low=Object.values(agg).filter(a=>a.qty>0&&a.qty<=thr);
-$('lowStockAlerts').innerHTML=low.length?`<div class="alert-banner"><h4>⚠ ${low.length} items below ${thr}</h4><ul>${low.map(a=>`<li>${gtn(a.tid)} — ${gcn(a.cid)} — ${a.size}: <strong>${a.qty}</strong></li>`).join('')}</ul></div>`:'';
+$('lowStockAlerts').innerHTML=low.length?`<div class="alert-banner"><h4>⚠ ${low.length} ${t('lowStockAlert')} ${thr}</h4><ul>${low.map(a=>`<li>${gtn(a.tid)} — ${gcn(a.cid)}${a.size&&a.size!=='—'?' — '+a.size:''}: <strong>${a.qty}</strong></li>`).join('')}</ul></div>`:'';
 const byT={};D.items.forEach(i=>{const n=gtn(i.item_type_id);byT[n]=(byT[n]||0)+i.quantity});
 rChart('chartType','bar',{labels:Object.keys(byT),datasets:[{data:Object.values(byT),backgroundColor:['#38b6ff','#34d399','#fbbf24','#f87171','#a855f7','#fb923c','#ec4899'],borderRadius:5,borderSkipped:false}]},{pl:false});
 const sizes=['XXS','XS','S','M','L','XL','XXL'],byS={};D.items.forEach(i=>{byS[i.size]=(byS[i.size]||0)+i.quantity});
@@ -1095,9 +1118,9 @@ img.onerror=()=>{toast(t('tImgOnly'),'error');if(inp)inp.value=''};
 img.src=ev.target.result};
 rd.readAsDataURL(f)}
 // Colors relevant to the type being edited (fall back to all when it has no items yet)
-function typeColors(){const used=[...new Set(D.items.filter(i=>i.item_type_id===editType).map(i=>i.color_id))];
-const list=used.length?D.colors.filter(c=>used.includes(c.id)):D.colors;
-return list.slice().sort((a,b)=>a.name.localeCompare(b.name))}
+function typeColors(){const used=new Set(D.items.filter(i=>i.item_type_id===editType&&i.quantity>0).map(i=>i.color_id));
+return D.colors.map(c=>({...c,used:used.has(c.id)}))
+.sort((a,b)=>(b.used?1:0)-(a.used?1:0)||a.name.localeCompare(b.name))}
 function setPhotoMode(m){typeMode=m;
 $('phModeSingle').classList.toggle('active',m==='single');$('phModePer').classList.toggle('active',m==='per_color');
 $('phSingleWrap').style.display=m==='single'?'block':'none';
@@ -1108,8 +1131,11 @@ el.innerHTML=typePhoto?`<div class="tp-prev"><img src="${typePhoto}" alt=""><but
 function renderPerColorPhotos(){const el=$('phPerWrap');if(!el)return;
 const cols=typeColors();
 if(!cols.length){el.innerHTML=`<p style="font-size:12px;color:var(--text3)">${t('noColorsYet')}</p>`;return}
-el.innerHTML=cols.map(c=>{const p=typePhotos[c.id];
-return `<div class="pc-row">${p?`<img class="pc-img" src="${p}" alt="">`:'<div class="pc-ph"></div>'}
+let split=false;
+el.innerHTML=cols.map((c,ix)=>{const p=typePhotos[c.id];
+let head='';
+if(!c.used&&!split){split=true;head=ix>0?`<div class="pc-sep">${t('otherColors')}</div>`:''}
+return head+`<div class="pc-row">${p?`<img class="pc-img" src="${p}" alt="">`:'<div class="pc-ph"></div>'}
 <div class="pc-name"><span class="color-dot" style="background:${c.hex_code}"></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.name)}</span></div>
 <input type="file" accept="image/*" id="tpc_${c.id}" onchange="typeColorPhotoPick('${c.id}',this)" style="display:none">
 <button type="button" class="btn btn-secondary btn-sm" onclick="$('tpc_${c.id}').click()">${p?t('changeBtn'):t('uploadBtn')}</button>
