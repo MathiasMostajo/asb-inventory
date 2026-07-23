@@ -102,6 +102,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .trial-banner{background:var(--accent-dim);border:1px solid var(--accent-dim2);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .trial-banner .tb-text{font-size:13px;color:var(--accent);font-weight:600}
 .trial-banner.warn{background:var(--orange-dim);border-color:rgba(251,146,60,.3)}.trial-banner.warn .tb-text{color:var(--orange)}
+.danger-zone{margin-top:26px;padding-top:20px;border-top:1px solid var(--border)}
+.danger-zone h4{font-size:13px;color:var(--red);margin-bottom:6px;font-weight:700}
+.danger-zone p{font-size:12px;color:var(--text3);margin-bottom:10px;max-width:520px}
+.dash-pick{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;padding:7px 10px;cursor:pointer;outline:none;max-width:220px}
 .welcome-card{background:linear-gradient(135deg,rgba(56,182,255,.09),rgba(3,48,107,.25));border:1px solid var(--accent-dim2);border-radius:var(--radius);padding:22px 20px;margin-bottom:18px}
 .welcome-card h3{font-size:18px;font-weight:700;margin-bottom:6px}
 .welcome-card p{font-size:13.5px;color:var(--text2);margin-bottom:14px}
@@ -372,6 +376,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="stat-card"><div class="stat-label" data-i18n="clean">Clean</div><div class="stat-value" id="statClean">—</div></div>
 <div class="stat-card"><div class="stat-label" data-i18n="checkedOut">Checked Out</div><div class="stat-value" id="statCheckout">—</div></div></div>
 <div class="charts-grid"><div class="chart-card"><h3 data-i18n="stockByType">Stock by Type</h3><canvas id="chartType"></canvas></div><div class="chart-card"><h3 id="chartSizeTitle" data-i18n="totalSizeDistribution">Total Size Distribution</h3><canvas id="chartSize"></canvas></div></div>
+<div id="perTypeWrap" style="display:none;align-items:center;gap:8px;margin-top:18px;flex-wrap:wrap"><span style="font-size:12.5px;color:var(--text3);font-weight:600" data-i18n="detailByItem">Detail by item</span><select class="dash-pick" id="perTypePick" onchange="setDashType(this.value)"></select></div>
 <div id="perTypeCharts"></div>
 <div class="charts-grid" style="margin-top:14px"><div class="chart-card"><h3 data-i18n="checkoutBreakdown">Checkout Breakdown</h3><canvas id="chartCheckout"></canvas></div><div class="chart-card"><h3 data-i18n="boxStatus">Box Status</h3><canvas id="chartStatus"></canvas></div></div></div>
 
@@ -433,7 +438,8 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="settings-section" id="settings-locations"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="locations">Locations</h3><button class="btn btn-secondary btn-sm" onclick="openAddLocModal()">+ <span data-i18n="add">Add</span></button></div><div class="locations-grid" id="locList"></div></div>
 <div class="settings-section" id="settings-users"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="users">Users</h3></div><div id="inviteBox"></div><div id="pendingUsers"></div><div class="users-grid" id="usersList"></div></div>
 <div class="settings-section" id="settings-general"><div style="max-width:400px"><div class="form-group"><label data-i18n="clubName">Club Name</label><input type="text" id="sClubName" placeholder="AS Blainville"></div><div class="form-group"><label data-i18n="clubLogoUrl">Club Logo</label><input type="file" accept="image/*" id="sLogoFile" onchange="logoPick(this)" style="font-size:12px"><div id="sLogoPrev"></div><p style="font-size:11px;color:var(--text3);margin-top:3px"><span data-i18n="logoHint">Shown in topbar & login screen</span></p></div><div class="form-group"><label data-i18n="lowStockThreshold">Low Stock Threshold</label><input type="number" id="sThreshold" min="1" value="5"></div><button class="btn btn-primary" onclick="saveSettings()" style="width:auto;margin-top:8px" data-i18n="save">Save</button>
-<div id="billingSection" style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)"></div></div></div></div>
+<div id="billingSection" style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)"></div>
+<div id="dangerSection"></div></div></div></div>
 
 <div class="page" id="page-print"><div class="print-qr"><h2 id="printBoxName"></h2><canvas id="printQrCanvas" width="250" height="250"></canvas></div></div>
 </div></div>
@@ -486,6 +492,12 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="form-group"><label data-i18n="name">Name</label><input type="text" id="locName" placeholder="Main Shed"></div>
 <div class="form-group"><label data-i18n="description">Description</label><input type="text" id="locDesc"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('locModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveLoc()" id="saveLocBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
+
+<div class="modal-overlay" id="deleteClubModal"><div class="modal"><h2 data-i18n="deleteClubBtn">Delete club</h2>
+<p style="color:var(--text2);font-size:13.5px;margin-bottom:6px" data-i18n="deleteClubWarn">This permanently deletes the club and everything in it: boxes, items, history, snapshots and all member access. This cannot be undone.</p>
+<p style="color:var(--text3);font-size:12.5px;margin-bottom:12px"><span data-i18n="typeToConfirm">To confirm, type the club name:</span> <strong id="delClubTarget" style="color:var(--text)"></strong></p>
+<div class="form-group"><input type="text" id="delClubName" oninput="delClubCheck()" autocomplete="off"></div>
+<div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('deleteClubModal')" data-i18n="cancel">Cancel</button><button class="btn btn-danger" id="delClubBtn" onclick="confirmDeleteClub()" style="width:auto" data-i18n="deleteClubBtn">Delete club</button></div></div></div>
 
 <div class="modal-overlay" id="confirmModal"><div class="modal"><h2 data-i18n="confirm">Confirm</h2><p style="color:var(--text2);font-size:14px" id="confirmText"></p>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('confirmModal')" data-i18n="cancel">Cancel</button><button class="btn btn-danger" onclick="confirmAction()" data-i18n="confirm">Confirm</button></div></div></div>
@@ -647,6 +659,15 @@ none:{en:"— None —",fr:"— Aucun —",es:"— Ninguno —",pt:"— Nenhum �
 pendingLabel:{en:"pending",fr:"en attente",es:"pendiente",pt:"pendente",de:"ausstehend",it:"in attesa",nl:"in afwachting"},
 roleSuper:{en:"super admin",fr:"super administrateur",es:"super administrador",pt:"super administrador",de:"Super-Admin",it:"super amministratore",nl:"superbeheerder"},
 roleAdmin:{en:"admin",fr:"administrateur",es:"administrador",pt:"administrador",de:"Administrator",it:"amministratore",nl:"beheerder"},
+allTypes:{en:"All items",fr:"Tous les articles",es:"Todos los artículos",pt:"Todos os itens",de:"Alle Artikel",it:"Tutti gli articoli",nl:"Alle artikelen"},
+detailByItem:{en:"Detail by item",fr:"Détail par article",es:"Detalle por artículo",pt:"Detalhe por item",de:"Detail nach Artikel",it:"Dettaglio per articolo",nl:"Detail per artikel"},
+dangerZone:{en:"Danger zone",fr:"Zone sensible",es:"Zona de peligro",pt:"Zona de perigo",de:"Gefahrenbereich",it:"Zona pericolosa",nl:"Gevarenzone"},
+deleteClubDesc:{en:"Permanently delete this club and all of its data. Members will lose access immediately.",fr:"Supprimer définitivement ce club et toutes ses données. Les membres perdront l'accès immédiatement.",es:"Eliminar permanentemente este club y todos sus datos. Los miembros perderán el acceso de inmediato.",pt:"Excluir permanentemente este clube e todos os seus dados. Os membros perderão o acesso imediatamente.",de:"Diesen Verein und alle seine Daten dauerhaft löschen. Mitglieder verlieren sofort den Zugang.",it:"Elimina definitivamente questo club e tutti i suoi dati. I membri perderanno subito l'accesso.",nl:"Verwijder deze club en al haar gegevens definitief. Leden verliezen direct toegang."},
+deleteClubBtn:{en:"Delete club",fr:"Supprimer le club",es:"Eliminar club",pt:"Excluir clube",de:"Verein löschen",it:"Elimina club",nl:"Club verwijderen"},
+deleteClubWarn:{en:"This permanently deletes the club and everything in it: boxes, items, history, snapshots and all member access. This cannot be undone.",fr:"Ceci supprime définitivement le club et tout son contenu : boîtes, articles, historique, captures et l'accès de tous les membres. Irréversible.",es:"Esto elimina permanentemente el club y todo lo que contiene: cajas, artículos, historial, capturas y el acceso de todos los miembros. No se puede deshacer.",pt:"Isto exclui permanentemente o clube e tudo nele: caixas, itens, histórico, capturas e o acesso de todos os membros. Irreversível.",de:"Dies löscht den Verein und alles darin dauerhaft: Boxen, Artikel, Verlauf, Aufnahmen und den Zugang aller Mitglieder. Nicht rückgängig machbar.",it:"Questo elimina definitivamente il club e tutto il suo contenuto: scatole, articoli, cronologia, istantanee e l'accesso di tutti i membri. Irreversibile.",nl:"Dit verwijdert de club en alles erin permanent: dozen, artikelen, geschiedenis, momentopnamen en toegang van alle leden. Onomkeerbaar."},
+typeToConfirm:{en:"To confirm, type the club name:",fr:"Pour confirmer, saisissez le nom du club :",es:"Para confirmar, escribí el nombre del club:",pt:"Para confirmar, digite o nome do clube:",de:"Zur Bestätigung geben Sie den Vereinsnamen ein:",it:"Per confermare, digita il nome del club:",nl:"Typ ter bevestiging de clubnaam:"},
+cancelBillingFirst:{en:"Cancel your subscription before deleting the club, so you're not charged again. Open billing now?",fr:"Annulez votre abonnement avant de supprimer le club, pour ne plus être facturé. Ouvrir la facturation?",es:"Cancelá tu suscripción antes de eliminar el club, así no te vuelven a cobrar. ¿Abrir facturación?",pt:"Cancele sua assinatura antes de excluir o clube, para não ser cobrado novamente. Abrir cobrança?",de:"Kündigen Sie Ihr Abonnement, bevor Sie den Verein löschen, damit Ihnen nichts mehr berechnet wird. Abrechnung öffnen?",it:"Annulla l'abbonamento prima di eliminare il club, così non ti addebitano di nuovo. Aprire la fatturazione?",nl:"Zeg je abonnement op voordat je de club verwijdert, zodat je niet opnieuw wordt belast. Facturering openen?"},
+clubDeleted:{en:"Club deleted",fr:"Club supprimé",es:"Club eliminado",pt:"Clube excluído",de:"Verein gelöscht",it:"Club eliminato",nl:"Club verwijderd"},
 signedInAs:{en:"Signed in as",fr:"Connecté en tant que",es:"Sesión iniciada como",pt:"Conectado como",de:"Angemeldet als",it:"Connesso come",nl:"Ingelogd als"},
 createClub:{en:"Create Club",fr:"Créer le club",es:"Crear club",pt:"Criar clube",de:"Verein erstellen",it:"Crea club",nl:"Club maken"},
 noClubTitle:{en:"No club linked to this account",fr:"Aucun club lié à ce compte",es:"Ningún club vinculado a esta cuenta",pt:"Nenhum clube vinculado a esta conta",de:"Kein Verein mit diesem Konto verknüpft",it:"Nessun club collegato a questo account",nl:"Geen club gekoppeld aan dit account"},
@@ -770,7 +791,7 @@ if(!au.session){b.innerHTML=lbl();b.disabled=0;sErr(err,'Check your email to con
 U=au.user}
 else{b.innerHTML='<span class="spinner"></span>';b.disabled=1}
 // 2. Create the club (trigger auto-provisions defaults)
-const{data:club,error:ce}=await SB.from('clubs').insert({name:cn}).select().single();
+const{data:club,error:ce}=await SB.from('clubs').insert({name:cn,lang:LANG}).select().single();
 if(ce){b.innerHTML=lbl();b.disabled=0;sErr(err,'Club creation failed: '+ce.message);return}
 // 3. Create (or repair) the profile as super_admin of this club
 const{error:pe}=await SB.from('profiles').upsert({id:U.id,email:e,club_id:club.id,role:'super_admin'});
@@ -866,8 +887,23 @@ if(localStorage.getItem('asb_theme')==='light')document.body.classList.add('ligh
 
 // NAV
 function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('page-'+p).classList.add('active');document.querySelectorAll('.topbar-nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p||(p==='detail'&&b.dataset.page==='boxes')));if(p==='dashboard')loadDash();if(p==='checkout')renderCO();if(p==='history')renderHistory();if(p==='snapshots')renderSnaps();if(p==='settings'){renderColors();renderTypes();renderLocs();if(isSA())renderUsers()}}
-function showSTab(tab,b){document.querySelectorAll('.settings-section').forEach(s=>s.classList.remove('active'));$('settings-'+tab).classList.add('active');document.querySelectorAll('.settings-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(tab==='general'){clubLogo=D.settings.logo_url||null;renderLogoPrev();$('sThreshold').value=D.settings.low_stock_threshold||'5';$('sClubName').value=D.settings.club_name||'';renderBillingSection()}}
+function showSTab(tab,b){document.querySelectorAll('.settings-section').forEach(s=>s.classList.remove('active'));$('settings-'+tab).classList.add('active');document.querySelectorAll('.settings-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(tab==='general'){clubLogo=D.settings.logo_url||null;renderLogoPrev();$('sThreshold').value=D.settings.low_stock_threshold||'5';$('sClubName').value=D.settings.club_name||'';renderBillingSection();renderDangerSection()}}
 
+function renderDangerSection(){const el=$('dangerSection');if(!el)return;el.innerHTML='';
+if(!isSA()||!CLUB)return;
+el.innerHTML=`<div class="danger-zone"><h4>${t('dangerZone')}</h4><p>${t('deleteClubDesc')}</p>
+<button class="btn btn-danger btn-sm" onclick="openDeleteClub()">${t('deleteClubBtn')}</button></div>`}
+function openDeleteClub(){
+// Never let someone delete while Stripe would keep charging them
+if(CLUB.subscription_status==='active'||CLUB.subscription_status==='past_due'){
+$('confirmText').textContent=t('cancelBillingFirst');pendConf=async()=>{closeModal('confirmModal');openPortal()};openModal('confirmModal');return}
+$('delClubName').value='';$('delClubTarget').textContent=CLUB.name;$('delClubBtn').disabled=true;openModal('deleteClubModal')}
+function delClubCheck(){$('delClubBtn').disabled=$('delClubName').value.trim()!==CLUB.name}
+async function confirmDeleteClub(){const b=$('delClubBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;
+const{error}=await SB.rpc('delete_my_club');
+if(error){b.innerHTML=t('deleteClubBtn');b.disabled=0;toast(error.message,'error');return}
+closeModal('deleteClubModal');toast(t('clubDeleted'));
+setTimeout(()=>handleLogout(),900)}
 function renderBillingSection(){const el=$('billingSection');if(!el)return;el.innerHTML='';if(!isSA()||!CLUB)return;
 if(CLUB.is_free_forever||CLUB.subscription_status==='free_forever')return;
 if(CLUB.subscription_status==='active'||CLUB.subscription_status==='past_due'){
@@ -918,7 +954,15 @@ if(shown.length){$('chartSizeTitle').textContent=t('totalSizeDistribution');
 rChart('chartSize','bar',{labels:shown,datasets:[{data:shown.map(s=>byS[s]),backgroundColor:'#38b6ff66',borderColor:'#38b6ff',borderWidth:2,borderRadius:5,borderSkipped:false}]},{pl:false})}
 else{$('chartSizeTitle').textContent=t('qtyByColor');const bcA={};D.items.forEach(i=>{const n=gcn(i.color_id);bcA[n]=(bcA[n]||0)+i.quantity});
 rChart('chartSize','bar',{labels:Object.keys(bcA),datasets:[{data:Object.values(bcA),backgroundColor:Object.keys(bcA).map(n=>{const cc=D.colors.find(x=>x.name===n);return cc?cc.hex_code:'#6b7280'}),borderRadius:5,borderSkipped:false}]},{pl:false})}
-const typeIds=[...new Set(D.items.map(i=>i.item_type_id))];const ptEl=$('perTypeCharts');
+const allTypeIds=[...new Set(D.items.map(i=>i.item_type_id))]
+  .sort((a,b)=>gtn(a).localeCompare(gtn(b)));
+const ptEl=$('perTypeCharts'),ptSel=$('perTypePick');
+// Keep the dashboard readable: show one item type at a time instead of every chart at once
+if(ptSel){if(dashType!=='all'&&!allTypeIds.includes(dashType))dashType=allTypeIds[0]||'all';
+ptSel.innerHTML=allTypeIds.map(id=>`<option value="${id}"${dashType===id?' selected':''}>${esc(gtn(id))}</option>`).join('')
++`<option value="all"${dashType==='all'?' selected':''}>${t('allTypes')}</option>`;
+$('perTypeWrap').style.display=allTypeIds.length>1?'flex':'none'}
+const typeIds=dashType==='all'?allTypeIds:allTypeIds.filter(id=>id===dashType);
 if(typeIds.length){const ptm=typeIds.map(tid=>{const ti=D.items.filter(x=>x.item_type_id===tid);
 const pres=sizes.filter(s=>ti.some(x=>x.size===s&&x.quantity>0));return{tid,ti,sized:pres.length>0,sizes:pres}});
 ptEl.innerHTML=ptm.map((m,i)=>`<div class="charts-grid" style="margin-top:14px"><div class="chart-card"><h3>${esc(gtn(m.tid))} — ${m.sized?t('sizeByColor'):t('qtyByColor')}</h3><canvas id="ptSC${i}"></canvas></div><div class="chart-card"><h3>${esc(gtn(m.tid))} — ${t('colorBreakdown')}</h3><canvas id="ptCB${i}"></canvas></div></div>`).join('');
@@ -984,6 +1028,8 @@ new QRious({element:$('qrCanvas'),value:boxURL(id),size:100,backgroundAlpha:0,fo
 function printBoxQR(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;$('printBoxName').textContent=b.name;new QRious({element:$('printQrCanvas'),value:boxURL(b.id),size:250,level:'M'});window.print()}
 // ===== QUICK VIEW: cards grouped by type+color, sizes collapsed inside =====
 let itemView='quick',qvOpen=new Set(),qvBusy=false;
+let dashType=localStorage.getItem('qajon_dash_type')||'';
+function setDashType(v){dashType=v;localStorage.setItem('qajon_dash_type',v);loadDash()}
 const QVSO={'—':-1,XXS:0,XS:1,S:2,M:3,L:4,XL:5,XXL:6};
 function setItemView(v){itemView=v;$('ivQuick').classList.toggle('active',v==='quick');$('ivList').classList.toggle('active',v==='list');renderItems()}
 function groupItems(items,includeZero){const g={};
@@ -1231,7 +1277,18 @@ await SB.from('app_settings').upsert(rows,{onConflict:'club_id,key'});
 // Keep clubs.name in sync with the club_name setting
 if(cn)await SB.from('clubs').update({name:cn}).eq('id',CID);
 toast(t('tSaved'));await loadData()}
-function exportCSV(){let csv='Type,Color,Size,Quantity,Box,Location\n';D.items.forEach(i=>{const b=D.boxes.find(x=>x.id===i.box_id);csv+=`"${gtn(i.item_type_id)}","${gcn(i.color_id)}","${i.size}",${i.quantity},"${b?b.name:''}","${b?gln(b.location_id):''}" \n`});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`asb_inventory_${new Date().toISOString().split('T')[0]}.csv`;a.click();toast(t('tExported'))}
+function exportCSV(){
+const q=s=>`"${String(s??'').replace(/"/g,'""')}"`;
+const st=s=>s==='na'?t('statusNA'):s==='clean'?t('clean'):t('dirty');
+let csv=[t('type'),t('color'),t('size'),t('qty'),t('boxes'),t('location'),t('status')].map(q).join(',')+'\n';
+D.items.slice().sort((a,b)=>gtn(a.item_type_id).localeCompare(gtn(b.item_type_id))||gcn(a.color_id).localeCompare(gcn(b.color_id)))
+.forEach(i=>{const b=D.boxes.find(x=>x.id===i.box_id);
+csv+=[q(gtn(i.item_type_id)),q(gcn(i.color_id)),q(i.size==='—'?'':i.size),i.quantity,q(b?b.name:''),q(b?gln(b.location_id):''),q(b?st(b.status):'')].join(',')+'\n'});
+const slug=(D.settings.club_name||CLUB?.name||'qajon').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'qajon';
+const a=document.createElement('a');
+// BOM so Excel opens accented names correctly
+a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));
+a.download=`${slug}-inventory-${new Date().toISOString().split('T')[0]}.csv`;a.click();toast(t('tExported'))}
 
 // HELPERS
 function openModal(id){$(id).classList.add('show')}
