@@ -326,8 +326,9 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 
 <div id="createForm" style="display:none">
 <div class="form-group"><label data-i18n="clubName">Club Name</label><input type="text" id="createClubName" placeholder="e.g. FC Barcelona Youth"></div>
-<div class="form-group"><label data-i18n="yourEmail">Your Email</label><input type="email" id="createEmail" autocomplete="email"></div>
-<div class="form-group"><label data-i18n="password">Password</label><input type="password" id="createPassword" placeholder="Min 6 characters" autocomplete="new-password"></div>
+<div id="createCreds"><div class="form-group"><label data-i18n="yourEmail">Your Email</label><input type="email" id="createEmail" autocomplete="email"></div>
+<div class="form-group"><label data-i18n="password">Password</label><input type="password" id="createPassword" placeholder="Min 6 characters" autocomplete="new-password"></div></div>
+<p id="createAsUser" style="display:none;font-size:12px;color:var(--text3);margin-bottom:12px"></p>
 <button class="btn btn-primary" onclick="handleCreateClub()" id="createBtn" data-i18n="createClubAccount">Create Club & Account</button>
 <p style="font-size:11px;color:var(--text3);margin-top:8px;text-align:center"><span data-i18n="clubAdminNote">You'll be the club's admin. 14-day free trial.</span></p>
 <p class="login-toggle">← <a onclick="showAuthMode('choose')" data-i18n="back">Back</a></p></div>
@@ -336,8 +337,9 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="form-group"><label data-i18n="findClub">Find Your Club</label><input type="text" id="joinSearch" placeholder="Search club name..." oninput="renderClubList()"></div>
 <div id="clubList" style="max-height:200px;overflow-y:auto;margin-bottom:14px"></div>
 <input type="hidden" id="joinClubId">
-<div class="form-group"><label data-i18n="yourEmail">Your Email</label><input type="email" id="joinEmail" autocomplete="email"></div>
-<div class="form-group"><label data-i18n="password">Password</label><input type="password" id="joinPassword" placeholder="Min 6 characters" autocomplete="new-password"></div>
+<div id="joinCreds"><div class="form-group"><label data-i18n="yourEmail">Your Email</label><input type="email" id="joinEmail" autocomplete="email"></div>
+<div class="form-group"><label data-i18n="password">Password</label><input type="password" id="joinPassword" placeholder="Min 6 characters" autocomplete="new-password"></div></div>
+<p id="joinAsUser" style="display:none;font-size:12px;color:var(--text3);margin-bottom:12px"></p>
 <button class="btn btn-primary" onclick="handleJoinClub()" id="joinBtn" data-i18n="requestJoin">Request to Join</button>
 <p class="login-toggle">← <a onclick="showAuthMode('choose')" data-i18n="back">Back</a></p></div>
 
@@ -645,6 +647,8 @@ none:{en:"— None —",fr:"— Aucun —",es:"— Ninguno —",pt:"— Nenhum �
 pendingLabel:{en:"pending",fr:"en attente",es:"pendiente",pt:"pendente",de:"ausstehend",it:"in attesa",nl:"in afwachting"},
 roleSuper:{en:"super admin",fr:"super administrateur",es:"super administrador",pt:"super administrador",de:"Super-Admin",it:"super amministratore",nl:"superbeheerder"},
 roleAdmin:{en:"admin",fr:"administrateur",es:"administrador",pt:"administrador",de:"Administrator",it:"amministratore",nl:"beheerder"},
+signedInAs:{en:"Signed in as",fr:"Connecté en tant que",es:"Sesión iniciada como",pt:"Conectado como",de:"Angemeldet als",it:"Connesso come",nl:"Ingelogd als"},
+createClub:{en:"Create Club",fr:"Créer le club",es:"Crear club",pt:"Criar clube",de:"Verein erstellen",it:"Crea club",nl:"Club maken"},
 noClubTitle:{en:"No club linked to this account",fr:"Aucun club lié à ce compte",es:"Ningún club vinculado a esta cuenta",pt:"Nenhum clube vinculado a esta conta",de:"Kein Verein mit diesem Konto verknüpft",it:"Nessun club collegato a questo account",nl:"Geen club gekoppeld aan dit account"},
 noClubMsg:{en:"Your club may have been removed, or your sign-up wasn't completed. You can start a new club or join an existing one with this same email.",fr:"Votre club a peut-être été supprimé, ou votre inscription n'a pas été complétée. Vous pouvez créer un nouveau club ou en rejoindre un avec ce même courriel.",es:"Puede que tu club haya sido eliminado, o que tu registro no se haya completado. Podés crear un club nuevo o unirte a uno existente con este mismo correo.",pt:"Seu clube pode ter sido removido, ou seu cadastro não foi concluído. Você pode criar um novo clube ou entrar em um existente com este mesmo e-mail.",de:"Ihr Verein wurde möglicherweise entfernt oder Ihre Registrierung wurde nicht abgeschlossen. Sie können einen neuen Verein erstellen oder einem bestehenden mit derselben E-Mail beitreten.",it:"Il tuo club potrebbe essere stato rimosso, o la registrazione non è stata completata. Puoi creare un nuovo club o unirti a uno esistente con la stessa email.",nl:"Je club is mogelijk verwijderd, of je registratie is niet voltooid. Je kunt een nieuwe club starten of lid worden van een bestaande met ditzelfde e-mailadres."},
 noClubAssigned:{en:"Your account has no club assigned. Contact support.",fr:"Votre compte n'a aucun club assigné. Contactez le support.",es:"Tu cuenta no tiene club asignado. Contacta soporte.",pt:"Sua conta não tem clube atribuído. Contate o suporte.",de:"Ihrem Konto ist kein Verein zugewiesen. Kontaktieren Sie den Support.",it:"Il tuo account non ha un club assegnato. Contatta il supporto.",nl:"Je account heeft geen club toegewezen. Neem contact op met support."},
@@ -741,39 +745,54 @@ async function checkSession(){const{data:{session}}=await SB.auth.getSession();i
 function openApp(mode){$('landingView').classList.remove('show');$('loginView').style.display='flex';showAuthMode(mode)}
 function showLanding(){$('landingView').classList.add('show');$('loginView').style.display='none';applyStaticLang()}
 function showAuthMode(mode){['loginForm','chooseForm','createForm','joinForm'].forEach(f=>$(f).style.display='none');$('loginError').style.display='none';applyStaticLang();
+// Signed in already (e.g. club was deleted)? Don't ask for a new account.
+const li=!!U;
+['createCreds','joinCreds'].forEach(id=>{const el=$(id);if(el)el.style.display=li?'none':'block'});
+[['createAsUser','createBtn','createClubAccount','createClub'],['joinAsUser','joinBtn','requestJoin','requestJoin']].forEach(([p,btn,keyNew,keySame])=>{
+const pe=$(p);if(pe){pe.style.display=li?'block':'none';if(li)pe.textContent=t('signedInAs')+' '+U.email}
+const be=$(btn);if(be)be.textContent=t(li?keySame:keyNew)});
 const map={login:'loginForm',choose:'chooseForm',create:'createForm',join:'joinForm'};
 $(map[mode]||'loginForm').style.display='block';
 if(mode==='join')loadClubsForPicker()}
 
 async function handleLogin(){const e=$('loginEmail').value.trim(),p=$('loginPassword').value,err=$('loginError'),b=$('loginBtn');if(!e||!p){sErr(err,'Enter email and password');return}b.innerHTML='<span class="spinner"></span>';b.disabled=1;const{data,error}=await SB.auth.signInWithPassword({email:e,password:p});b.innerHTML='Sign In';b.disabled=0;if(error){sErr(err,error.message);return}U=data.user;await checkRole()}
 
-async function handleCreateClub(){const cn=$('createClubName').value.trim(),e=$('createEmail').value.trim(),p=$('createPassword').value,err=$('loginError'),b=$('createBtn');
-if(!cn){sErr(err,'Enter a club name');return}if(!e||!p){sErr(err,'Enter email and password');return}if(p.length<6){sErr(err,'Min 6 characters');return}
+async function handleCreateClub(){const cn=$('createClubName').value.trim(),err=$('loginError'),b=$('createBtn');
+const already=!!U;const lbl=()=>t(already?'createClub':'createClubAccount');
+if(!cn){sErr(err,t('tEnterName'));return}
+let e=already?U.email:$('createEmail').value.trim();
+if(!already){const p=$('createPassword').value;
+if(!e||!p){sErr(err,'Enter email and password');return}if(p.length<6){sErr(err,'Min 6 characters');return}
 b.innerHTML='<span class="spinner"></span>';b.disabled=1;
-// 1. Create auth user
 const{data:au,error:ae}=await SB.auth.signUp({email:e,password:p});
-if(ae){b.innerHTML='Create Club & Account';b.disabled=0;sErr(err,ae.message);return}
-if(!au.session){b.innerHTML='Create Club & Account';b.disabled=0;sErr(err,'Check your email to confirm, then sign in');return}
-U=au.user;
+if(ae){b.innerHTML=lbl();b.disabled=0;sErr(err,ae.message);return}
+if(!au.session){b.innerHTML=lbl();b.disabled=0;sErr(err,'Check your email to confirm, then sign in');return}
+U=au.user}
+else{b.innerHTML='<span class="spinner"></span>';b.disabled=1}
 // 2. Create the club (trigger auto-provisions defaults)
 const{data:club,error:ce}=await SB.from('clubs').insert({name:cn}).select().single();
-if(ce){b.innerHTML='Create Club & Account';b.disabled=0;sErr(err,'Club creation failed: '+ce.message);return}
-// 3. Create profile as super_admin of this club
-const{error:pe}=await SB.from('profiles').insert({id:U.id,email:e,club_id:club.id,role:'super_admin'});
-b.innerHTML='Create Club & Account';b.disabled=0;
+if(ce){b.innerHTML=lbl();b.disabled=0;sErr(err,'Club creation failed: '+ce.message);return}
+// 3. Create (or repair) the profile as super_admin of this club
+const{error:pe}=await SB.from('profiles').upsert({id:U.id,email:e,club_id:club.id,role:'super_admin'});
+b.innerHTML=lbl();b.disabled=0;
 if(pe){sErr(err,'Profile creation failed: '+pe.message);return}
 await checkRole()}
 
-async function handleJoinClub(){const cid=$('joinClubId').value,e=$('joinEmail').value.trim(),p=$('joinPassword').value,err=$('loginError'),b=$('joinBtn');
-if(!cid){sErr(err,'Select your club from the list');return}if(!e||!p){sErr(err,'Enter email and password');return}if(p.length<6){sErr(err,'Min 6 characters');return}
+async function handleJoinClub(){const cid=$('joinClubId').value,err=$('loginError'),b=$('joinBtn');
+const already=!!U;const lbl=()=>t('requestJoin');
+if(!cid){sErr(err,'Select your club from the list');return}
+let e=already?U.email:$('joinEmail').value.trim();
+if(!already){const p=$('joinPassword').value;
+if(!e||!p){sErr(err,'Enter email and password');return}if(p.length<6){sErr(err,'Min 6 characters');return}
 b.innerHTML='<span class="spinner"></span>';b.disabled=1;
 const{data:au,error:ae}=await SB.auth.signUp({email:e,password:p});
-if(ae){b.innerHTML='Request to Join';b.disabled=0;sErr(err,ae.message);return}
-if(!au.session){b.innerHTML='Request to Join';b.disabled=0;sErr(err,'Check your email to confirm, then sign in');return}
-U=au.user;
-// Create profile as pending member of chosen club
-const{error:pe}=await SB.from('profiles').insert({id:U.id,email:e,club_id:cid,role:'pending'});
-b.innerHTML='Request to Join';b.disabled=0;
+if(ae){b.innerHTML=lbl();b.disabled=0;sErr(err,ae.message);return}
+if(!au.session){b.innerHTML=lbl();b.disabled=0;sErr(err,'Check your email to confirm, then sign in');return}
+U=au.user}
+else{b.innerHTML='<span class="spinner"></span>';b.disabled=1}
+// Create (or repair) profile as pending member of chosen club
+const{error:pe}=await SB.from('profiles').upsert({id:U.id,email:e,club_id:cid,role:'pending'});
+b.innerHTML=lbl();b.disabled=0;
 if(pe){sErr(err,'Request failed: '+pe.message);return}
 await checkRole()}
 
@@ -801,9 +820,8 @@ $('pendingView').style.display='flex';
 $('pendingTitle').textContent=t('noClubTitle');
 $('pendingMsg').textContent=t('noClubMsg');
 $('pendingActions').innerHTML=`<button class="btn btn-primary" style="margin-bottom:8px" onclick="orphanGo('create')">${t('createClubBtn')}</button><button class="btn btn-secondary" style="margin-bottom:12px" onclick="orphanGo('join')">${t('joinClubBtn')}</button>`}
-// Sign out first so the signup forms start from a clean session
-async function orphanGo(mode){await SB.auth.signOut();U=null;UP=null;CID=null;CLUB=null;
-$('pendingView').style.display='none';openApp(mode)}
+// Keep the existing session: the user already has an account, they just need a club
+function orphanGo(mode){$('pendingView').style.display='none';openApp(mode)}
 
 async function handleLogout(){await SB.auth.signOut();U=null;UP=null;CID=null;CLUB=null;
 // Clear previous club's identity so it never flashes for the next account
