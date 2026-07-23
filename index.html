@@ -342,7 +342,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <p class="login-toggle">← <a onclick="showAuthMode('choose')" data-i18n="back">Back</a></p></div>
 
 </div></div>
-<div class="pending-wrap" id="pendingView" style="display:none"><div class="pending-card"><h2 data-i18n="accountPending">Account Pending</h2><p id="pendingMsg" data-i18n="pendingMsg">Your request is waiting for approval from your club's admin.</p><button class="btn btn-secondary" onclick="handleLogout()" data-i18n="signOut">Sign Out</button></div></div>
+<div class="pending-wrap" id="pendingView" style="display:none"><div class="pending-card"><h2 id="pendingTitle" data-i18n="accountPending">Account Pending</h2><p id="pendingMsg" data-i18n="pendingMsg">Your request is waiting for approval from your club's admin.</p><div id="pendingActions"></div><button class="btn btn-secondary" onclick="handleLogout()" data-i18n="signOut">Sign Out</button></div></div>
 
 <div class="app-wrap" id="appView">
 <div class="topbar"><div class="topbar-left">
@@ -645,6 +645,8 @@ none:{en:"— None —",fr:"— Aucun —",es:"— Ninguno —",pt:"— Nenhum �
 pendingLabel:{en:"pending",fr:"en attente",es:"pendiente",pt:"pendente",de:"ausstehend",it:"in attesa",nl:"in afwachting"},
 roleSuper:{en:"super admin",fr:"super administrateur",es:"super administrador",pt:"super administrador",de:"Super-Admin",it:"super amministratore",nl:"superbeheerder"},
 roleAdmin:{en:"admin",fr:"administrateur",es:"administrador",pt:"administrador",de:"Administrator",it:"amministratore",nl:"beheerder"},
+noClubTitle:{en:"No club linked to this account",fr:"Aucun club lié à ce compte",es:"Ningún club vinculado a esta cuenta",pt:"Nenhum clube vinculado a esta conta",de:"Kein Verein mit diesem Konto verknüpft",it:"Nessun club collegato a questo account",nl:"Geen club gekoppeld aan dit account"},
+noClubMsg:{en:"Your club may have been removed, or your sign-up wasn't completed. You can start a new club or join an existing one with this same email.",fr:"Votre club a peut-être été supprimé, ou votre inscription n'a pas été complétée. Vous pouvez créer un nouveau club ou en rejoindre un avec ce même courriel.",es:"Puede que tu club haya sido eliminado, o que tu registro no se haya completado. Podés crear un club nuevo o unirte a uno existente con este mismo correo.",pt:"Seu clube pode ter sido removido, ou seu cadastro não foi concluído. Você pode criar um novo clube ou entrar em um existente com este mesmo e-mail.",de:"Ihr Verein wurde möglicherweise entfernt oder Ihre Registrierung wurde nicht abgeschlossen. Sie können einen neuen Verein erstellen oder einem bestehenden mit derselben E-Mail beitreten.",it:"Il tuo club potrebbe essere stato rimosso, o la registrazione non è stata completata. Puoi creare un nuovo club o unirti a uno esistente con la stessa email.",nl:"Je club is mogelijk verwijderd, of je registratie is niet voltooid. Je kunt een nieuwe club starten of lid worden van een bestaande met ditzelfde e-mailadres."},
 noClubAssigned:{en:"Your account has no club assigned. Contact support.",fr:"Votre compte n'a aucun club assigné. Contactez le support.",es:"Tu cuenta no tiene club asignado. Contacta soporte.",pt:"Sua conta não tem clube atribuído. Contate o suporte.",de:"Ihrem Konto ist kein Verein zugewiesen. Kontaktieren Sie den Support.",it:"Il tuo account non ha un club assegnato. Contatta il supporto.",nl:"Je account heeft geen club toegewezen. Neem contact op met support."},
 addToItQ:{en:"Add",fr:"Ajouter",es:"Agregar",pt:"Adicionar",de:"Hinzufügen",it:"Aggiungi",nl:"Toevoegen"},
 errLoadHist:{en:"Error loading history",fr:"Erreur de chargement",es:"Error al cargar",pt:"Erro ao carregar",de:"Fehler beim Laden",it:"Errore di caricamento",nl:"Fout bij laden"},
@@ -784,12 +786,24 @@ el.innerHTML=list.slice(0,50).map(c=>`<div onclick="pickClub('${c.id}','${esc(c.
 function pickClub(id,name){$('joinClubId').value=id;document.querySelectorAll('#clubList [data-cid]').forEach(d=>{d.dataset.sel='0';d.style.borderColor='var(--border)';d.style.background='transparent'});const sel=document.querySelector(`#clubList [data-cid="${id}"]`);if(sel){sel.dataset.sel='1';sel.style.borderColor='var(--accent)';sel.style.background='var(--accent-dim)'}}
 
 async function checkRole(){const{data}=await SB.from('profiles').select('*').eq('id',U.id).single();UP=data;
-if(!data){$('loginView').style.display='none';$('pendingView').style.display='flex';$('pendingMsg').textContent=t('noClubAssigned');return}
+// No profile, or a profile pointing at a club that no longer exists -> dead end. Offer a way out.
+if(!data||!data.club_id){showOrphan();return}
 CID=data.club_id;
-if(data.role==='pending'){$('loginView').style.display='none';$('pendingView').style.display='flex';return}
-// Load club info
-const{data:club}=await SB.from('clubs').select('*').eq('id',CID).single();CLUB=club;
-showApp()}
+if(data.role==='pending'){$('loginView').style.display='none';$('landingView').classList.remove('show');$('pendingView').style.display='flex';
+$('pendingTitle').textContent=t('accountPending');$('pendingMsg').textContent=t('pendingMsg');$('pendingActions').innerHTML='';return}
+const{data:club}=await SB.from('clubs').select('*').eq('id',CID).single();
+if(!club){showOrphan();return}
+CLUB=club;showApp()}
+
+// Account with no club (club deleted, or signup interrupted): explain and let them recover
+function showOrphan(){$('loginView').style.display='none';$('landingView').classList.remove('show');$('appView').style.display='none';
+$('pendingView').style.display='flex';
+$('pendingTitle').textContent=t('noClubTitle');
+$('pendingMsg').textContent=t('noClubMsg');
+$('pendingActions').innerHTML=`<button class="btn btn-primary" style="margin-bottom:8px" onclick="orphanGo('create')">${t('createClubBtn')}</button><button class="btn btn-secondary" style="margin-bottom:12px" onclick="orphanGo('join')">${t('joinClubBtn')}</button>`}
+// Sign out first so the signup forms start from a clean session
+async function orphanGo(mode){await SB.auth.signOut();U=null;UP=null;CID=null;CLUB=null;
+$('pendingView').style.display='none';openApp(mode)}
 
 async function handleLogout(){await SB.auth.signOut();U=null;UP=null;CID=null;CLUB=null;
 // Clear previous club's identity so it never flashes for the next account
