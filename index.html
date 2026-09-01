@@ -102,6 +102,9 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .trial-banner{background:var(--accent-dim);border:1px solid var(--accent-dim2);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .trial-banner .tb-text{font-size:13px;color:var(--accent);font-weight:600}
 .trial-banner.warn{background:var(--orange-dim);border-color:rgba(251,146,60,.3)}.trial-banner.warn .tb-text{color:var(--orange)}
+.size-row{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;margin-bottom:6px}
+.size-row .sz-name{flex:1;font-size:14px;font-weight:600;font-family:'JetBrains Mono',monospace}
+.size-row .sz-use{font-size:11px;color:var(--text3)}
 .danger-zone{margin-top:26px;padding-top:20px;border-top:1px solid var(--border)}
 .danger-zone h4{font-size:13px;color:var(--red);margin-bottom:6px;font-weight:700}
 .danger-zone p{font-size:12px;color:var(--text3);margin-bottom:10px;max-width:520px}
@@ -430,10 +433,14 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="settings-tabs">
 <button class="active" onclick="showSTab('colors',this)" data-i18n="colors">Colors</button>
 <button onclick="showSTab('types',this)" data-i18n="itemsTab">Items</button>
+<button onclick="showSTab('sizes',this)" data-i18n="sizesTab">Sizes</button>
 <button onclick="showSTab('locations',this)" data-i18n="locations">Locations</button>
 <button onclick="showSTab('users',this)" id="usersTabBtn" data-i18n="users">Users</button>
 <button onclick="showSTab('general',this)" data-i18n="general">General</button></div>
 <div class="settings-section active" id="settings-colors"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="colors">Colors</h3><button class="btn btn-secondary btn-sm" onclick="openAddColorModal()">+ <span data-i18n="add">Add</span></button></div><div class="colors-grid" id="colorsList"></div></div>
+<div class="settings-section" id="settings-sizes"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="sizesTab">Sizes</h3><button class="btn btn-secondary btn-sm" onclick="openAddSizeModal()">+ <span data-i18n="add">Add</span></button></div>
+<p style="font-size:12px;color:var(--text3);margin-bottom:12px" data-i18n="sizesHint">These are the sizes available when adding items. Use the arrows to reorder them.</p>
+<div id="sizesList"></div></div>
 <div class="settings-section" id="settings-types"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="itemTypes">Item Types</h3><button class="btn btn-secondary btn-sm" onclick="openAddTypeModal()">+ <span data-i18n="add">Add</span></button></div><div class="types-grid" id="typesList"></div></div>
 <div class="settings-section" id="settings-locations"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="locations">Locations</h3><button class="btn btn-secondary btn-sm" onclick="openAddLocModal()">+ <span data-i18n="add">Add</span></button></div><div class="locations-grid" id="locList"></div></div>
 <div class="settings-section" id="settings-users"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="users">Users</h3></div><div id="inviteBox"></div><div id="pendingUsers"></div><div class="users-grid" id="usersList"></div></div>
@@ -455,7 +462,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="modal-overlay" id="itemModal"><div class="modal"><h2 id="itemModalTitle">Add Item</h2>
 <div class="form-group"><label data-i18n="type">Type</label><select id="itemType"></select></div>
 <div class="form-group"><label data-i18n="color">Color</label><div class="color-select-wrap"><select id="itemColor" onchange="updCP()"></select><div class="color-preview" id="colorPreview"></div></div></div>
-<div class="form-group"><label data-i18n="size">Size</label><select id="itemSize"><option value="—" data-i18n="noSize">— No size —</option><option>XXS</option><option>XS</option><option>S</option><option selected>M</option><option>L</option><option>XL</option><option>XXL</option></select></div>
+<div class="form-group"><label data-i18n="size">Size</label><select id="itemSize"></select></div>
 <div class="form-group"><label data-i18n="quantity">Quantity</label><input type="number" id="itemQty" min="0" value="1"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('itemModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveItem()" id="saveItemBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
 
@@ -492,6 +499,10 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="form-group"><label data-i18n="name">Name</label><input type="text" id="locName" placeholder="Main Shed"></div>
 <div class="form-group"><label data-i18n="description">Description</label><input type="text" id="locDesc"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('locModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveLoc()" id="saveLocBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
+
+<div class="modal-overlay" id="sizeModal"><div class="modal"><h2 id="sizeModalTitle">Add Size</h2>
+<div class="form-group"><label data-i18n="name">Name</label><input type="text" id="sizeName" placeholder="3XL" maxlength="12" autocomplete="off"></div>
+<div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('sizeModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveSize()" id="saveSizeBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
 
 <div class="modal-overlay" id="deleteClubModal"><div class="modal"><h2 data-i18n="deleteClubBtn">Delete club</h2>
 <p style="color:var(--text2);font-size:13.5px;margin-bottom:6px" data-i18n="deleteClubWarn">This permanently deletes the club and everything in it: boxes, items, history, snapshots and all member access. This cannot be undone.</p>
@@ -716,6 +727,16 @@ welcomeS1:{en:"Create a box for each physical container you store equipment in."
 welcomeS2:{en:"Open the box and add what's inside — use Bulk to load many sizes at once.",fr:"Ouvrez la boîte et ajoutez son contenu — utilisez En lot pour charger plusieurs tailles d'un coup.",es:"Abrí la caja y agregá lo que hay adentro — usá En lote para cargar muchas tallas de una vez.",pt:"Abra a caixa e adicione o que há dentro — use Em lote para carregar vários tamanhos de uma vez.",de:"Öffnen Sie die Box und fügen Sie den Inhalt hinzu — nutzen Sie Sammeln für viele Größen auf einmal.",it:"Apri la scatola e aggiungi il contenuto — usa In blocco per caricare più taglie insieme.",nl:"Open de doos en voeg de inhoud toe — gebruik Bulk om veel maten tegelijk te laden."},
 welcomeS3:{en:"Print the QR label and stick it on the box. Scanning it opens the box here.",fr:"Imprimez l'étiquette QR et collez-la sur la boîte. La scanner ouvre la boîte ici.",es:"Imprimí la etiqueta QR y pegala en la caja. Escanearla abre la caja acá.",pt:"Imprima a etiqueta QR e cole na caixa. Escaneá-la abre a caixa aqui.",de:"Drucken Sie das QR-Etikett und kleben Sie es auf die Box. Beim Scannen öffnet sich die Box hier.",it:"Stampa l'etichetta QR e attaccala alla scatola. Scansionandola si apre la scatola qui.",nl:"Print het QR-label en plak het op de doos. Scannen opent de doos hier."},
 welcomeCta:{en:"Create my first box",fr:"Créer ma première boîte",es:"Crear mi primera caja",pt:"Criar minha primeira caixa",de:"Erste Box erstellen",it:"Crea la mia prima scatola",nl:"Maak mijn eerste doos"},
+sizesTab:{en:"Sizes",fr:"Tailles",es:"Tallas",pt:"Tamanhos",de:"Größen",it:"Taglie",nl:"Maten"},
+sizesHint:{en:"These are the sizes available when adding items. Use the arrows to reorder them.",fr:"Ce sont les tailles disponibles lors de l'ajout d'articles. Utilisez les flèches pour les réordonner.",es:"Estas son las tallas disponibles al agregar artículos. Usá las flechas para reordenarlas.",pt:"Estes são os tamanhos disponíveis ao adicionar itens. Use as setas para reordená-los.",de:"Dies sind die verfügbaren Größen beim Hinzufügen von Artikeln. Mit den Pfeilen umsortieren.",it:"Queste sono le taglie disponibili quando aggiungi articoli. Usa le frecce per riordinarle.",nl:"Dit zijn de beschikbare maten bij het toevoegen van artikelen. Gebruik de pijlen om te herordenen."},
+addSize:{en:"Add Size",fr:"Ajouter une taille",es:"Agregar talla",pt:"Adicionar tamanho",de:"Größe hinzufügen",it:"Aggiungi taglia",nl:"Maat toevoegen"},
+noSizes:{en:"No sizes yet. Add one to get started.",fr:"Aucune taille. Ajoutez-en une pour commencer.",es:"Todavía no hay tallas. Agregá una para empezar.",pt:"Ainda não há tamanhos. Adicione um para começar.",de:"Noch keine Größen. Fügen Sie eine hinzu.",it:"Nessuna taglia. Aggiungine una per iniziare.",nl:"Nog geen maten. Voeg er een toe om te beginnen."},
+noSizeShort:{en:"No size",fr:"Sans taille",es:"Sin talla",pt:"Sem tamanho",de:"Ohne Größe",it:"Senza taglia",nl:"Geen maat"},
+inUseCount:{en:"in use",fr:"utilisés",es:"en uso",pt:"em uso",de:"in Verwendung",it:"in uso",nl:"in gebruik"},
+deleteSizeQ:{en:"Delete this size?",fr:"Supprimer cette taille?",es:"¿Eliminar esta talla?",pt:"Excluir este tamanho?",de:"Diese Größe löschen?",it:"Eliminare questa taglia?",nl:"Deze maat verwijderen?"},
+cascadeSizeQ:{en:"This size is used by {n} items. Deleting it will also delete that stock in every box. This cannot be undone.",fr:"Cette taille est utilisée par {n} articles. La supprimer effacera aussi ce stock dans chaque boîte. Irréversible.",es:"Esta talla está en uso por {n} artículos. Eliminarla también borrará ese stock en todas las cajas. No se puede deshacer.",pt:"Este tamanho é usado por {n} itens. Excluí-lo também apagará esse estoque em todas as caixas. Irreversível.",de:"Diese Größe wird von {n} Artikeln verwendet. Beim Löschen wird auch dieser Bestand in jeder Box entfernt. Nicht rückgängig machbar.",it:"Questa taglia è usata da {n} articoli. Eliminarla cancellerà anche quelle scorte in ogni scatola. Irreversibile.",nl:"Deze maat wordt gebruikt door {n} artikelen. Verwijderen wist ook die voorraad in elke doos. Onomkeerbaar."},
+tSizeExists:{en:"That size already exists",fr:"Cette taille existe déjà",es:"Esa talla ya existe",pt:"Esse tamanho já existe",de:"Diese Größe existiert bereits",it:"Quella taglia esiste già",nl:"Die maat bestaat al"},
+tSizeReserved:{en:"That name is reserved for sizeless items",fr:"Ce nom est réservé aux articles sans taille",es:"Ese nombre está reservado para artículos sin talla",pt:"Esse nome é reservado para itens sem tamanho",de:"Dieser Name ist für Artikel ohne Größe reserviert",it:"Quel nome è riservato agli articoli senza taglia",nl:"Die naam is gereserveerd voor artikelen zonder maat"},
 otherColors:{en:"Other colors",fr:"Autres couleurs",es:"Otros colores",pt:"Outras cores",de:"Weitere Farben",it:"Altri colori",nl:"Andere kleuren"},
 noColorsYet:{en:"No colors available yet — add colors first.",fr:"Aucune couleur disponible — ajoutez d'abord des couleurs.",es:"Todavía no hay colores — agregá colores primero.",pt:"Ainda não há cores — adicione cores primeiro.",de:"Noch keine Farben — fügen Sie zuerst Farben hinzu.",it:"Nessun colore disponibile — aggiungi prima i colori.",nl:"Nog geen kleuren — voeg eerst kleuren toe."},
 photoLbl:{en:"Photo (optional)",fr:"Photo (facultatif)",es:"Foto (opcional)",pt:"Foto (opcional)",de:"Foto (optional)",it:"Foto (facoltativa)",nl:"Foto (optioneel)"},
@@ -747,7 +768,7 @@ function setLang(code){LANG=code;localStorage.setItem('qajon_lang',code);documen
 if(U&&UP&&UP.role!=='pending'){const active=document.querySelector('.page.active');const pid=active?active.id.replace('page-',''):'dashboard';applyLogo();
 if(pid==='dashboard')loadDash();else if(pid==='boxes')renderBoxes();else if(pid==='checkout')renderCO();else if(pid==='history')renderHistory();else if(pid==='snapshots')renderSnaps();else if(pid==='settings'){renderColors();renderTypes();renderLocs();if(isSA())renderUsers()}else if(pid==='detail'&&curBox)openDetail(curBox)}}
 
-let U=null,UP=null,CID=null,CLUB=null,D={boxes:[],items:[],colors:[],types:[],locs:[],profiles:[],logs:[],snaps:[],settings:{}};
+let U=null,UP=null,CID=null,CLUB=null,D={boxes:[],items:[],colors:[],types:[],locs:[],sizes:[],profiles:[],logs:[],snaps:[],settings:{}};
 let allClubs=[]; // for join-club picker
 // Club-scoped insert: automatically stamps club_id on every row
 function ins(table,rows){const arr=Array.isArray(rows)?rows:[rows];const stamped=arr.map(r=>({...r,club_id:CID}));return SB.from(table).insert(stamped)}
@@ -887,7 +908,8 @@ if(localStorage.getItem('asb_theme')==='light')document.body.classList.add('ligh
 
 // NAV
 function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('page-'+p).classList.add('active');document.querySelectorAll('.topbar-nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p||(p==='detail'&&b.dataset.page==='boxes')));if(p==='dashboard')loadDash();if(p==='checkout')renderCO();if(p==='history')renderHistory();if(p==='snapshots')renderSnaps();if(p==='settings'){renderColors();renderTypes();renderLocs();if(isSA())renderUsers()}}
-function showSTab(tab,b){document.querySelectorAll('.settings-section').forEach(s=>s.classList.remove('active'));$('settings-'+tab).classList.add('active');document.querySelectorAll('.settings-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(tab==='general'){clubLogo=D.settings.logo_url||null;renderLogoPrev();$('sThreshold').value=D.settings.low_stock_threshold||'5';$('sClubName').value=D.settings.club_name||'';renderBillingSection();renderDangerSection()}}
+function showSTab(tab,b){document.querySelectorAll('.settings-section').forEach(s=>s.classList.remove('active'));$('settings-'+tab).classList.add('active');document.querySelectorAll('.settings-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(tab==='sizes')renderSizes();
+if(tab==='general'){clubLogo=D.settings.logo_url||null;renderLogoPrev();$('sThreshold').value=D.settings.low_stock_threshold||'5';$('sClubName').value=D.settings.club_name||'';renderBillingSection();renderDangerSection()}}
 
 function renderDangerSection(){const el=$('dangerSection');if(!el)return;el.innerHTML='';
 if(!isSA()||!CLUB)return;
@@ -912,10 +934,13 @@ else{const d=trialDaysLeft();
 el.innerHTML=`<h4 style="font-size:13px;color:var(--text2);margin-bottom:10px">${t('billing')}</h4><p style="font-size:13px;color:var(--text3);margin-bottom:10px">⏳ ${d<=1?t('trialLastDay'):d+' '+t('trialDaysLeft')}</p><button class="btn btn-primary btn-sm" onclick="startCheckout()" id="subBtn">${t('subscribeNow')}</button>`}}
 
 // DATA
-async function loadData(){const[bx,it,co,ty,lo,lg,pr,st,sn]=await Promise.all([SB.from('boxes').select('*').order('created_at',{ascending:false}),SB.from('box_items').select('*'),SB.from('colors').select('*').order('name'),SB.from('item_types').select('*').order('name'),SB.from('storage_locations').select('*').order('name'),SB.from('activity_log').select('*').order('created_at',{ascending:false}),SB.from('profiles').select('*').eq('club_id',CID).order('created_at'),SB.from('app_settings').select('*'),SB.from('inventory_snapshots').select('*').order('created_at',{ascending:false})]);
-D.boxes=bx.data||[];D.items=it.data||[];D.colors=co.data||[];D.types=ty.data||[];D.locs=lo.data||[];D.logs=lg.data||[];D.profiles=pr.data||[];D.snaps=sn.data||[];D.settings={};(st.data||[]).forEach(s=>D.settings[s.key]=s.value);applyLogo();loadDash();renderBoxes();
+async function loadData(){const[bx,it,co,ty,lo,lg,pr,st,sn,sz]=await Promise.all([SB.from('boxes').select('*').order('created_at',{ascending:false}),SB.from('box_items').select('*'),SB.from('colors').select('*').order('name'),SB.from('item_types').select('*').order('name'),SB.from('storage_locations').select('*').order('name'),SB.from('activity_log').select('*').order('created_at',{ascending:false}),SB.from('profiles').select('*').eq('club_id',CID).order('created_at'),SB.from('app_settings').select('*'),SB.from('inventory_snapshots').select('*').order('created_at',{ascending:false}),SB.from('sizes').select('*').order('position')]);
+D.boxes=bx.data||[];D.items=it.data||[];D.colors=co.data||[];D.types=ty.data||[];D.locs=lo.data||[];D.sizes=sz.data||[];D.logs=lg.data||[];D.profiles=pr.data||[];D.snaps=sn.data||[];D.settings={};(st.data||[]).forEach(s=>D.settings[s.key]=s.value);applyLogo();loadDash();renderBoxes();
 // QR deep link: open the scanned box if it belongs to this club
 if(pendingBoxLink){const target=D.boxes.find(b=>b.id===pendingBoxLink);pendingBoxLink=null;if(target)openDetail(target.id)}}
+// The club's size list drives every dropdown, chart and sort in the app
+function sizeNames(){return D.sizes.map(s=>s.name)}
+function sizeRank(s){if(s==='—')return -1;const i=D.sizes.findIndex(x=>x.name===s);return i<0?999:i}
 function gc(id){return D.colors.find(x=>x.id===id)||{name:'Unknown',hex_code:'#6b7280'}}
 function gcn(id){return gc(id).name}
 function gch(id){return gc(id).hex_code}
@@ -948,7 +973,7 @@ const low=Object.values(agg).filter(a=>a.qty>0&&a.qty<=thr);
 $('lowStockAlerts').innerHTML=low.length?`<div class="alert-banner"><h4>⚠ ${low.length} ${t('lowStockAlert')} ${thr}</h4><ul>${low.map(a=>`<li>${gtn(a.tid)} — ${gcn(a.cid)}${a.size&&a.size!=='—'?' — '+a.size:''}: <strong>${a.qty}</strong></li>`).join('')}</ul></div>`:'';
 const byT={};D.items.forEach(i=>{const n=gtn(i.item_type_id);byT[n]=(byT[n]||0)+i.quantity});
 rChart('chartType','bar',{labels:Object.keys(byT),datasets:[{data:Object.values(byT),backgroundColor:['#38b6ff','#34d399','#fbbf24','#f87171','#a855f7','#fb923c','#ec4899'],borderRadius:5,borderSkipped:false}]},{pl:false});
-const sizes=['XXS','XS','S','M','L','XL','XXL'],byS={};D.items.forEach(i=>{byS[i.size]=(byS[i.size]||0)+i.quantity});
+const sizes=sizeNames(),byS={};D.items.forEach(i=>{byS[i.size]=(byS[i.size]||0)+i.quantity});
 const shown=sizes.filter(s=>(byS[s]||0)>0);
 if(shown.length){$('chartSizeTitle').textContent=t('totalSizeDistribution');
 rChart('chartSize','bar',{labels:shown,datasets:[{data:shown.map(s=>byS[s]),backgroundColor:'#38b6ff66',borderColor:'#38b6ff',borderWidth:2,borderRadius:5,borderSkipped:false}]},{pl:false})}
@@ -1010,7 +1035,7 @@ $('detailTitle').textContent=b.name;$('detailStatus').innerHTML=`<span class="st
 $('detailLocBadge').innerHTML=gln(b.location_id)?`<span style="font-size:12px;color:var(--text3)">📍 ${esc(gln(b.location_id))}</span>`:'';
 const items=D.items.filter(i=>i.box_id===id);const tot=items.reduce((s,i)=>s+i.quantity,0);
 $('detailStats').innerHTML=`<div class="detail-stat"><div class="ds-val">${tot}</div><div class="ds-label">${t('total')}</div></div><div class="detail-stat"><div class="ds-val">${[...new Set(items.map(i=>i.item_type_id))].length}</div><div class="ds-label">${t('types')}</div></div><div class="detail-stat"><div class="ds-val">${[...new Set(items.map(i=>i.color_id))].length}</div><div class="ds-label">${t('colors')}</div></div><div class="detail-stat"><div class="ds-val">${items.length}</div><div class="ds-label">${t('lines')}</div></div>`;
-const tids=[...new Set(items.map(i=>i.item_type_id))];const dpc=$('detailPerTypeCharts');const sizes=['XXS','XS','S','M','L','XL','XXL'];
+const tids=[...new Set(items.map(i=>i.item_type_id))];const dpc=$('detailPerTypeCharts');const sizes=sizeNames();
 if(tids.length){
 // Only show the size chart for types that actually have sizes (medals & co. skip it)
 const tmeta=tids.map(tid=>{const ti=items.filter(x=>x.item_type_id===tid);
@@ -1030,13 +1055,13 @@ function printBoxQR(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;$('pri
 let itemView='quick',qvOpen=new Set(),qvBusy=false;
 let dashType=localStorage.getItem('qajon_dash_type')||'';
 function setDashType(v){dashType=v;localStorage.setItem('qajon_dash_type',v);loadDash()}
-const QVSO={'—':-1,XXS:0,XS:1,S:2,M:3,L:4,XL:5,XXL:6};
+
 function setItemView(v){itemView=v;$('ivQuick').classList.toggle('active',v==='quick');$('ivList').classList.toggle('active',v==='list');renderItems()}
 function groupItems(items,includeZero){const g={};
 items.forEach(i=>{if(!includeZero&&i.quantity<=0)return;const k=i.item_type_id+'|'+i.color_id;
 if(!g[k])g[k]={k,tid:i.item_type_id,cid:i.color_id,total:0,sizes:{}};
 g[k].total+=i.quantity;g[k].sizes[i.size]=(g[k].sizes[i.size]||0)+i.quantity});
-return Object.values(g).map(x=>{x.sizeList=Object.entries(x.sizes).sort((a,b)=>(QVSO[a[0]]??50)-(QVSO[b[0]]??50));return x})
+return Object.values(g).map(x=>{x.sizeList=Object.entries(x.sizes).sort((a,b)=>sizeRank(a[0])-sizeRank(b[0]));return x})
 .sort((a,b)=>gtn(a.tid).localeCompare(gtn(b.tid))||gcn(a.cid).localeCompare(gcn(b.cid)))}
 function qvToggle(k,mode){qvOpen.has(k)?qvOpen.delete(k):qvOpen.add(k);mode==='co'?renderCO():renderItems()}
 function qvCard(g,mode){const single=g.sizeList.length===1,open=qvOpen.has(g.k),sz=single?g.sizeList[0][0]:'';
@@ -1089,8 +1114,13 @@ function popTDD(s,v){$(s).innerHTML=D.types.map(ty=>`<option value="${ty.id}"${t
 function popCDD(s,v){$(s).innerHTML=D.colors.map(c=>`<option value="${c.id}"${c.id===v?' selected':''}>● ${esc(c.name)}</option>`).join('')}
 function updCP(){const c=D.colors.find(x=>x.id===$('itemColor').value);$('colorPreview').style.background=c?c.hex_code:'#6b7280'}
 function updBCP(){const c=D.colors.find(x=>x.id===$('bulkColor').value);$('bulkCP').style.background=c?c.hex_code:'#6b7280'}
-function openAddItemModal(){editItem=null;$('itemModalTitle').textContent=t('addItem');popTDD('itemType',lastTID||D.types[0]?.id);popCDD('itemColor',lastCID||D.colors[0]?.id);updCP();$('itemSize').value='M';$('itemQty').value=1;openModal('itemModal')}
-function openEditItem(id){const i=D.items.find(x=>x.id===id);if(!i)return;editItem=id;$('itemModalTitle').textContent=t('edit');popTDD('itemType',i.item_type_id);popCDD('itemColor',i.color_id);updCP();$('itemSize').value=i.size;$('itemQty').value=i.quantity;openModal('itemModal')}
+// Fill the size dropdown from the club's own list
+function popSizeDD(sel,v){const el=$(sel);if(!el)return;
+el.innerHTML=`<option value="—">${t('noSize')}</option>`+D.sizes.map(s=>`<option value="${esc(s.name)}">${esc(s.name)}</option>`).join('');
+const want=v||(D.sizes.find(s=>s.name==='M')?'M':(D.sizes[0]?.name||'—'));
+el.value=[...el.options].some(o=>o.value===want)?want:'—'}
+function openAddItemModal(){editItem=null;$('itemModalTitle').textContent=t('addItem');popTDD('itemType',lastTID||D.types[0]?.id);popCDD('itemColor',lastCID||D.colors[0]?.id);updCP();popSizeDD('itemSize');$('itemQty').value=1;openModal('itemModal')}
+function openEditItem(id){const i=D.items.find(x=>x.id===id);if(!i)return;editItem=id;$('itemModalTitle').textContent=t('edit');popTDD('itemType',i.item_type_id);popCDD('itemColor',i.color_id);updCP();popSizeDD('itemSize',i.size);$('itemQty').value=i.quantity;openModal('itemModal')}
 async function saveItem(){const tid=$('itemType').value,cid=$('itemColor').value,sz=$('itemSize').value,qty=parseInt($('itemQty').value)||0;if(!cid||!tid){toast(t('tSelectTC'),'error');return}
 if(!editItem){const dup=D.items.find(i=>i.box_id===curBox&&i.item_type_id===tid&&i.color_id===cid&&i.size===sz);
 if(dup){pendConf=async()=>{await SB.from('box_items').update({quantity:dup.quantity+qty}).eq('id',dup.id);await ins('activity_log',{action_type:'item_added',item_type_id:tid,color_id:cid,size:sz,quantity:qty,box_id:curBox,created_by:U.id});toast(t('tMerged'));closeModal('confirmModal');closeModal('itemModal');lastTID=tid;lastCID=cid;await loadData();openDetail(curBox)};$('confirmText').textContent=`${gtn(tid)} ${gcn(cid)} ${sz} ${t('existsLbl')} (${dup.quantity}). ${t('addToItQ')} ${qty}?`;openModal('confirmModal');return}}
@@ -1099,8 +1129,9 @@ if(editItem){const{error}=await SB.from('box_items').update({item_type_id:tid,co
 else{const{error}=await ins('box_items',{box_id:curBox,item_type_id:tid,color_id:cid,size:sz,quantity:qty});if(error){toast(error.message,'error');b.innerHTML='Save';b.disabled=0;return}await ins('activity_log',{action_type:'item_added',item_type_id:tid,color_id:cid,size:sz,quantity:qty,box_id:curBox,created_by:U.id});toast(t('tAdded'));lastTID=tid;lastCID=cid}
 b.innerHTML='Save';b.disabled=0;closeModal('itemModal');await loadData();openDetail(curBox)}
 async function delItem(id){const i=D.items.find(x=>x.id===id);pendConf=async()=>{await SB.from('box_items').delete().eq('id',id);if(i)await ins('activity_log',{action_type:'item_removed',item_type_id:i.item_type_id,color_id:i.color_id,size:i.size,quantity:i.quantity,box_id:curBox,created_by:U.id});toast(t('tDeleted'));closeModal('confirmModal');await loadData();openDetail(curBox)};$('confirmText').textContent=t('deleteItemQ');openModal('confirmModal')}
-function openBulkModal(){popTDD('bulkType',lastTID||D.types[0]?.id);popCDD('bulkColor',lastCID||D.colors[0]?.id);updBCP();$('bulkSizes').innerHTML=['—','XXS','XS','S','M','L','XL','XXL'].map(s=>`<div class="bulk-size-item"><label>${s}</label><input type="number" min="0" value="0" id="bulk_${s}"></div>`).join('');openModal('bulkModal')}
-async function saveBulk(){const tid=$('bulkType').value,cid=$('bulkColor').value;const entries=[];['—','XXS','XS','S','M','L','XL','XXL'].forEach(s=>{const q=parseInt($('bulk_'+s).value)||0;if(q>0)entries.push({s,q})});
+function bulkSizeList(){return ['—',...sizeNames()]}
+function openBulkModal(){popTDD('bulkType',lastTID||D.types[0]?.id);popCDD('bulkColor',lastCID||D.colors[0]?.id);updBCP();$('bulkSizes').innerHTML=bulkSizeList().map((s,ix)=>`<div class="bulk-size-item"><label>${s==='—'?t('noSizeShort'):esc(s)}</label><input type="number" min="0" value="0" id="bulk_${ix}"></div>`).join('');openModal('bulkModal')}
+async function saveBulk(){const tid=$('bulkType').value,cid=$('bulkColor').value;const entries=[];bulkSizeList().forEach((s,ix)=>{const q=parseInt($('bulk_'+ix).value)||0;if(q>0)entries.push({s,q})});
 if(!entries.length){toast(t('tEnterQty'),'error');return}const b=$('bulkBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;
 for(const e of entries){const dup=D.items.find(i=>i.box_id===curBox&&i.item_type_id===tid&&i.color_id===cid&&i.size===e.s);
 let r;if(dup)r=await SB.from('box_items').update({quantity:dup.quantity+e.q}).eq('id',dup.id);else r=await ins('box_items',{box_id:curBox,item_type_id:tid,color_id:cid,size:e.s,quantity:e.q});
@@ -1182,6 +1213,49 @@ toast(t('tDeleted'));await loadData();renderColors()};
 $('confirmText').textContent=t('cascadeColorQ');openModal('confirmModal');return}
 if(error){toast(error.message,'error');return}
 toast(t('tDeleted'));await loadData();renderColors()};$('confirmText').textContent=t('deleteColorQ');openModal('confirmModal')}
+let editSize=null;
+function sizeUsage(n){return D.items.filter(i=>i.size===n).reduce((s,i)=>s+i.quantity,0)}
+function renderSizes(){const el=$('sizesList');if(!el)return;
+if(!D.sizes.length){el.innerHTML=`<div class="empty-state"><p>${t('noSizes')}</p></div>`;return}
+el.innerHTML=D.sizes.map((s,ix)=>{const used=sizeUsage(s.name);
+return `<div class="size-row"><span class="sz-name">${esc(s.name)}</span>
+${used?`<span class="sz-use">${used} ${t('inUseCount')}</span>`:''}
+<button class="btn-icon" onclick="moveSize('${s.id}',-1)"${ix===0?' disabled style="opacity:.3"':''}>\u25b2</button>
+<button class="btn-icon" onclick="moveSize('${s.id}',1)"${ix===D.sizes.length-1?' disabled style="opacity:.3"':''}>\u25bc</button>
+<button class="btn-icon" onclick="openEditSize('${s.id}')">\u270e</button>
+<button class="btn-icon" onclick="delSize('${s.id}')">\u2715</button></div>`}).join('')}
+function openAddSizeModal(){editSize=null;$('sizeModalTitle').textContent=t('addSize');$('sizeName').value='';openModal('sizeModal')}
+function openEditSize(id){const s=D.sizes.find(x=>x.id===id);if(!s)return;editSize=id;$('sizeModalTitle').textContent=t('edit');$('sizeName').value=s.name;openModal('sizeModal')}
+async function saveSize(){const n=$('sizeName').value.trim();if(!n){toast(t('tEnterName'),'error');return}
+if(n==='\u2014'){toast(t('tSizeReserved'),'error');return}
+if(D.sizes.some(s=>s.name.toLowerCase()===n.toLowerCase()&&s.id!==editSize)){toast(t('tSizeExists'),'error');return}
+const b=$('saveSizeBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;
+let r;
+if(editSize){const old=D.sizes.find(s=>s.id===editSize);
+r=await SB.from('sizes').update({name:n}).eq('id',editSize);
+// Renaming a size must carry the existing stock with it
+if(!r.error&&old&&old.name!==n)await SB.from('box_items').update({size:n}).eq('size',old.name)}
+else{const pos=D.sizes.length?Math.max(...D.sizes.map(s=>s.position))+1:0;
+r=await ins('sizes',{name:n,position:pos})}
+b.innerHTML='Save';b.disabled=0;
+if(r.error){toast(r.error.message,'error');return}
+toast(t('tSaved'));closeModal('sizeModal');await loadData();renderSizes()}
+async function moveSize(id,dir){const ix=D.sizes.findIndex(s=>s.id===id);const j=ix+dir;
+if(ix<0||j<0||j>=D.sizes.length)return;
+const a=D.sizes[ix],b2=D.sizes[j];
+const r=await Promise.all([SB.from('sizes').update({position:b2.position}).eq('id',a.id),
+SB.from('sizes').update({position:a.position}).eq('id',b2.id)]);
+const err=r.find(x=>x.error);if(err){toast(err.error.message,'error');return}
+await loadData();renderSizes()}
+function delSize(id){const s=D.sizes.find(x=>x.id===id);if(!s)return;
+const used=sizeUsage(s.name);
+pendConf=async()=>{closeModal('confirmModal');
+if(used)await SB.from('box_items').delete().eq('size',s.name);
+const{error}=await SB.from('sizes').delete().eq('id',id);
+if(error){toast(error.message,'error');return}
+toast(t('tDeleted'));await loadData();renderSizes()};
+$('confirmText').textContent=used?t('cascadeSizeQ').replace('{n}',used):t('deleteSizeQ');
+openModal('confirmModal')}
 function renderTypes(){$('typesList').innerHTML=D.types.map(ty=>`<div class="type-card"><div class="type-name" style="display:flex;align-items:center">${(()=>{const p=ty.photo_mode==='per_color'?Object.values(ty.photos||{})[0]:ty.photo;return p?`<img class="tp-thumb" src="${p}" alt="">`:''})()}${esc(ty.name)}</div><div style="display:flex;gap:4px"><button class="btn-icon" onclick="openEditType('${ty.id}')">✎</button><button class="btn-icon" onclick="delType('${ty.id}')">✕</button></div></div>`).join('')}
 let typePhoto=null,typePhotos={},typeMode='single';
 // Shared: shrink + compress an image file to a small data URL
