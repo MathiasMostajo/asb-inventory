@@ -102,6 +102,27 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .trial-banner{background:var(--accent-dim);border:1px solid var(--accent-dim2);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .trial-banner .tb-text{font-size:13px;color:var(--accent);font-weight:600}
 .trial-banner.warn{background:var(--orange-dim);border-color:rgba(251,146,60,.3)}.trial-banner.warn .tb-text{color:var(--orange)}
+.imp-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:12px}
+.imp-c{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px}
+.imp-c .n{font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace}
+.imp-c .l{font-size:11px;color:var(--text3)}
+.imp-new{background:rgba(56,182,255,.08);border:1px solid var(--accent-dim2);border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.6}
+.imp-err{background:rgba(248,113,113,.09);border:1px solid rgba(248,113,113,.35);border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;color:var(--text2);margin-bottom:10px;max-height:130px;overflow-y:auto;line-height:1.6}
+.imp-mode{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.imp-mode label{display:flex;gap:9px;align-items:flex-start;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;cursor:pointer}
+.imp-mode label.on{border-color:var(--accent);background:var(--accent-dim)}
+.imp-mode .t{font-size:13px;font-weight:700}
+.imp-mode .d{font-size:11.5px;color:var(--text3);line-height:1.5}
+.cbx{position:relative}
+.cbx-in{width:100%}
+.cbx-list{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:60;max-height:210px;overflow-y:auto;background:var(--card);border:1px solid var(--accent-dim2);border-radius:var(--radius-sm);box-shadow:0 10px 26px rgba(0,0,0,.45)}
+.cbx.open .cbx-list{display:block}
+.cbx-opt{display:flex;align-items:center;gap:8px;padding:9px 11px;font-size:13.5px;cursor:pointer;color:var(--text2)}
+.cbx-opt:hover{background:var(--bg3);color:var(--text)}
+.cbx-opt.sel{background:var(--accent-dim);color:var(--accent);font-weight:600}
+.cbx-empty{padding:10px 11px;font-size:12.5px;color:var(--text3)}
+.box-hit{margin-top:9px;padding-top:8px;border-top:1px dashed var(--border);font-size:11.5px;color:var(--text2);line-height:1.55}
+.box-hit strong{color:var(--accent)}
 .size-row{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;margin-bottom:6px}
 .size-row .sz-name{flex:1;font-size:14px;font-weight:600;font-family:'JetBrains Mono',monospace}
 .size-row .sz-use{font-size:11px;color:var(--text3)}
@@ -370,7 +391,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div id="trialBanner"></div>
 <!-- DASHBOARD -->
 <div class="page active" id="page-dashboard">
-<div class="page-header"><h2 class="page-title" data-i18n="dashboard">Dashboard</h2><button class="btn btn-secondary btn-sm" onclick="exportCSV()">📥 <span data-i18n="exportCSV">Export</span></button></div>
+<div class="page-header"><h2 class="page-title" data-i18n="dashboard">Dashboard</h2><button class="btn btn-secondary btn-sm" onclick="exportCSV()">📥 <span data-i18n="exportCSV">Export</span></button><button class="btn btn-secondary btn-sm" onclick="openImport()">📤 <span data-i18n="importCSV">Import</span></button><input type="file" accept=".csv,text/csv" id="importFile" style="display:none" onchange="importPick(this)"></div>
 <div id="dashWelcome"></div>
 <div id="lowStockAlerts"></div>
 <div class="stats-row">
@@ -460,15 +481,15 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('boxModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveBox()" id="saveBoxBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
 
 <div class="modal-overlay" id="itemModal"><div class="modal"><h2 id="itemModalTitle">Add Item</h2>
-<div class="form-group"><label data-i18n="type">Type</label><select id="itemType"></select></div>
-<div class="form-group"><label data-i18n="color">Color</label><div class="color-select-wrap"><select id="itemColor" onchange="updCP()"></select><div class="color-preview" id="colorPreview"></div></div></div>
+<div class="form-group"><label data-i18n="type">Type</label><div class="cbx" id="cbx_itemType"><input type="hidden" id="itemType"><input type="text" class="cbx-in" id="in_itemType" autocomplete="off" oninput="cbxType('itemType')" onfocus="cbxOpen('itemType')"><div class="cbx-list" id="ls_itemType"></div></div></div>
+<div class="form-group"><label data-i18n="color">Color</label><div class="color-select-wrap"><div class="cbx" id="cbx_itemColor"><input type="hidden" id="itemColor"><input type="text" class="cbx-in" id="in_itemColor" autocomplete="off" oninput="cbxType('itemColor')" onfocus="cbxOpen('itemColor')"><div class="cbx-list" id="ls_itemColor"></div></div><div class="color-preview" id="colorPreview"></div></div></div>
 <div class="form-group"><label data-i18n="size">Size</label><select id="itemSize"></select></div>
 <div class="form-group"><label data-i18n="quantity">Quantity</label><input type="number" id="itemQty" min="0" value="1"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('itemModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveItem()" id="saveItemBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
 
 <div class="modal-overlay" id="bulkModal"><div class="modal"><h2 data-i18n="bulkAddItems">Bulk Add Items</h2><p style="font-size:13px;color:var(--text3);margin-bottom:14px" data-i18n="bulkDesc">Pick type + color, enter qty per size</p>
-<div class="form-group"><label data-i18n="type">Type</label><select id="bulkType"></select></div>
-<div class="form-group"><label data-i18n="color">Color</label><div class="color-select-wrap"><select id="bulkColor" onchange="updBCP()"></select><div class="color-preview" id="bulkCP"></div></div></div>
+<div class="form-group"><label data-i18n="type">Type</label><div class="cbx" id="cbx_bulkType"><input type="hidden" id="bulkType"><input type="text" class="cbx-in" id="in_bulkType" autocomplete="off" oninput="cbxType('bulkType')" onfocus="cbxOpen('bulkType')"><div class="cbx-list" id="ls_bulkType"></div></div></div>
+<div class="form-group"><label data-i18n="color">Color</label><div class="color-select-wrap"><div class="cbx" id="cbx_bulkColor"><input type="hidden" id="bulkColor"><input type="text" class="cbx-in" id="in_bulkColor" autocomplete="off" oninput="cbxType('bulkColor')" onfocus="cbxOpen('bulkColor')"><div class="cbx-list" id="ls_bulkColor"></div></div><div class="color-preview" id="bulkCP"></div></div></div>
 <div class="bulk-sizes" id="bulkSizes"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('bulkModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveBulk()" id="bulkBtn" style="width:auto" data-i18n="addAll">Add All</button></div></div></div>
 
@@ -499,6 +520,19 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="form-group"><label data-i18n="name">Name</label><input type="text" id="locName" placeholder="Main Shed"></div>
 <div class="form-group"><label data-i18n="description">Description</label><input type="text" id="locDesc"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('locModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveLoc()" id="saveLocBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
+
+<div class="modal-overlay" id="importModal"><div class="modal" style="max-width:640px">
+<h2 data-i18n="importTitle">Import inventory</h2>
+<div id="impStep1">
+<p style="font-size:13px;color:var(--text2);margin-bottom:10px" data-i18n="importIntro">Upload a CSV with your inventory. The easiest way is to export first and use that file as your template.</p>
+<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;font-size:12px;color:var(--text3);margin-bottom:14px">
+<div style="font-weight:700;color:var(--text2);margin-bottom:4px" data-i18n="importCols">Expected columns</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:11.5px" id="impColsHint"></div>
+<div style="margin-top:6px" data-i18n="importColsNote">Location and Status are optional. Anything that doesn't exist yet will be created.</div></div>
+<div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('importModal')" data-i18n="cancel">Cancel</button><button class="btn btn-secondary" onclick="exportCSV()" data-i18n="exportFirst">Export a backup first</button><button class="btn btn-primary" onclick="$('importFile').click()" style="width:auto" data-i18n="chooseFile">Choose file</button></div>
+</div>
+<div id="impStep2" style="display:none"></div>
+</div></div>
 
 <div class="modal-overlay" id="sizeModal"><div class="modal"><h2 id="sizeModalTitle">Add Size</h2>
 <div class="form-group"><label data-i18n="name">Name</label><input type="text" id="sizeName" placeholder="3XL" maxlength="12" autocomplete="off"></div>
@@ -566,7 +600,7 @@ addBox:{en:"Add Box",fr:"Ajouter une boîte",es:"Agregar caja",pt:"Adicionar cai
 cards:{en:"Cards",fr:"Cartes",es:"Tarjetas",pt:"Cartões",de:"Karten",it:"Schede",nl:"Kaarten"},
 summary:{en:"Summary",fr:"Résumé",es:"Resumen",pt:"Resumo",de:"Übersicht",it:"Riepilogo",nl:"Samenvatting"},
 filter:{en:"Filter",fr:"Filtrer",es:"Filtrar",pt:"Filtrar",de:"Filtern",it:"Filtra",nl:"Filteren"},
-searchBoxes:{en:"Search boxes by name or location...",fr:"Rechercher des boîtes par nom ou emplacement...",es:"Buscar cajas por nombre o ubicación...",pt:"Buscar caixas por nome ou local...",de:"Boxen nach Name oder Ort suchen...",it:"Cerca scatole per nome o posizione...",nl:"Zoek dozen op naam of locatie..."},
+searchBoxes:{en:"Search boxes or items...",fr:"Rechercher une boîte ou un article...",es:"Buscar cajas o artículos...",pt:"Buscar caixas ou itens...",de:"Boxen oder Artikel suchen...",it:"Cerca scatole o articoli...",nl:"Zoek dozen of artikelen..."},
 noBoxes:{en:"No boxes",fr:"Aucune boîte",es:"Sin cajas",pt:"Sem caixas",de:"Keine Boxen",it:"Nessuna scatola",nl:"Geen dozen"},
 clear:{en:"Clear",fr:"Effacer",es:"Limpiar",pt:"Limpar",de:"Löschen",it:"Cancella",nl:"Wissen"},
 items:{en:"Items",fr:"Articles",es:"Artículos",pt:"Itens",de:"Artikel",it:"Articoli",nl:"Artikelen"},
@@ -727,6 +761,38 @@ welcomeS1:{en:"Create a box for each physical container you store equipment in."
 welcomeS2:{en:"Open the box and add what's inside — use Bulk to load many sizes at once.",fr:"Ouvrez la boîte et ajoutez son contenu — utilisez En lot pour charger plusieurs tailles d'un coup.",es:"Abrí la caja y agregá lo que hay adentro — usá En lote para cargar muchas tallas de una vez.",pt:"Abra a caixa e adicione o que há dentro — use Em lote para carregar vários tamanhos de uma vez.",de:"Öffnen Sie die Box und fügen Sie den Inhalt hinzu — nutzen Sie Sammeln für viele Größen auf einmal.",it:"Apri la scatola e aggiungi il contenuto — usa In blocco per caricare più taglie insieme.",nl:"Open de doos en voeg de inhoud toe — gebruik Bulk om veel maten tegelijk te laden."},
 welcomeS3:{en:"Print the QR label and stick it on the box. Scanning it opens the box here.",fr:"Imprimez l'étiquette QR et collez-la sur la boîte. La scanner ouvre la boîte ici.",es:"Imprimí la etiqueta QR y pegala en la caja. Escanearla abre la caja acá.",pt:"Imprima a etiqueta QR e cole na caixa. Escaneá-la abre a caixa aqui.",de:"Drucken Sie das QR-Etikett und kleben Sie es auf die Box. Beim Scannen öffnet sich die Box hier.",it:"Stampa l'etichetta QR e attaccala alla scatola. Scansionandola si apre la scatola qui.",nl:"Print het QR-label en plak het op de doos. Scannen opent de doos hier."},
 welcomeCta:{en:"Create my first box",fr:"Créer ma première boîte",es:"Crear mi primera caja",pt:"Criar minha primeira caixa",de:"Erste Box erstellen",it:"Crea la mia prima scatola",nl:"Maak mijn eerste doos"},
+importCSV:{en:"Import",fr:"Importer",es:"Importar",pt:"Importar",de:"Importieren",it:"Importa",nl:"Importeren"},
+importTitle:{en:"Import inventory",fr:"Importer l'inventaire",es:"Importar inventario",pt:"Importar inventário",de:"Inventar importieren",it:"Importa inventario",nl:"Inventaris importeren"},
+importIntro:{en:"Upload a CSV with your inventory. The easiest way is to export first and use that file as your template.",fr:"Téléversez un CSV avec votre inventaire. Le plus simple est d'exporter d'abord et d'utiliser ce fichier comme modèle.",es:"Subí un CSV con tu inventario. Lo más fácil es exportar primero y usar ese archivo como plantilla.",pt:"Envie um CSV com seu inventário. O mais fácil é exportar primeiro e usar esse arquivo como modelo.",de:"Laden Sie eine CSV mit Ihrem Inventar hoch. Am einfachsten: zuerst exportieren und diese Datei als Vorlage nutzen.",it:"Carica un CSV con il tuo inventario. Il modo più semplice è esportare prima e usare quel file come modello.",nl:"Upload een CSV met je inventaris. Het makkelijkst is eerst exporteren en dat bestand als sjabloon gebruiken."},
+importCols:{en:"Expected columns",fr:"Colonnes attendues",es:"Columnas esperadas",pt:"Colunas esperadas",de:"Erwartete Spalten",it:"Colonne attese",nl:"Verwachte kolommen"},
+importColsNote:{en:"Location and Status are optional. Anything that doesn't exist yet will be created.",fr:"Emplacement et Statut sont facultatifs. Tout ce qui n'existe pas encore sera créé.",es:"Ubicación y Estado son opcionales. Todo lo que todavía no exista se va a crear.",pt:"Localização e Status são opcionais. Tudo que ainda não existir será criado.",de:"Ort und Status sind optional. Alles, was noch nicht existiert, wird angelegt.",it:"Posizione e Stato sono facoltativi. Tutto ciò che non esiste verrà creato.",nl:"Locatie en Status zijn optioneel. Alles wat nog niet bestaat wordt aangemaakt."},
+exportFirst:{en:"Export a backup first",fr:"Exporter une sauvegarde d'abord",es:"Exportar un respaldo primero",pt:"Exportar um backup primeiro",de:"Zuerst Sicherung exportieren",it:"Esporta prima un backup",nl:"Eerst back-up exporteren"},
+chooseFile:{en:"Choose file",fr:"Choisir un fichier",es:"Elegir archivo",pt:"Escolher arquivo",de:"Datei wählen",it:"Scegli file",nl:"Bestand kiezen"},
+impRowsOk:{en:"rows read",fr:"lignes lues",es:"filas leídas",pt:"linhas lidas",de:"Zeilen gelesen",it:"righe lette",nl:"regels gelezen"},
+impNewItems:{en:"new entries",fr:"nouvelles entrées",es:"entradas nuevas",pt:"novas entradas",de:"neue Einträge",it:"nuove voci",nl:"nieuwe items"},
+impExisting:{en:"already exist",fr:"existent déjà",es:"ya existen",pt:"já existem",de:"existieren bereits",it:"già esistenti",nl:"bestaan al"},
+impErrors:{en:"skipped",fr:"ignorées",es:"omitidas",pt:"ignoradas",de:"übersprungen",it:"saltate",nl:"overgeslagen"},
+impWillCreate:{en:"Will be created:",fr:"Seront créés :",es:"Se van a crear:",pt:"Serão criados:",de:"Wird angelegt:",it:"Verranno creati:",nl:"Wordt aangemaakt:"},
+impSkipped:{en:"Rows skipped:",fr:"Lignes ignorées :",es:"Filas omitidas:",pt:"Linhas ignoradas:",de:"Übersprungene Zeilen:",it:"Righe saltate:",nl:"Overgeslagen regels:"},
+rowLbl:{en:"Row",fr:"Ligne",es:"Fila",pt:"Linha",de:"Zeile",it:"Riga",nl:"Regel"},
+impMissing:{en:"missing item, color or box",fr:"article, couleur ou boîte manquant",es:"falta artículo, color o caja",pt:"falta item, cor ou caixa",de:"Artikel, Farbe oder Box fehlt",it:"manca articolo, colore o scatola",nl:"artikel, kleur of doos ontbreekt"},
+impBadQty:{en:"invalid quantity",fr:"quantité invalide",es:"cantidad inválida",pt:"quantidade inválida",de:"ungültige Menge",it:"quantità non valida",nl:"ongeldig aantal"},
+impAddT:{en:"Add to current stock",fr:"Ajouter au stock actuel",es:"Sumar al stock actual",pt:"Somar ao estoque atual",de:"Zum Bestand addieren",it:"Aggiungi alle scorte",nl:"Bij voorraad optellen"},
+impAddD:{en:"8 in the app + 12 in the file = 20. Use this for new stock arriving.",fr:"8 dans l'app + 12 dans le fichier = 20. Pour du nouveau stock.",es:"8 en la app + 12 en el archivo = 20. Para mercadería que llega.",pt:"8 no app + 12 no arquivo = 20. Para estoque que chega.",de:"8 in der App + 12 in der Datei = 20. Für neuen Bestand.",it:"8 nell'app + 12 nel file = 20. Per nuove scorte.",nl:"8 in de app + 12 in het bestand = 20. Voor nieuwe voorraad."},
+impSetT:{en:"Replace quantities",fr:"Remplacer les quantités",es:"Reemplazar cantidades",pt:"Substituir quantidades",de:"Mengen ersetzen",it:"Sostituisci quantità",nl:"Aantallen vervangen"},
+impSetD:{en:"Stock becomes exactly what the file says. Use this after a physical count.",fr:"Le stock devient exactement ce que dit le fichier. Après un inventaire physique.",es:"El stock queda exactamente como dice el archivo. Para un recuento físico.",pt:"O estoque fica exatamente como o arquivo diz. Após contagem física.",de:"Der Bestand wird exakt wie in der Datei. Nach einer Zählung.",it:"Le scorte diventano esattamente quelle del file. Dopo un conteggio fisico.",nl:"Voorraad wordt exact wat het bestand zegt. Na een fysieke telling."},
+impUntouched:{en:"{n} existing entries are not in the file — they will be left unchanged.",fr:"{n} entrées existantes ne sont pas dans le fichier — elles resteront inchangées.",es:"{n} entradas existentes no están en el archivo — quedarán sin cambios.",pt:"{n} entradas existentes não estão no arquivo — ficarão inalteradas.",de:"{n} vorhandene Einträge fehlen in der Datei — sie bleiben unverändert.",it:"{n} voci esistenti non sono nel file — resteranno invariate.",nl:"{n} bestaande items staan niet in het bestand — die blijven ongewijzigd."},
+impSnapNote:{en:"A snapshot of your current inventory is saved automatically before importing.",fr:"Une capture de votre inventaire actuel est enregistrée automatiquement avant l'import.",es:"Se guarda automáticamente una captura de tu inventario actual antes de importar.",pt:"Uma captura do seu inventário atual é salva automaticamente antes de importar.",de:"Vor dem Import wird automatisch eine Aufnahme Ihres Inventars gespeichert.",it:"Prima dell'importazione viene salvata automaticamente un'istantanea dell'inventario.",nl:"Voor het importeren wordt automatisch een momentopname van je inventaris opgeslagen."},
+impSnapName:{en:"Before import",fr:"Avant import",es:"Antes de importar",pt:"Antes de importar",de:"Vor Import",it:"Prima import",nl:"Voor import"},
+impConfirm:{en:"Import",fr:"Importer",es:"Importar",pt:"Importar",de:"Importieren",it:"Importa",nl:"Importeren"},
+tImportRead:{en:"Couldn't read that file",fr:"Impossible de lire ce fichier",es:"No se pudo leer ese archivo",pt:"Não foi possível ler esse arquivo",de:"Datei konnte nicht gelesen werden",it:"Impossibile leggere il file",nl:"Kan dat bestand niet lezen"},
+tImportEmpty:{en:"That file has no data rows",fr:"Ce fichier n'a aucune ligne de données",es:"Ese archivo no tiene filas de datos",pt:"Esse arquivo não tem linhas de dados",de:"Diese Datei enthält keine Datenzeilen",it:"Quel file non ha righe di dati",nl:"Dat bestand heeft geen datarijen"},
+tImportCols:{en:"Missing required columns:",fr:"Colonnes requises manquantes :",es:"Faltan columnas obligatorias:",pt:"Faltam colunas obrigatórias:",de:"Fehlende Pflichtspalten:",it:"Colonne obbligatorie mancanti:",nl:"Ontbrekende verplichte kolommen:"},
+tImportNoValid:{en:"No valid rows found in that file",fr:"Aucune ligne valide dans ce fichier",es:"No se encontraron filas válidas en ese archivo",pt:"Nenhuma linha válida nesse arquivo",de:"Keine gültigen Zeilen in dieser Datei",it:"Nessuna riga valida in quel file",nl:"Geen geldige regels in dat bestand"},
+tImported:{en:"Imported {n} rows",fr:"{n} lignes importées",es:"Se importaron {n} filas",pt:"{n} linhas importadas",de:"{n} Zeilen importiert",it:"{n} righe importate",nl:"{n} regels geïmporteerd"},
+noMatches:{en:"No matches",fr:"Aucun résultat",es:"Sin resultados",pt:"Sem resultados",de:"Keine Treffer",it:"Nessun risultato",nl:"Geen resultaten"},
+noSearchHit:{en:"Nothing matched your search.",fr:"Aucun résultat pour votre recherche.",es:"No se encontró nada con esa búsqueda.",pt:"Nada corresponde à sua busca.",de:"Keine Treffer für Ihre Suche.",it:"Nessun risultato per la tua ricerca.",nl:"Niets gevonden voor je zoekopdracht."},
+more:{en:"more",fr:"de plus",es:"más",pt:"mais",de:"weitere",it:"altri",nl:"meer"},
 sizesTab:{en:"Sizes",fr:"Tailles",es:"Tallas",pt:"Tamanhos",de:"Größen",it:"Taglie",nl:"Maten"},
 sizesHint:{en:"These are the sizes available when adding items. Use the arrows to reorder them.",fr:"Ce sont les tailles disponibles lors de l'ajout d'articles. Utilisez les flèches pour les réordonner.",es:"Estas son las tallas disponibles al agregar artículos. Usá las flechas para reordenarlas.",pt:"Estes são os tamanhos disponíveis ao adicionar itens. Use as setas para reordená-los.",de:"Dies sind die verfügbaren Größen beim Hinzufügen von Artikeln. Mit den Pfeilen umsortieren.",it:"Queste sono le taglie disponibili quando aggiungi articoli. Usa le frecce per riordinarle.",nl:"Dit zijn de beschikbare maten bij het toevoegen van artikelen. Gebruik de pijlen om te herordenen."},
 addSize:{en:"Add Size",fr:"Ajouter une taille",es:"Agregar talla",pt:"Adicionar tamanho",de:"Größe hinzufügen",it:"Aggiungi taglia",nl:"Maat toevoegen"},
@@ -1012,16 +1078,26 @@ charts[id]=new Chart(c,{type,data,options:{responsive:true,maintainAspectRatio:t
 // BOXES
 function setBoxView(v){boxView=v;$('viewCards').className=v==='cards'?'active':'';$('viewTable').className=v==='table'?'active':'';renderBoxes()}
 function renderBoxes(){let bx=D.boxes;if(boxLocF)bx=bx.filter(b=>b.location_id===boxLocF);
-const sq=($('boxSearch')?.value||'').toLowerCase().trim();if(sq)bx=bx.filter(b=>(b.name||'').toLowerCase().includes(sq)||(gln(b.location_id)||'').toLowerCase().includes(sq));
+const sq=($('boxSearch')?.value||'').toLowerCase().trim();
+// Searching also looks inside the boxes, so "where are the blue M jerseys?" has an answer
+const hits={};
+if(sq){D.items.forEach(i=>{if(i.quantity<=0)return;
+if(`${gtn(i.item_type_id)} ${gcn(i.color_id)} ${i.size==='—'?'':i.size}`.toLowerCase().includes(sq)){(hits[i.box_id]=hits[i.box_id]||[]).push(i)}});
+bx=bx.filter(b=>(b.name||'').toLowerCase().includes(sq)||(gln(b.location_id)||'').toLowerCase().includes(sq)||hits[b.id]);
+// Boxes that actually contain the searched item come first
+bx=bx.slice().sort((a,b)=>(hits[b.id]?1:0)-(hits[a.id]?1:0))}
+const hitLine=b=>{const h=hits[b.id];if(!h)return '';
+const tot=h.reduce((s,i)=>s+i.quantity,0);
+return `<div class="box-hit">${h.slice(0,3).map(i=>`<div>${esc(gtn(i.item_type_id))} · ${esc(gcn(i.color_id))}${i.size&&i.size!=='—'?' · '+esc(i.size):''} — <strong>${i.quantity}</strong></div>`).join('')}${h.length>3?`<div>+${h.length-3} ${t('more')} · ${t('total')}: ${tot}</div>`:''}</div>`};
 const el=$('boxesList');
-if(!bx.length){el.innerHTML=`<div class="empty-state"><p>📦</p><p>${t('noBoxes')}</p>${boxLocF?`<button class="btn btn-secondary btn-sm" onclick="boxLocF=null;renderBoxes()">${t('clear')}</button>`:`<button class="btn btn-primary btn-sm" onclick="openAddBoxModal()">${t('addBox')}</button>`}</div>`;return}
+if(!bx.length){el.innerHTML=`<div class="empty-state"><p>📦</p><p>${sq?t('noSearchHit'):t('noBoxes')}</p>${boxLocF?`<button class="btn btn-secondary btn-sm" onclick="boxLocF=null;renderBoxes()">${t('clear')}</button>`:`<button class="btn btn-primary btn-sm" onclick="openAddBoxModal()">${t('addBox')}</button>`}</div>`;return}
 if(boxView==='table'){
 el.innerHTML=`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('name')}</th><th>${t('location')}</th><th>${t('status')}</th><th>${t('items')}</th><th>${t('types')}</th>${D.types.map(ty=>`<th>${esc(ty.name)}</th>`).join('')}</tr></thead><tbody>${bx.map(b=>{
 const it=D.items.filter(i=>i.box_id===b.id);const tot=it.reduce((s,i)=>s+i.quantity,0);const tc=[...new Set(it.map(i=>i.item_type_id))].length;
 const perType=D.types.map(ty=>{const q=it.filter(i=>i.item_type_id===ty.id).reduce((s,i)=>s+i.quantity,0);return`<td class="qty">${q||'—'}</td>`}).join('');
 return`<tr style="cursor:pointer" onclick="openDetail('${b.id}')"><td style="font-weight:600">${esc(b.name)}</td><td>${esc(gln(b.location_id))}</td><td><span class="status-badge status-${b.status}">${b.status==='na'?t('statusNA'):b.status==='clean'?t('clean'):t('dirty')}</span></td><td class="qty">${tot}</td><td class="qty">${tc}</td>${perType}</tr>`}).join('')}</tbody></table></div>`;return}
 el.innerHTML='<div class="boxes-grid">'+bx.map(b=>{const it=D.items.filter(i=>i.box_id===b.id);const tot=it.reduce((s,i)=>s+i.quantity,0);const tc=[...new Set(it.map(i=>i.item_type_id))].length;const ct={};it.forEach(i=>{const h=gch(i.color_id);ct[h]=(ct[h]||0)+i.quantity});const bar=tot>0?Object.entries(ct).map(([h,q])=>`<div style="width:${(q/tot*100).toFixed(1)}%;background:${h}"></div>`).join(''):'';const loc=gln(b.location_id);
-return`<div class="box-card" onclick="openDetail('${b.id}')"><div class="box-card-header"><div class="box-card-name">${esc(b.name)}</div><span class="status-badge status-${b.status}">${b.status==='na'?t('statusNA'):b.status==='clean'?t('clean'):t('dirty')}</span></div>${loc?`<div class="box-card-loc">📍 ${esc(loc)}</div>`:''}<div class="box-card-stats"><div class="box-card-stat">${t('items')}: <span>${tot}</span></div><div class="box-card-stat">${t('types')}: <span>${tc}</span></div></div>${bar?`<div class="box-card-chart">${bar}</div>`:''}</div>`}).join('')+'</div>'}
+return`<div class="box-card" onclick="openDetail('${b.id}')"><div class="box-card-header"><div class="box-card-name">${esc(b.name)}</div><span class="status-badge status-${b.status}">${b.status==='na'?t('statusNA'):b.status==='clean'?t('clean'):t('dirty')}</span></div>${loc?`<div class="box-card-loc">📍 ${esc(loc)}</div>`:''}<div class="box-card-stats"><div class="box-card-stat">${t('items')}: <span>${tot}</span></div><div class="box-card-stat">${t('types')}: <span>${tc}</span></div></div>${bar?`<div class="box-card-chart">${bar}</div>`:''}${hitLine(b)}</div>`}).join('')+'</div>'}
 function openFilterLocModal(){if(!D.locs.length){toast(t('tNoLocations'),'error');return}pendConf=null;$('confirmText').innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn btn-secondary btn-sm" onclick="boxLocF=null;renderBoxes();closeModal('confirmModal')">${t('all')}</button>${D.locs.map(l=>`<button class="btn btn-secondary btn-sm" onclick="boxLocF='${l.id}';renderBoxes();closeModal('confirmModal')">${esc(l.name)}</button>`).join('')}</div>`;openModal('confirmModal')}
 function popLocDD(v){$('boxLocation').innerHTML='<option value="">— None —</option>'+D.locs.map(l=>`<option value="${l.id}"${l.id===v?' selected':''}>${esc(l.name)}</option>`).join('')}
 function openAddBoxModal(){editBox=null;$('boxModalTitle').textContent=t('addBox');$('boxName').value='';$('boxStatus').value='clean';$('boxNotes').value='';popLocDD('');openModal('boxModal')}
@@ -1110,8 +1186,29 @@ if(itemView==='quick'){$('itemsTable').innerHTML=`<div class="qv-grid">${groupIt
 $('itemsTable').innerHTML=`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('type')}</th><th>${t('color')}</th><th>${t('size')}</th><th>${t('qty')}</th><th style="width:80px"></th></tr></thead><tbody>${items.map(i=>`<tr><td>${esc(gtn(i.item_type_id))}</td><td><span class="color-dot" style="background:${gch(i.color_id)}"></span>${esc(gcn(i.color_id))}</td><td>${i.size}</td><td class="qty">${i.quantity}</td><td><div class="actions-cell"><button class="btn-icon" onclick="event.stopPropagation();openEditItem('${i.id}')">✎</button><button class="btn-icon" onclick="event.stopPropagation();delItem('${i.id}')">✕</button></div></td></tr>`).join('')}</tbody></table></div>`}
 
 // ITEMS
-function popTDD(s,v){$(s).innerHTML=D.types.map(ty=>`<option value="${ty.id}"${ty.id===v?' selected':''}>${esc(ty.name)}</option>`).join('')}
-function popCDD(s,v){$(s).innerHTML=D.colors.map(c=>`<option value="${c.id}"${c.id===v?' selected':''}>● ${esc(c.name)}</option>`).join('')}
+// Searchable dropdown. The hidden input keeps the original id, so every
+// existing $('itemType').value / $('itemColor').value keeps working untouched.
+const CBX={itemType:'types',itemColor:'colors',bulkType:'types',bulkColor:'colors'};
+function cbxSrc(id){return CBX[id]==='colors'?D.colors:D.types}
+function cbxAfter(id){if(id==='itemColor')updCP();if(id==='bulkColor')updBCP()}
+function cbxSet(id,v){const src=cbxSrc(id),o=src.find(x=>x.id===v)||src[0];
+$(id).value=o?o.id:'';const inp=$('in_'+id);if(inp)inp.value=o?o.name:'';
+cbxRender(id,'');cbxAfter(id)}
+function cbxRender(id,q){const el=$('ls_'+id);if(!el)return;
+const isC=CBX[id]==='colors',cur=$(id).value;
+const list=cbxSrc(id).filter(x=>x.name.toLowerCase().includes((q||'').toLowerCase()));
+el.innerHTML=list.length?list.map(x=>`<div class="cbx-opt${x.id===cur?' sel':''}" onmousedown="event.preventDefault();cbxPick('${id}','${x.id}')">${isC?`<span class="color-dot" style="background:${x.hex_code}"></span>`:''}${esc(x.name)}</div>`).join('')
+:`<div class="cbx-empty">${t('noMatches')}</div>`}
+function cbxPick(id,v){cbxSet(id,v);cbxClose(id)}
+function cbxOpen(id){const inp=$('in_'+id);if(inp)inp.select();cbxRender(id,'');$('cbx_'+id).classList.add('open')}
+function cbxClose(id){const w=$('cbx_'+id);if(w)w.classList.remove('open')}
+function cbxType(id){cbxRender(id,$('in_'+id).value);$('cbx_'+id).classList.add('open')}
+// Clicking away restores the label of whatever is actually selected
+document.addEventListener('click',e=>{Object.keys(CBX).forEach(id=>{const w=$('cbx_'+id);
+if(w&&w.classList.contains('open')&&!w.contains(e.target)){cbxClose(id);
+const o=cbxSrc(id).find(x=>x.id===$(id).value);const inp=$('in_'+id);if(inp)inp.value=o?o.name:''}})});
+function popTDD(s,v){cbxSet(s,v)}
+function popCDD(s,v){cbxSet(s,v)}
 function updCP(){const c=D.colors.find(x=>x.id===$('itemColor').value);$('colorPreview').style.background=c?c.hex_code:'#6b7280'}
 function updBCP(){const c=D.colors.find(x=>x.id===$('bulkColor').value);$('bulkCP').style.background=c?c.hex_code:'#6b7280'}
 // Fill the size dropdown from the club's own list
@@ -1351,6 +1448,127 @@ await SB.from('app_settings').upsert(rows,{onConflict:'club_id,key'});
 // Keep clubs.name in sync with the club_name setting
 if(cn)await SB.from('clubs').update({name:cn}).eq('id',CID);
 toast(t('tSaved'));await loadData()}
+// ============ IMPORT ============
+// CSV parser that survives quoted fields, embedded commas/newlines and CRLF
+function parseCSV(txt){txt=txt.replace(/^\ufeff/,'');const rows=[];let row=[],f='',q=false;
+for(let i=0;i<txt.length;i++){const ch=txt[i];
+if(q){if(ch==='"'){if(txt[i+1]==='"'){f+='"';i++}else q=false}else f+=ch}
+else if(ch==='"')q=true;
+else if(ch===','){row.push(f);f=''}
+else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&txt[i+1]==='\n')i++;row.push(f);f='';if(row.some(x=>x.trim()!==''))rows.push(row);row=[]}
+else f+=ch}
+row.push(f);if(row.some(x=>x.trim()!==''))rows.push(row);
+return rows}
+// Header names are exported translated, so accept every language plus common variants
+const IMPH={type:['type','types','item','items','article','articles','tipo','tipos','articulo','articulos','artículo','artículos','produit','produits','artikel','artikelen','articolo','articoli','item type','tipo de articulo'],
+color:['color','colors','colour','couleur','couleurs','cor','cores','farbe','farben','colore','colori','kleur','kleuren'],
+size:['size','sizes','talla','tallas','taille','tailles','tamanho','tamanhos','grosse','größe','größen','taglia','taglie','maat','maten'],
+qty:['qty','quantity','quantities','cant','cantidad','cantidades','quantite','quantité','qte','quantidade','menge','quantita','quantità','aantal','stock'],
+box:['box','boxes','caja','cajas','boite','boîte','boites','boîtes','caixa','caixas','kiste','kisten','box name','scatola','scatole','doos','dozen'],
+loc:['location','locations','ubicacion','ubicación','ubicaciones','emplacement','emplacements','local','locais','localizacao','localização','ort','standort','posizione','posizioni','locatie','locaties'],
+status:['status','state','estado','etat','état','statut','zustand','stato','staat']};
+function impCol(h){const n=(h||'').toLowerCase().trim().replace(/[_-]+/g,' ');
+for(const k in IMPH)if(IMPH[k].includes(n))return k;return null}
+let impData=null;
+function openImport(){$('impStep1').style.display='block';$('impStep2').style.display='none';$('impStep2').innerHTML='';
+$('impColsHint').textContent=[t('type'),t('color'),t('size'),t('qty'),t('boxes'),t('location'),t('status')].join(' · ');
+$('importFile').value='';openModal('importModal')}
+function importPick(inp){const f=inp.files&&inp.files[0];if(!f)return;
+const rd=new FileReader();rd.onload=e=>{try{impAnalyze(String(e.target.result))}catch(err){toast(err.message||'Parse error','error')}};
+rd.onerror=()=>toast(t('tImportRead'),'error');rd.readAsText(f)}
+// Read the file and work out exactly what WOULD happen — nothing is written yet
+function impAnalyze(txt){const rows=parseCSV(txt);
+if(rows.length<2){toast(t('tImportEmpty'),'error');return}
+const map=rows[0].map(impCol);
+const need=['type','color','qty','box'].filter(k=>!map.includes(k));
+if(need.length){toast(t('tImportCols')+' '+need.map(k=>t(k==='qty'?'qty':k==='box'?'boxes':k)).join(', '),'error');return}
+const gi=k=>map.indexOf(k);
+const parsed=[],errs=[];
+const nT=new Map(),nC=new Map(),nS=new Map(),nB=new Map();
+const low=s=>(s||'').trim().toLowerCase();
+for(let r=1;r<rows.length;r++){const row=rows[r];
+const ty=(row[gi('type')]||'').trim(),co=(row[gi('color')]||'').trim(),bx=(row[gi('box')]||'').trim();
+let sz=gi('size')>=0?(row[gi('size')]||'').trim():'';if(!sz)sz='\u2014';
+const rawQ=(row[gi('qty')]||'').trim().replace(/\s/g,'').replace(',','.');
+const qty=Math.round(Number(rawQ));
+if(!ty||!co||!bx){errs.push(`${t('rowLbl')} ${r+1}: ${t('impMissing')}`);continue}
+if(!rawQ||!isFinite(qty)||qty<0){errs.push(`${t('rowLbl')} ${r+1}: ${t('impBadQty')} "${row[gi('qty')]||''}"`);continue}
+if(!D.types.some(x=>low(x.name)===low(ty)))nT.set(low(ty),ty);
+if(!D.colors.some(x=>low(x.name)===low(co)))nC.set(low(co),co);
+if(sz!=='\u2014'&&!D.sizes.some(x=>low(x.name)===low(sz)))nS.set(low(sz),sz);
+if(!D.boxes.some(x=>low(x.name)===low(bx)))nB.set(low(bx),bx);
+parsed.push({ty,co,sz,qty,bx,loc:gi('loc')>=0?(row[gi('loc')]||'').trim():''})}
+if(!parsed.length){toast(t('tImportNoValid'),'error');return}
+// Rows pointing at the same item+box are summed so the file can't fight itself
+const merged=new Map();
+parsed.forEach(p=>{const k=[low(p.bx),low(p.ty),low(p.co),low(p.sz)].join('|');
+if(merged.has(k))merged.get(k).qty+=p.qty;else merged.set(k,{...p})});
+const rowsF=[...merged.values()];
+// How many existing records this would touch
+let willUpdate=0;
+rowsF.forEach(p=>{const b=D.boxes.find(x=>low(x.name)===low(p.bx));if(!b)return;
+const ty=D.types.find(x=>low(x.name)===low(p.ty)),co=D.colors.find(x=>low(x.name)===low(p.co));
+if(ty&&co&&D.items.some(i=>i.box_id===b.id&&i.item_type_id===ty.id&&i.color_id===co.id&&i.size===p.sz))willUpdate++});
+const untouched=D.items.filter(i=>{const b=D.boxes.find(x=>x.id===i.box_id);if(!b)return false;
+return !rowsF.some(p=>low(p.bx)===low(b.name)&&low(p.ty)===low(gtn(i.item_type_id))&&low(p.co)===low(gcn(i.color_id))&&p.sz===i.size)}).length;
+impData={rows:rowsF,newT:[...nT.values()],newC:[...nC.values()],newS:[...nS.values()],newB:[...nB.values()],errs,willUpdate,willCreate:rowsF.length-willUpdate,untouched};
+impPreview()}
+function impPreview(){const d=impData;
+const li=(arr,lbl)=>arr.length?`<div><strong>${arr.length}</strong> ${lbl}: ${arr.slice(0,8).map(esc).join(', ')}${arr.length>8?` +${arr.length-8}`:''}</div>`:'';
+$('impStep1').style.display='none';
+const el=$('impStep2');el.style.display='block';
+el.innerHTML=`<div class="imp-sum">
+<div class="imp-c"><div class="n">${d.rows.length}</div><div class="l">${t('impRowsOk')}</div></div>
+<div class="imp-c"><div class="n">${d.willCreate}</div><div class="l">${t('impNewItems')}</div></div>
+<div class="imp-c"><div class="n">${d.willUpdate}</div><div class="l">${t('impExisting')}</div></div>
+<div class="imp-c"><div class="n"${d.errs.length?' style="color:var(--red)"':''}>${d.errs.length}</div><div class="l">${t('impErrors')}</div></div></div>
+${(d.newB.length||d.newT.length||d.newC.length||d.newS.length)?`<div class="imp-new"><div style="font-weight:700;margin-bottom:3px">${t('impWillCreate')}</div>${li(d.newB,t('boxes'))}${li(d.newT,t('itemTypes'))}${li(d.newC,t('colors'))}${li(d.newS,t('sizesTab'))}</div>`:''}
+${d.errs.length?`<div class="imp-err"><div style="font-weight:700;margin-bottom:3px">${t('impSkipped')}</div>${d.errs.slice(0,20).map(esc).map(x=>`<div>${x}</div>`).join('')}${d.errs.length>20?`<div>+${d.errs.length-20}</div>`:''}</div>`:''}
+<div class="imp-mode">
+<label class="on" id="impM_add" onclick="impMode('add')"><input type="radio" name="impm" checked><div><div class="t">${t('impAddT')}</div><div class="d">${t('impAddD')}</div></div></label>
+<label id="impM_set" onclick="impMode('set')"><input type="radio" name="impm"><div><div class="t">${t('impSetT')}</div><div class="d">${t('impSetD')}</div></div></label></div>
+${d.untouched?`<p style="font-size:11.5px;color:var(--text3);margin-bottom:10px">${t('impUntouched').replace('{n}',d.untouched)}</p>`:''}
+<p style="font-size:11.5px;color:var(--text3);margin-bottom:10px">${t('impSnapNote')}</p>
+<div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('importModal')">${t('cancel')}</button><button class="btn btn-primary" id="impGo" onclick="runImport()" style="width:auto">${t('impConfirm')}</button></div>`;
+impMode('add')}
+let impM='add';
+function impMode(m){impM=m;$('impM_add').classList.toggle('on',m==='add');$('impM_set').classList.toggle('on',m==='set');
+$('impM_add').querySelector('input').checked=m==='add';$('impM_set').querySelector('input').checked=m==='set'}
+async function runImport(){const d=impData;if(!d)return;
+const b=$('impGo');b.innerHTML='<span class="spinner"></span>';b.disabled=1;
+const low=s=>(s||'').trim().toLowerCase();
+try{
+// Automatic restore point before anything is written
+const agg={};D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}`;
+if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,qty:0};agg[k].qty+=i.quantity});
+if(Object.keys(agg).length)await ins('inventory_snapshots',{name:t('impSnapName')+' '+new Date().toISOString().split('T')[0],data:Object.values(agg),created_by:U.id});
+// Create everything the file references that doesn't exist yet
+const PAL=['#3b82f6','#ef4444','#22c55e','#eab308','#f97316','#a855f7','#ec4899','#14b8a6','#6b7280','#84cc16'];
+if(d.newT.length){const r=await ins('item_types',d.newT.map(n=>({name:n})));if(r.error)throw r.error}
+if(d.newC.length){const r=await ins('colors',d.newC.map((n,ix)=>({name:n,hex_code:PAL[ix%PAL.length]})));if(r.error)throw r.error}
+if(d.newS.length){let pos=D.sizes.length?Math.max(...D.sizes.map(s=>s.position))+1:0;
+const r=await ins('sizes',d.newS.map(n=>({name:n,position:pos++})));if(r.error)throw r.error}
+if(d.newB.length){const r=await ins('boxes',d.newB.map(n=>{const src=d.rows.find(p=>low(p.bx)===low(n)&&p.loc);
+const lo=src?D.locs.find(l=>low(l.name)===low(src.loc)):null;
+return{name:n,status:'clean',location_id:lo?lo.id:null}}));if(r.error)throw r.error}
+await loadData();
+// Now apply the quantities
+const ups=[],inserts=[];
+d.rows.forEach(p=>{const bx=D.boxes.find(x=>low(x.name)===low(p.bx));
+const ty=D.types.find(x=>low(x.name)===low(p.ty));
+const co=D.colors.find(x=>low(x.name)===low(p.co));
+if(!bx||!ty||!co)return;
+const sz=p.sz==='\u2014'?'\u2014':(D.sizes.find(x=>low(x.name)===low(p.sz))?.name||p.sz);
+const ex=D.items.find(i=>i.box_id===bx.id&&i.item_type_id===ty.id&&i.color_id===co.id&&i.size===sz);
+if(ex)ups.push({id:ex.id,quantity:impM==='add'?ex.quantity+p.qty:p.qty});
+else inserts.push({box_id:bx.id,item_type_id:ty.id,color_id:co.id,size:sz,quantity:p.qty})});
+if(inserts.length){const r=await ins('box_items',inserts);if(r.error)throw r.error}
+for(const u of ups){const r=await SB.from('box_items').update({quantity:u.quantity}).eq('id',u.id);if(r.error)throw r.error}
+await ins('activity_log',{action_type:'item_added',quantity:d.rows.length,created_by:U.id});
+await loadData();
+closeModal('importModal');toast(t('tImported').replace('{n}',d.rows.length));impData=null}
+catch(e){toast(e.message||'Import failed','error')}
+finally{b.innerHTML=t('impConfirm');b.disabled=0}}
 function exportCSV(){
 const q=s=>`"${String(s??'').replace(/"/g,'""')}"`;
 const st=s=>s==='na'?t('statusNA'):s==='clean'?t('clean'):t('dirty');
