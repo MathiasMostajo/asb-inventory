@@ -17,7 +17,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
 <style>
-:root{--bg:#000;--bg2:#080d1a;--bg3:#121942;--bg4:#1a2255;--border:#1e2a5a;--border2:#2a3a7a;--text:#fff;--text2:#bec9ce;--text3:#7a8a9a;--accent:#38b6ff;--accent2:#2090dd;--accent-dim:rgba(56,182,255,.1);--accent-dim2:rgba(56,182,255,.2);--brand:#03306b;--red:#f87171;--red-dim:rgba(248,113,113,.1);--orange:#fb923c;--orange-dim:rgba(251,146,60,.1);--green:#34d399;--green-dim:rgba(52,211,153,.1);--radius:10px;--radius-sm:6px;--shadow:0 4px 24px rgba(0,0,0,.5)}
+:root{--bg:#000;--bg2:#080d1a;--card:var(--bg2);--bg3:#121942;--bg4:#1a2255;--border:#1e2a5a;--border2:#2a3a7a;--text:#fff;--text2:#bec9ce;--text3:#7a8a9a;--accent:#38b6ff;--accent2:#2090dd;--accent-dim:rgba(56,182,255,.1);--accent-dim2:rgba(56,182,255,.2);--brand:#03306b;--red:#f87171;--red-dim:rgba(248,113,113,.1);--orange:#fb923c;--orange-dim:rgba(251,146,60,.1);--green:#34d399;--green-dim:rgba(52,211,153,.1);--radius:10px;--radius-sm:6px;--shadow:0 4px 24px rgba(0,0,0,.5)}
 body.light{--bg:#f0f2f5;--bg2:#fff;--bg3:#e8ecf1;--bg4:#dce1e8;--border:#c8d0dc;--border2:#aeb9c8;--text:#111827;--text2:#4b5563;--text3:#6b7280;--accent:#03306b;--accent2:#0a4a9e;--accent-dim:rgba(3,48,107,.08);--accent-dim2:rgba(3,48,107,.15);--brand:#03306b;--red:#dc2626;--red-dim:rgba(220,38,38,.08);--orange:#ea580c;--orange-dim:rgba(234,88,12,.08);--green:#16a34a;--green-dim:rgba(22,163,74,.08);--shadow:0 2px 12px rgba(0,0,0,.08)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
@@ -113,9 +113,16 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .imp-mode label.on{border-color:var(--accent);background:var(--accent-dim)}
 .imp-mode .t{font-size:13px;font-weight:700}
 .imp-mode .d{font-size:11.5px;color:var(--text3);line-height:1.5}
+.busy{position:fixed;inset:0;background:rgba(4,10,26,.82);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:3000;padding:20px}
+.busy.show{display:flex}
+.busy-card{background:var(--bg2);border:1px solid var(--accent-dim2);border-radius:16px;padding:26px 30px;text-align:center;max-width:340px;box-shadow:0 16px 48px rgba(0,0,0,.55)}
+.busy-sp{width:26px;height:26px;border-width:3px;margin-bottom:14px}
+.busy-msg{font-size:14.5px;font-weight:600;color:var(--text);line-height:1.4}
+.busy-sub{font-size:11.5px;color:var(--text3);margin-top:7px}
 .cbx{position:relative}
-.cbx-in{width:100%}
-.cbx-list{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:60;max-height:210px;overflow-y:auto;background:var(--card);border:1px solid var(--accent-dim2);border-radius:var(--radius-sm);box-shadow:0 10px 26px rgba(0,0,0,.45)}
+.cbx-in{width:100%;cursor:pointer}
+.cbx-in.typing{cursor:text;border-color:var(--accent)}
+.cbx-list{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:60;max-height:210px;overflow-y:auto;background:var(--bg2);border:1px solid var(--accent-dim2);border-radius:var(--radius-sm);box-shadow:0 10px 26px rgba(0,0,0,.45)}
 .cbx.open .cbx-list{display:block}
 .cbx-opt{display:flex;align-items:center;gap:8px;padding:9px 11px;font-size:13.5px;cursor:pointer;color:var(--text2)}
 .cbx-opt:hover{background:var(--bg3);color:var(--text)}
@@ -481,15 +488,15 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('boxModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveBox()" id="saveBoxBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
 
 <div class="modal-overlay" id="itemModal"><div class="modal"><h2 id="itemModalTitle">Add Item</h2>
-<div class="form-group"><label data-i18n="type">Type</label><div class="cbx" id="cbx_itemType"><input type="hidden" id="itemType"><input type="text" class="cbx-in" id="in_itemType" autocomplete="off" oninput="cbxType('itemType')" onfocus="cbxOpen('itemType')"><div class="cbx-list" id="ls_itemType"></div></div></div>
-<div class="form-group"><label data-i18n="color">Color</label><div class="color-select-wrap"><div class="cbx" id="cbx_itemColor"><input type="hidden" id="itemColor"><input type="text" class="cbx-in" id="in_itemColor" autocomplete="off" oninput="cbxType('itemColor')" onfocus="cbxOpen('itemColor')"><div class="cbx-list" id="ls_itemColor"></div></div><div class="color-preview" id="colorPreview"></div></div></div>
+<div class="form-group"><label data-i18n="type">Type</label><div class="cbx" id="cbx_itemType"><input type="hidden" id="itemType"><input type="text" class="cbx-in" id="in_itemType" autocomplete="off" readonly oninput="cbxType('itemType')" onclick="cbxTap('itemType')"><div class="cbx-list" id="ls_itemType"></div></div></div>
+<div class="form-group"><label data-i18n="color">Color</label><div class="color-select-wrap"><div class="cbx" id="cbx_itemColor"><input type="hidden" id="itemColor"><input type="text" class="cbx-in" id="in_itemColor" autocomplete="off" readonly oninput="cbxType('itemColor')" onclick="cbxTap('itemColor')"><div class="cbx-list" id="ls_itemColor"></div></div><div class="color-preview" id="colorPreview"></div></div></div>
 <div class="form-group"><label data-i18n="size">Size</label><select id="itemSize"></select></div>
 <div class="form-group"><label data-i18n="quantity">Quantity</label><input type="number" id="itemQty" min="0" value="1"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('itemModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveItem()" id="saveItemBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
 
 <div class="modal-overlay" id="bulkModal"><div class="modal"><h2 data-i18n="bulkAddItems">Bulk Add Items</h2><p style="font-size:13px;color:var(--text3);margin-bottom:14px" data-i18n="bulkDesc">Pick type + color, enter qty per size</p>
-<div class="form-group"><label data-i18n="type">Type</label><div class="cbx" id="cbx_bulkType"><input type="hidden" id="bulkType"><input type="text" class="cbx-in" id="in_bulkType" autocomplete="off" oninput="cbxType('bulkType')" onfocus="cbxOpen('bulkType')"><div class="cbx-list" id="ls_bulkType"></div></div></div>
-<div class="form-group"><label data-i18n="color">Color</label><div class="color-select-wrap"><div class="cbx" id="cbx_bulkColor"><input type="hidden" id="bulkColor"><input type="text" class="cbx-in" id="in_bulkColor" autocomplete="off" oninput="cbxType('bulkColor')" onfocus="cbxOpen('bulkColor')"><div class="cbx-list" id="ls_bulkColor"></div></div><div class="color-preview" id="bulkCP"></div></div></div>
+<div class="form-group"><label data-i18n="type">Type</label><div class="cbx" id="cbx_bulkType"><input type="hidden" id="bulkType"><input type="text" class="cbx-in" id="in_bulkType" autocomplete="off" readonly oninput="cbxType('bulkType')" onclick="cbxTap('bulkType')"><div class="cbx-list" id="ls_bulkType"></div></div></div>
+<div class="form-group"><label data-i18n="color">Color</label><div class="color-select-wrap"><div class="cbx" id="cbx_bulkColor"><input type="hidden" id="bulkColor"><input type="text" class="cbx-in" id="in_bulkColor" autocomplete="off" readonly oninput="cbxType('bulkColor')" onclick="cbxTap('bulkColor')"><div class="cbx-list" id="ls_bulkColor"></div></div><div class="color-preview" id="bulkCP"></div></div></div>
 <div class="bulk-sizes" id="bulkSizes"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('bulkModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveBulk()" id="bulkBtn" style="width:auto" data-i18n="addAll">Add All</button></div></div></div>
 
@@ -520,6 +527,8 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="form-group"><label data-i18n="name">Name</label><input type="text" id="locName" placeholder="Main Shed"></div>
 <div class="form-group"><label data-i18n="description">Description</label><input type="text" id="locDesc"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('locModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveLoc()" id="saveLocBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
+
+<div class="busy" id="busyOverlay"><div class="busy-card"><span class="spinner busy-sp"></span><div class="busy-msg" id="busyMsg"></div><div class="busy-sub" data-i18n="busyWait">Please don't close this window</div></div></div>
 
 <div class="modal-overlay" id="importModal"><div class="modal" style="max-width:640px">
 <h2 data-i18n="importTitle">Import inventory</h2>
@@ -761,6 +770,11 @@ welcomeS1:{en:"Create a box for each physical container you store equipment in."
 welcomeS2:{en:"Open the box and add what's inside — use Bulk to load many sizes at once.",fr:"Ouvrez la boîte et ajoutez son contenu — utilisez En lot pour charger plusieurs tailles d'un coup.",es:"Abrí la caja y agregá lo que hay adentro — usá En lote para cargar muchas tallas de una vez.",pt:"Abra a caixa e adicione o que há dentro — use Em lote para carregar vários tamanhos de uma vez.",de:"Öffnen Sie die Box und fügen Sie den Inhalt hinzu — nutzen Sie Sammeln für viele Größen auf einmal.",it:"Apri la scatola e aggiungi il contenuto — usa In blocco per caricare più taglie insieme.",nl:"Open de doos en voeg de inhoud toe — gebruik Bulk om veel maten tegelijk te laden."},
 welcomeS3:{en:"Print the QR label and stick it on the box. Scanning it opens the box here.",fr:"Imprimez l'étiquette QR et collez-la sur la boîte. La scanner ouvre la boîte ici.",es:"Imprimí la etiqueta QR y pegala en la caja. Escanearla abre la caja acá.",pt:"Imprima a etiqueta QR e cole na caixa. Escaneá-la abre a caixa aqui.",de:"Drucken Sie das QR-Etikett und kleben Sie es auf die Box. Beim Scannen öffnet sich die Box hier.",it:"Stampa l'etichetta QR e attaccala alla scatola. Scansionandola si apre la scatola qui.",nl:"Print het QR-label en plak het op de doos. Scannen opent de doos hier."},
 welcomeCta:{en:"Create my first box",fr:"Créer ma première boîte",es:"Crear mi primera caja",pt:"Criar minha primeira caixa",de:"Erste Box erstellen",it:"Crea la mia prima scatola",nl:"Maak mijn eerste doos"},
+busyWorking:{en:"Applying changes\u2026",fr:"Application des modifications\u2026",es:"Aplicando cambios\u2026",pt:"Aplicando alterações\u2026",de:"Änderungen werden angewendet\u2026",it:"Applicazione modifiche\u2026",nl:"Wijzigingen toepassen\u2026"},
+busyImporting:{en:"Importing your inventory\u2026",fr:"Importation de votre inventaire\u2026",es:"Importando tu inventario\u2026",pt:"Importando seu inventário\u2026",de:"Inventar wird importiert\u2026",it:"Importazione inventario\u2026",nl:"Inventaris importeren\u2026"},
+busySetup:{en:"Setting up your club\u2026",fr:"Configuration de votre club\u2026",es:"Configurando tu club\u2026",pt:"Configurando seu clube\u2026",de:"Verein wird eingerichtet\u2026",it:"Configurazione del club\u2026",nl:"Je club instellen\u2026"},
+busyDeleting:{en:"Deleting\u2026",fr:"Suppression\u2026",es:"Eliminando\u2026",pt:"Excluindo\u2026",de:"Wird gelöscht\u2026",it:"Eliminazione\u2026",nl:"Verwijderen\u2026"},
+busyWait:{en:"Please don't close this window",fr:"Ne fermez pas cette fenêtre",es:"No cierres esta ventana",pt:"Não feche esta janela",de:"Bitte dieses Fenster nicht schließen",it:"Non chiudere questa finestra",nl:"Sluit dit venster niet"},
 importCSV:{en:"Import",fr:"Importer",es:"Importar",pt:"Importar",de:"Importieren",it:"Importa",nl:"Importeren"},
 importTitle:{en:"Import inventory",fr:"Importer l'inventaire",es:"Importar inventario",pt:"Importar inventário",de:"Inventar importieren",it:"Importa inventario",nl:"Inventaris importeren"},
 importIntro:{en:"Upload a CSV with your inventory. The easiest way is to export first and use that file as your template.",fr:"Téléversez un CSV avec votre inventaire. Le plus simple est d'exporter d'abord et d'utiliser ce fichier comme modèle.",es:"Subí un CSV con tu inventario. Lo más fácil es exportar primero y usar ese archivo como plantilla.",pt:"Envie um CSV com seu inventário. O mais fácil é exportar primeiro e usar esse arquivo como modelo.",de:"Laden Sie eine CSV mit Ihrem Inventar hoch. Am einfachsten: zuerst exportieren und diese Datei als Vorlage nutzen.",it:"Carica un CSV con il tuo inventario. Il modo più semplice è esportare prima e usare quel file come modello.",nl:"Upload een CSV met je inventaris. Het makkelijkst is eerst exporteren en dat bestand als sjabloon gebruiken."},
@@ -878,8 +892,9 @@ if(!au.session){b.innerHTML=lbl();b.disabled=0;sErr(err,'Check your email to con
 U=au.user}
 else{b.innerHTML='<span class="spinner"></span>';b.disabled=1}
 // 2. Create the club (trigger auto-provisions defaults)
+busy('busySetup');
 const{data:club,error:ce}=await SB.from('clubs').insert({name:cn,lang:LANG}).select().single();
-if(ce){b.innerHTML=lbl();b.disabled=0;sErr(err,'Club creation failed: '+ce.message);return}
+if(ce){busyOff();b.innerHTML=lbl();b.disabled=0;sErr(err,'Club creation failed: '+ce.message);return}
 // 3. Create (or repair) the profile as super_admin of this club
 const{error:pe}=await SB.from('profiles').upsert({id:U.id,email:e,club_id:club.id,role:'super_admin'});
 b.innerHTML=lbl();b.disabled=0;
@@ -988,7 +1003,9 @@ $('confirmText').textContent=t('cancelBillingFirst');pendConf=async()=>{closeMod
 $('delClubName').value='';$('delClubTarget').textContent=CLUB.name;$('delClubBtn').disabled=true;openModal('deleteClubModal')}
 function delClubCheck(){$('delClubBtn').disabled=$('delClubName').value.trim()!==CLUB.name}
 async function confirmDeleteClub(){const b=$('delClubBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;
+busy('busyDeleting');
 const{error}=await SB.rpc('delete_my_club');
+busyOff();
 if(error){b.innerHTML=t('deleteClubBtn');b.disabled=0;toast(error.message,'error');return}
 closeModal('deleteClubModal');toast(t('clubDeleted'));
 setTimeout(()=>handleLogout(),900)}
@@ -1192,7 +1209,7 @@ const CBX={itemType:'types',itemColor:'colors',bulkType:'types',bulkColor:'color
 function cbxSrc(id){return CBX[id]==='colors'?D.colors:D.types}
 function cbxAfter(id){if(id==='itemColor')updCP();if(id==='bulkColor')updBCP()}
 function cbxSet(id,v){const src=cbxSrc(id),o=src.find(x=>x.id===v)||src[0];
-$(id).value=o?o.id:'';const inp=$('in_'+id);if(inp)inp.value=o?o.name:'';
+$(id).value=o?o.id:'';const inp=$('in_'+id);if(inp){inp.value=o?o.name:'';inp.readOnly=true;inp.classList.remove('typing')}
 cbxRender(id,'');cbxAfter(id)}
 function cbxRender(id,q){const el=$('ls_'+id);if(!el)return;
 const isC=CBX[id]==='colors',cur=$(id).value;
@@ -1200,8 +1217,14 @@ const list=cbxSrc(id).filter(x=>x.name.toLowerCase().includes((q||'').toLowerCas
 el.innerHTML=list.length?list.map(x=>`<div class="cbx-opt${x.id===cur?' sel':''}" onmousedown="event.preventDefault();cbxPick('${id}','${x.id}')">${isC?`<span class="color-dot" style="background:${x.hex_code}"></span>`:''}${esc(x.name)}</div>`).join('')
 :`<div class="cbx-empty">${t('noMatches')}</div>`}
 function cbxPick(id,v){cbxSet(id,v);cbxClose(id)}
-function cbxOpen(id){const inp=$('in_'+id);if(inp)inp.select();cbxRender(id,'');$('cbx_'+id).classList.add('open')}
-function cbxClose(id){const w=$('cbx_'+id);if(w)w.classList.remove('open')}
+function cbxOpen(id){cbxRender(id,'');$('cbx_'+id).classList.add('open')}
+function cbxClose(id){const w=$('cbx_'+id);if(w)w.classList.remove('open');
+// Back to picker mode: no keyboard until the user asks for it again
+const inp=$('in_'+id);if(inp){inp.readOnly=true;inp.classList.remove('typing')}}
+// First tap opens the list. Tapping the field again turns on typing to filter.
+function cbxTap(id){const w=$('cbx_'+id),inp=$('in_'+id);
+if(!w.classList.contains('open')){cbxOpen(id);return}
+if(inp.readOnly){inp.readOnly=false;inp.classList.add('typing');inp.value='';inp.focus();cbxRender(id,'')}}
 function cbxType(id){cbxRender(id,$('in_'+id).value);$('cbx_'+id).classList.add('open')}
 // Clicking away restores the label of whatever is actually selected
 document.addEventListener('click',e=>{Object.keys(CBX).forEach(id=>{const w=$('cbx_'+id);
@@ -1301,10 +1324,10 @@ function openAddColorModal(){editColor=null;$('colorModalTitle').textContent=t('
 function openEditColor(id){const c=D.colors.find(x=>x.id===id);if(!c)return;editColor=id;$('colorModalTitle').textContent=t('edit');$('colorName').value=c.name;$('colorHex').value=c.hex_code;openModal('colorModal')}
 async function saveColor(){const nm=$('colorName').value.trim(),hx=$('colorHex').value;if(!nm){toast(t('tEnterName'),'error');return}const b=$('saveColorBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editColor)await SB.from('colors').update({name:nm,hex_code:hx}).eq('id',editColor);else await ins('colors',{name:nm,hex_code:hx});b.innerHTML='Save';b.disabled=0;toast(t('tSaved'));closeModal('colorModal');await loadData();renderColors()}
 async function delColor(id){pendConf=async()=>{const{error}=await SB.from('colors').delete().eq('id',id);closeModal('confirmModal');
-if(error&&error.code==='23503'){pendConf=async()=>{closeModal('confirmModal');
+if(error&&error.code==='23503'){pendConf=async()=>{closeModal('confirmModal');busy('busyWorking');
 await SB.from('box_items').delete().eq('color_id',id);
 await SB.from('activity_log').delete().eq('color_id',id);
-const r2=await SB.from('colors').delete().eq('id',id);
+const r2=await SB.from('colors').delete().eq('id',id);busyOff();
 if(r2.error){toast(r2.error.message,'error');return}
 toast(t('tDeleted'));await loadData();renderColors()};
 $('confirmText').textContent=t('cascadeColorQ');openModal('confirmModal');return}
@@ -1402,10 +1425,10 @@ const pi=$('typePhotoInput');if(pi)pi.value='';setPhotoMode(typeMode);openModal(
 async function saveType(){const n=$('typeName').value.trim();if(!n){toast(t('tEnterName'),'error');return}const b=$('saveTypeBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;const payload={name:n,photo:typePhoto,photo_mode:typeMode,photos:typePhotos};
 const r=editType?await SB.from('item_types').update(payload).eq('id',editType):await ins('item_types',payload);b.innerHTML='Save';b.disabled=0;if(r.error){toast(r.error.message,'error');return}toast(t('tSaved'));closeModal('typeModal');await loadData();renderTypes()}
 async function delType(id){pendConf=async()=>{const{error}=await SB.from('item_types').delete().eq('id',id);closeModal('confirmModal');
-if(error&&error.code==='23503'){pendConf=async()=>{closeModal('confirmModal');
+if(error&&error.code==='23503'){pendConf=async()=>{closeModal('confirmModal');busy('busyWorking');
 await SB.from('box_items').delete().eq('item_type_id',id);
 await SB.from('activity_log').delete().eq('item_type_id',id);
-const r2=await SB.from('item_types').delete().eq('id',id);
+const r2=await SB.from('item_types').delete().eq('id',id);busyOff();
 if(r2.error){toast(r2.error.message,'error');return}
 toast(t('tDeleted'));await loadData();renderTypes()};
 $('confirmText').textContent=t('cascadeTypeQ');openModal('confirmModal');return}
@@ -1448,6 +1471,11 @@ await SB.from('app_settings').upsert(rows,{onConflict:'club_id,key'});
 // Keep clubs.name in sync with the club_name setting
 if(cn)await SB.from('clubs').update({name:cn}).eq('id',CID);
 toast(t('tSaved'));await loadData()}
+// Full-screen busy state for anything that writes a lot of rows at once
+function busy(msgKey){const el=$('busyOverlay');if(!el)return;
+$('busyMsg').textContent=t(msgKey||'busyWorking');el.classList.add('show')}
+function busyOff(){const el=$('busyOverlay');if(el)el.classList.remove('show')}
+
 // ============ IMPORT ============
 // CSV parser that survives quoted fields, embedded commas/newlines and CRLF
 function parseCSV(txt){txt=txt.replace(/^\ufeff/,'');const rows=[];let row=[],f='',q=false;
@@ -1536,6 +1564,7 @@ function impMode(m){impM=m;$('impM_add').classList.toggle('on',m==='add');$('imp
 $('impM_add').querySelector('input').checked=m==='add';$('impM_set').querySelector('input').checked=m==='set'}
 async function runImport(){const d=impData;if(!d)return;
 const b=$('impGo');b.innerHTML='<span class="spinner"></span>';b.disabled=1;
+busy('busyImporting');
 const low=s=>(s||'').trim().toLowerCase();
 try{
 // Automatic restore point before anything is written
@@ -1568,7 +1597,7 @@ await ins('activity_log',{action_type:'item_added',quantity:d.rows.length,create
 await loadData();
 closeModal('importModal');toast(t('tImported').replace('{n}',d.rows.length));impData=null}
 catch(e){toast(e.message||'Import failed','error')}
-finally{b.innerHTML=t('impConfirm');b.disabled=0}}
+finally{busyOff();b.innerHTML=t('impConfirm');b.disabled=0}}
 function exportCSV(){
 const q=s=>`"${String(s??'').replace(/"/g,'""')}"`;
 const st=s=>s==='na'?t('statusNA'):s==='clean'?t('clean'):t('dirty');
