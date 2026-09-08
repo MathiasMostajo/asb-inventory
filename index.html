@@ -17,7 +17,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
 <style>
-:root{--bg:#000;--bg2:#080d1a;--card:var(--bg2);--bg3:#121942;--bg4:#1a2255;--border:#1e2a5a;--border2:#2a3a7a;--text:#fff;--text2:#bec9ce;--text3:#7a8a9a;--accent:#38b6ff;--accent2:#2090dd;--accent-dim:rgba(56,182,255,.1);--accent-dim2:rgba(56,182,255,.2);--brand:#03306b;--red:#f87171;--red-dim:rgba(248,113,113,.1);--orange:#fb923c;--orange-dim:rgba(251,146,60,.1);--green:#34d399;--green-dim:rgba(52,211,153,.1);--radius:10px;--radius-sm:6px;--shadow:0 4px 24px rgba(0,0,0,.5)}
+:root{--bg:#000;--bg2:#080d1a;--bg3:#121942;--bg4:#1a2255;--border:#1e2a5a;--border2:#2a3a7a;--text:#fff;--text2:#bec9ce;--text3:#7a8a9a;--accent:#38b6ff;--accent2:#2090dd;--accent-dim:rgba(56,182,255,.1);--accent-dim2:rgba(56,182,255,.2);--brand:#03306b;--red:#f87171;--red-dim:rgba(248,113,113,.1);--orange:#fb923c;--orange-dim:rgba(251,146,60,.1);--green:#34d399;--green-dim:rgba(52,211,153,.1);--radius:10px;--radius-sm:6px;--shadow:0 4px 24px rgba(0,0,0,.5)}
 body.light{--bg:#f0f2f5;--bg2:#fff;--bg3:#e8ecf1;--bg4:#dce1e8;--border:#c8d0dc;--border2:#aeb9c8;--text:#111827;--text2:#4b5563;--text3:#6b7280;--accent:#03306b;--accent2:#0a4a9e;--accent-dim:rgba(3,48,107,.08);--accent-dim2:rgba(3,48,107,.15);--brand:#03306b;--red:#dc2626;--red-dim:rgba(220,38,38,.08);--orange:#ea580c;--orange-dim:rgba(234,88,12,.08);--green:#16a34a;--green-dim:rgba(22,163,74,.08);--shadow:0 2px 12px rgba(0,0,0,.08)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
@@ -34,12 +34,12 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .ld-cta:hover{transform:translateY(-2px);filter:brightness(1.1)}
 .ld-hint{font-size:12px;color:var(--text3);margin-top:12px}
 .ld-feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;max-width:1000px;margin:0 auto;padding:20px 24px 50px}
-.ld-feat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 18px}
+.ld-feat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:22px 18px}
 .ld-feat .fi{font-size:26px;margin-bottom:10px}
 .ld-feat h3{font-size:15px;font-weight:700;margin-bottom:6px}
 .ld-feat p{font-size:13px;color:var(--text3);line-height:1.45}
 .ld-price{max-width:380px;margin:0 auto;padding:0 24px 60px;text-align:center}
-.ld-price-card{background:var(--card);border:1px solid var(--accent-dim2);border-radius:var(--radius);padding:30px 24px}
+.ld-price-card{background:var(--bg2);border:1px solid var(--accent-dim2);border-radius:var(--radius);padding:30px 24px}
 .ld-price-card .amt{font-size:44px;font-weight:800;color:var(--accent)}
 .ld-price-card .amt small{font-size:15px;color:var(--text3);font-weight:500}
 .ld-price-card ul{list-style:none;margin:16px 0 22px;text-align:left}
@@ -116,16 +116,16 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .sw-row{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:13.5px;color:var(--text2)}
 .sw-row input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer}
 .tag-pick{display:flex;flex-wrap:wrap;gap:7px}
-.tag-sw{width:30px;height:30px;border-radius:9px;border:2px solid transparent;cursor:pointer;padding:0;position:relative}
+.tag-sw{width:30px;height:30px;border-radius:9px;border:2px solid transparent;cursor:pointer;padding:0;position:relative;box-shadow:0 0 0 1px rgba(128,128,128,.55)}
 .tag-sw.on{border-color:var(--text);box-shadow:0 0 0 2px var(--bg2) inset}
 .tag-sw.custom{background:var(--bg3);color:var(--accent);font-size:17px;font-weight:700;line-height:26px;border:2px dashed var(--accent-dim2)}
 .tag-sw.none{background:var(--bg3);color:var(--text3);font-size:15px;line-height:26px;border:2px dashed var(--border)}
 .tag-sw.none.on{border-style:solid;border-color:var(--text)}
-.box-tag{display:inline-block;width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-right:7px;vertical-align:middle}
+.box-tag{display:inline-block;width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-right:7px;vertical-align:middle;box-shadow:0 0 0 1px rgba(128,128,128,.65)}
 .box-card{position:relative;overflow:hidden}
-.box-card .tag-bar{position:absolute;left:0;top:0;bottom:0;width:5px}
+.box-card .tag-bar{position:absolute;left:0;top:0;bottom:0;width:5px;box-shadow:inset -1px 0 0 rgba(128,128,128,.55)}
 .tag-filters{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
-.tag-fb{width:26px;height:26px;border-radius:8px;border:2px solid transparent;cursor:pointer;padding:0}
+.tag-fb{width:26px;height:26px;border-radius:8px;border:2px solid transparent;cursor:pointer;padding:0;box-shadow:0 0 0 1px rgba(128,128,128,.55)}
 .tag-fb.on{border-color:var(--text)}
 .lightbox{position:fixed;inset:0;background:rgba(4,10,26,.92);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:2500;padding:24px;cursor:zoom-out}
 .lightbox.show{display:flex}
@@ -147,10 +147,11 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .cbx-opt{display:flex;align-items:center;gap:8px;padding:9px 11px;font-size:13.5px;cursor:pointer;color:var(--text2)}
 .cbx-opt:hover{background:var(--bg3);color:var(--text)}
 .cbx-opt.sel{background:var(--accent-dim);color:var(--accent);font-weight:600}
+.cbx-sep{padding:8px 11px 4px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);background:var(--bg3);position:sticky;top:0}
 .cbx-empty{padding:10px 11px;font-size:12.5px;color:var(--text3)}
 .box-hit{margin-top:9px;padding-top:8px;border-top:1px dashed var(--border);font-size:11.5px;color:var(--text2);line-height:1.55}
 .box-hit strong{color:var(--accent)}
-.size-row{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;margin-bottom:6px}
+.size-row{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;margin-bottom:6px}
 .size-row .sz-name{flex:1;font-size:14px;font-weight:600;font-family:'JetBrains Mono',monospace}
 .size-row .sz-use{font-size:11px;color:var(--text3)}
 .danger-zone{margin-top:26px;padding-top:20px;border-top:1px solid var(--border)}
@@ -192,7 +193,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .inv-row input{flex:1;font-size:12px;font-family:'JetBrains Mono',monospace;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2)}
 .qv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(144px,1fr));gap:10px}
 @media(min-width:1100px){.qv-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}}
-.qv-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 10px;text-align:center;transition:border-color .15s;position:relative}
+.qv-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 10px;text-align:center;transition:border-color .15s;position:relative}
 .qv-edit{position:absolute;top:5px;right:5px;width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--bg3);color:var(--text3);font-size:12px;cursor:pointer;padding:0;line-height:1;z-index:2}
 .qv-edit:hover{color:var(--accent);border-color:var(--accent)}
 .qv-card.open{border-color:var(--accent-dim2)}
@@ -229,7 +230,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .items-table tr:hover td{background:var(--bg3)}
 .items-table .qty{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text)}
 .items-table .actions-cell{display:flex;gap:4px}
-.color-dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:middle;border:1px solid rgba(255,255,255,.12)}
+.color-dot{box-shadow:0 0 0 1px rgba(128,128,128,.5);display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:middle;border:1px solid rgba(255,255,255,.12)}
 body.light .color-dot{border-color:rgba(0,0,0,.12)}
 .empty-state{text-align:center;padding:40px 20px;color:var(--text3)}.empty-state p{font-size:14px;margin-bottom:14px}
 .qr-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:20px;display:flex;align-items:center;gap:18px}
@@ -799,6 +800,8 @@ welcomeS2:{en:"Open the box and add what's inside — use Bulk to load many size
 welcomeS3:{en:"Print the QR label and stick it on the box. Scanning it opens the box here.",fr:"Imprimez l'étiquette QR et collez-la sur la boîte. La scanner ouvre la boîte ici.",es:"Imprimí la etiqueta QR y pegala en la caja. Escanearla abre la caja acá.",pt:"Imprima a etiqueta QR e cole na caixa. Escaneá-la abre a caixa aqui.",de:"Drucken Sie das QR-Etikett und kleben Sie es auf die Box. Beim Scannen öffnet sich die Box hier.",it:"Stampa l'etichetta QR e attaccala alla scatola. Scansionandola si apre la scatola qui.",nl:"Print het QR-label en plak het op de doos. Scannen opent de doos hier."},
 welcomeCta:{en:"Create my first box",fr:"Créer ma première boîte",es:"Crear mi primera caja",pt:"Criar minha primeira caixa",de:"Erste Box erstellen",it:"Crea la mia prima scatola",nl:"Maak mijn eerste doos"},
 lowStockOn:{en:"Warn me about low stock",fr:"M'avertir des stocks bas",es:"Avisarme cuando haya poco stock",pt:"Avisar sobre estoque baixo",de:"Bei niedrigem Bestand warnen",it:"Avvisami sulle scorte basse",nl:"Waarschuw bij lage voorraad"},
+usedAlready:{en:"Already in use",fr:"Déjà utilisés",es:"Ya en uso",pt:"Já em uso",de:"Bereits verwendet",it:"Già in uso",nl:"Al in gebruik"},
+otherOnes:{en:"Others",fr:"Autres",es:"Otros",pt:"Outros",de:"Weitere",it:"Altri",nl:"Overige"},
 customColor:{en:"Custom colour",fr:"Couleur personnalisée",es:"Color personalizado",pt:"Cor personalizada",de:"Eigene Farbe",it:"Colore personalizzato",nl:"Aangepaste kleur"},
 tagLbl:{en:"Sticker colour",fr:"Couleur de pastille",es:"Color de pegatina",pt:"Cor do adesivo",de:"Aufkleberfarbe",it:"Colore adesivo",nl:"Stickerkleur"},
 busyWorking:{en:"Applying changes\u2026",fr:"Application des modifications\u2026",es:"Aplicando cambios\u2026",pt:"Aplicando alterações\u2026",de:"Änderungen werden angewendet\u2026",it:"Applicazione modifiche\u2026",nl:"Wijzigingen toepassen\u2026"},
@@ -1255,8 +1258,15 @@ cbxRender(id,'');cbxAfter(id)}
 function cbxRender(id,q){const el=$('ls_'+id);if(!el)return;
 const isC=CBX[id]==='colors',cur=$(id).value;
 const list=cbxSrc(id).filter(x=>x.name.toLowerCase().includes((q||'').toLowerCase()));
-el.innerHTML=list.length?list.map(x=>`<div class="cbx-opt${x.id===cur?' sel':''}" onmousedown="event.preventDefault();cbxPick('${id}','${x.id}')">${isC?`<span class="color-dot" style="background:${x.hex_code}"></span>`:''}${esc(x.name)}</div>`).join('')
-:`<div class="cbx-empty">${t('noMatches')}</div>`}
+if(!list.length){el.innerHTML=`<div class="cbx-empty">${t('noMatches')}</div>`;return}
+// What the club already owns goes first, so nobody picks a near-duplicate colour by mistake
+const key=isC?'color_id':'item_type_id';
+const used=new Set(D.items.filter(i=>i.quantity>0).map(i=>i[key]));
+const opt=x=>`<div class="cbx-opt${x.id===cur?' sel':''}" onmousedown="event.preventDefault();cbxPick('${id}','${x.id}')">${isC?`<span class="color-dot" style="background:${x.hex_code}"></span>`:''}${esc(x.name)}</div>`;
+const inUse=list.filter(x=>used.has(x.id)),rest=list.filter(x=>!used.has(x.id));
+if(!inUse.length||!rest.length){el.innerHTML=list.map(opt).join('');return}
+el.innerHTML=`<div class="cbx-sep">${t('usedAlready')}</div>`+inUse.map(opt).join('')
++`<div class="cbx-sep">${t('otherOnes')}</div>`+rest.map(opt).join('')}
 function cbxPick(id,v){cbxSet(id,v);cbxClose(id)}
 function cbxOpen(id){cbxRender(id,'');$('cbx_'+id).classList.add('open')}
 function cbxClose(id){const w=$('cbx_'+id);if(w)w.classList.remove('open');
@@ -1492,7 +1502,7 @@ img.src=ev.target.result};
 rd.readAsDataURL(f)}
 function logoPick(inp){const f=inp.files&&inp.files[0];if(!f)return;shrinkLogo(f,inp,d=>{clubLogo=d;inp.value='';renderLogoPrev()})}
 function renderLogoPrev(){const el=$('sLogoPrev');if(!el)return;
-el.innerHTML=clubLogo?`<div class="tp-prev"><img src="${clubLogo}" alt="" style="background:var(--brand)"><button class="btn btn-secondary btn-sm" onclick="clubLogo=null;renderLogoPrev()">${t('removePhoto')}</button></div>`:''}
+el.innerHTML=clubLogo?`<div class="tp-prev"><img src="${clubLogo}" alt="" style="background:var(--brand)" onclick="openLightbox(this.src,$('sClubName').value)"><button class="btn btn-secondary btn-sm" onclick="clubLogo=null;renderLogoPrev()">${t('removePhoto')}</button></div>`:''}
 function inviteURL(){return location.origin+location.pathname+'?join='+CID}
 function copyInvite(){const i=$('inviteInput');if(!i)return;i.select();i.setSelectionRange(0,99999);
 navigator.clipboard?.writeText(i.value).then(()=>toast(t('tCopied'))).catch(()=>{try{document.execCommand('copy');toast(t('tCopied'))}catch(e){toast(i.value)}})}
