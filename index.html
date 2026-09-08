@@ -113,9 +113,12 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .imp-mode label.on{border-color:var(--accent);background:var(--accent-dim)}
 .imp-mode .t{font-size:13px;font-weight:700}
 .imp-mode .d{font-size:11.5px;color:var(--text3);line-height:1.5}
+.sw-row{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:13.5px;color:var(--text2)}
+.sw-row input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer}
 .tag-pick{display:flex;flex-wrap:wrap;gap:7px}
 .tag-sw{width:30px;height:30px;border-radius:9px;border:2px solid transparent;cursor:pointer;padding:0;position:relative}
 .tag-sw.on{border-color:var(--text);box-shadow:0 0 0 2px var(--bg2) inset}
+.tag-sw.custom{background:var(--bg3);color:var(--accent);font-size:17px;font-weight:700;line-height:26px;border:2px dashed var(--accent-dim2)}
 .tag-sw.none{background:var(--bg3);color:var(--text3);font-size:15px;line-height:26px;border:2px dashed var(--border)}
 .tag-sw.none.on{border-style:solid;border-color:var(--text)}
 .box-tag{display:inline-block;width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-right:7px;vertical-align:middle}
@@ -176,18 +179,19 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .ph-modes button{flex:1;padding:8px 6px;background:var(--bg3);border:none;color:var(--text2);font-family:'Outfit',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;line-height:1.25}
 .ph-modes button.active{background:var(--accent-dim);color:var(--accent)}
 .pc-sep{font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--text3);padding:10px 0 4px;border-top:1px solid var(--border);margin-top:6px}
-.pc-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border)}
+.pc-row{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--border)}
 .pc-row:last-child{border-bottom:none}
-.pc-img{width:42px;height:42px;object-fit:contain;border-radius:7px;background:var(--bg3);border:1px solid var(--border);flex-shrink:0}
-.pc-ph{width:42px;height:42px;border-radius:7px;background:var(--bg3);border:1px dashed var(--border);flex-shrink:0}
+.pc-img{width:64px;height:64px;cursor:zoom-in;object-fit:contain;border-radius:7px;background:var(--bg3);border:1px solid var(--border);flex-shrink:0}
+.pc-ph{width:64px;height:64px;border-radius:7px;background:var(--bg3);border:1px dashed var(--border);flex-shrink:0}
 .pc-name{flex:1;font-size:12.5px;display:flex;align-items:center;gap:6px;min-width:0}
 .tp-prev{display:flex;align-items:center;gap:10px;margin-top:8px}
-.tp-prev img{width:56px;height:56px;object-fit:contain;border-radius:8px;background:var(--bg3);border:1px solid var(--border)}
-.tp-thumb{width:30px;height:30px;object-fit:contain;border-radius:6px;background:var(--bg3);margin-right:8px;flex-shrink:0}
+.tp-prev img{width:104px;height:104px;cursor:zoom-in;object-fit:contain;border-radius:8px;background:var(--bg3);border:1px solid var(--border)}
+.tp-thumb{width:46px;height:46px;cursor:zoom-in;object-fit:contain;border-radius:6px;background:var(--bg3);margin-right:8px;flex-shrink:0}
 .inv-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:16px}
 .inv-row{display:flex;gap:8px;align-items:center;margin-top:8px}
 .inv-row input{flex:1;font-size:12px;font-family:'JetBrains Mono',monospace;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2)}
-.qv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
+.qv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(144px,1fr));gap:10px}
+@media(min-width:1100px){.qv-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}}
 .qv-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 10px;text-align:center;transition:border-color .15s;position:relative}
 .qv-edit{position:absolute;top:5px;right:5px;width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--bg3);color:var(--text3);font-size:12px;cursor:pointer;padding:0;line-height:1;z-index:2}
 .qv-edit:hover{color:var(--accent);border-color:var(--accent)}
@@ -455,7 +459,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="page-header"><h2 class="page-title" data-i18n="checkout">Checkout</h2></div>
 <input type="text" class="co-search" id="coSearch" data-i18n-ph="searchItems" placeholder="Search items... (type, color, size)" oninput="renderCO()">
 <div class="checkout-filters" id="checkoutFilters"></div>
-<div class="checkout-grid" id="checkoutGrid"></div></div>
+<div id="checkoutGrid"></div></div>
 <button class="checkout-undo" id="undoBtn" onclick="undoLast()">↩ <span data-i18n="undo">Undo</span></button>
 
 <!-- HISTORY -->
@@ -492,7 +496,8 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="settings-section" id="settings-types"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="itemTypes">Item Types</h3><button class="btn btn-secondary btn-sm" onclick="openAddTypeModal()">+ <span data-i18n="add">Add</span></button></div><div class="types-grid" id="typesList"></div></div>
 <div class="settings-section" id="settings-locations"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="locations">Locations</h3><button class="btn btn-secondary btn-sm" onclick="openAddLocModal()">+ <span data-i18n="add">Add</span></button></div><div class="locations-grid" id="locList"></div></div>
 <div class="settings-section" id="settings-users"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="users">Users</h3></div><div id="inviteBox"></div><div id="pendingUsers"></div><div class="users-grid" id="usersList"></div></div>
-<div class="settings-section" id="settings-general"><div style="max-width:400px"><div class="form-group"><label data-i18n="clubName">Club Name</label><input type="text" id="sClubName" placeholder="AS Blainville"></div><div class="form-group"><label data-i18n="clubLogoUrl">Club Logo</label><input type="file" accept="image/*" id="sLogoFile" onchange="logoPick(this)" style="font-size:12px"><div id="sLogoPrev"></div><p style="font-size:11px;color:var(--text3);margin-top:3px"><span data-i18n="logoHint">Shown in topbar & login screen</span></p></div><div class="form-group"><label data-i18n="lowStockThreshold">Low Stock Threshold</label><input type="number" id="sThreshold" min="1" value="5"></div><button class="btn btn-primary" onclick="saveSettings()" style="width:auto;margin-top:8px" data-i18n="save">Save</button>
+<div class="settings-section" id="settings-general"><div style="max-width:400px"><div class="form-group"><label data-i18n="clubName">Club Name</label><input type="text" id="sClubName" placeholder="AS Blainville"></div><div class="form-group"><label data-i18n="clubLogoUrl">Club Logo</label><input type="file" accept="image/*" id="sLogoFile" onchange="logoPick(this)" style="font-size:12px"><div id="sLogoPrev"></div><p style="font-size:11px;color:var(--text3);margin-top:3px"><span data-i18n="logoHint">Shown in topbar & login screen</span></p></div><div class="form-group"><label class="sw-row"><input type="checkbox" id="sLowOn" onchange="toggleLowStock()"><span data-i18n="lowStockOn">Warn me about low stock</span></label>
+<div id="sThreshWrap" style="margin-top:8px"><label data-i18n="lowStockThreshold">Low Stock Threshold</label><input type="number" id="sThreshold" min="1" value="5"></div></div><button class="btn btn-primary" onclick="saveSettings()" style="width:auto;margin-top:8px" data-i18n="save">Save</button>
 <div id="billingSection" style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border)"></div>
 <div id="dangerSection"></div></div></div></div>
 
@@ -793,6 +798,8 @@ welcomeS1:{en:"Create a box for each physical container you store equipment in."
 welcomeS2:{en:"Open the box and add what's inside — use Bulk to load many sizes at once.",fr:"Ouvrez la boîte et ajoutez son contenu — utilisez En lot pour charger plusieurs tailles d'un coup.",es:"Abrí la caja y agregá lo que hay adentro — usá En lote para cargar muchas tallas de una vez.",pt:"Abra a caixa e adicione o que há dentro — use Em lote para carregar vários tamanhos de uma vez.",de:"Öffnen Sie die Box und fügen Sie den Inhalt hinzu — nutzen Sie Sammeln für viele Größen auf einmal.",it:"Apri la scatola e aggiungi il contenuto — usa In blocco per caricare più taglie insieme.",nl:"Open de doos en voeg de inhoud toe — gebruik Bulk om veel maten tegelijk te laden."},
 welcomeS3:{en:"Print the QR label and stick it on the box. Scanning it opens the box here.",fr:"Imprimez l'étiquette QR et collez-la sur la boîte. La scanner ouvre la boîte ici.",es:"Imprimí la etiqueta QR y pegala en la caja. Escanearla abre la caja acá.",pt:"Imprima a etiqueta QR e cole na caixa. Escaneá-la abre a caixa aqui.",de:"Drucken Sie das QR-Etikett und kleben Sie es auf die Box. Beim Scannen öffnet sich die Box hier.",it:"Stampa l'etichetta QR e attaccala alla scatola. Scansionandola si apre la scatola qui.",nl:"Print het QR-label en plak het op de doos. Scannen opent de doos hier."},
 welcomeCta:{en:"Create my first box",fr:"Créer ma première boîte",es:"Crear mi primera caja",pt:"Criar minha primeira caixa",de:"Erste Box erstellen",it:"Crea la mia prima scatola",nl:"Maak mijn eerste doos"},
+lowStockOn:{en:"Warn me about low stock",fr:"M'avertir des stocks bas",es:"Avisarme cuando haya poco stock",pt:"Avisar sobre estoque baixo",de:"Bei niedrigem Bestand warnen",it:"Avvisami sulle scorte basse",nl:"Waarschuw bij lage voorraad"},
+customColor:{en:"Custom colour",fr:"Couleur personnalisée",es:"Color personalizado",pt:"Cor personalizada",de:"Eigene Farbe",it:"Colore personalizzato",nl:"Aangepaste kleur"},
 tagLbl:{en:"Sticker colour",fr:"Couleur de pastille",es:"Color de pegatina",pt:"Cor do adesivo",de:"Aufkleberfarbe",it:"Colore adesivo",nl:"Stickerkleur"},
 busyWorking:{en:"Applying changes\u2026",fr:"Application des modifications\u2026",es:"Aplicando cambios\u2026",pt:"Aplicando alterações\u2026",de:"Änderungen werden angewendet\u2026",it:"Applicazione modifiche\u2026",nl:"Wijzigingen toepassen\u2026"},
 busyImporting:{en:"Importing your inventory\u2026",fr:"Importation de votre inventaire\u2026",es:"Importando tu inventario\u2026",pt:"Importando seu inventário\u2026",de:"Inventar wird importiert\u2026",it:"Importazione inventario\u2026",nl:"Inventaris importeren\u2026"},
@@ -1014,7 +1021,7 @@ if(localStorage.getItem('asb_theme')==='light')document.body.classList.add('ligh
 // NAV
 function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$('page-'+p).classList.add('active');document.querySelectorAll('.topbar-nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p||(p==='detail'&&b.dataset.page==='boxes')));if(p==='dashboard')loadDash();if(p==='checkout')renderCO();if(p==='history')renderHistory();if(p==='snapshots')renderSnaps();if(p==='settings'){renderColors();renderTypes();renderLocs();if(isSA())renderUsers()}}
 function showSTab(tab,b){document.querySelectorAll('.settings-section').forEach(s=>s.classList.remove('active'));$('settings-'+tab).classList.add('active');document.querySelectorAll('.settings-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(tab==='sizes')renderSizes();
-if(tab==='general'){clubLogo=D.settings.logo_url||null;renderLogoPrev();$('sThreshold').value=D.settings.low_stock_threshold||'5';$('sClubName').value=D.settings.club_name||'';renderBillingSection();renderDangerSection()}}
+if(tab==='general'){clubLogo=D.settings.logo_url||null;renderLogoPrev();$('sThreshold').value=D.settings.low_stock_threshold||'5';$('sLowOn').checked=D.settings.low_stock_on!=='0';toggleLowStock();$('sClubName').value=D.settings.club_name||'';renderBillingSection();renderDangerSection()}}
 
 function renderDangerSection(){const el=$('dangerSection');if(!el)return;el.innerHTML='';
 if(!isSA()||!CLUB)return;
@@ -1074,9 +1081,10 @@ if(dw){dw.innerHTML=!D.boxes.length?`<div class="welcome-card">
 <ol class="wc-steps"><li>${t('welcomeS1')}</li><li>${t('welcomeS2')}</li><li>${t('welcomeS3')}</li></ol>
 <button class="btn btn-primary" style="width:auto" onclick="showPage('boxes');openAddBoxModal()">${t('welcomeCta')}</button>
 </div>`:''}
+const lowOn=D.settings.low_stock_on!=='0';
 const thr=parseInt(D.settings.low_stock_threshold)||5;const agg={};
 D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}`;if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,qty:0};agg[k].qty+=i.quantity});
-const low=Object.values(agg).filter(a=>a.qty>0&&a.qty<=thr);
+const low=lowOn?Object.values(agg).filter(a=>a.qty>0&&a.qty<=thr):[];
 $('lowStockAlerts').innerHTML=low.length?`<div class="alert-banner"><h4>⚠ ${low.length} ${t('lowStockAlert')} ${thr}</h4><ul>${low.map(a=>`<li>${gtn(a.tid)} — ${gcn(a.cid)}${a.size&&a.size!=='—'?' — '+a.size:''}: <strong>${a.qty}</strong></li>`).join('')}</ul></div>`:'';
 const byT={};D.items.forEach(i=>{const n=gtn(i.item_type_id);byT[n]=(byT[n]||0)+i.quantity});
 rChart('chartType','bar',{labels:Object.keys(byT),datasets:[{data:Object.values(byT),backgroundColor:['#38b6ff','#34d399','#fbbf24','#f87171','#a855f7','#fb923c','#ec4899'],borderRadius:5,borderSkipped:false}]},{pl:false});
@@ -1409,7 +1417,7 @@ if(error){toast(error.message,'error');return}
 toast(t('tDeleted'));await loadData();renderSizes()};
 $('confirmText').textContent=used?t('cascadeSizeQ').replace('{n}',used):t('deleteSizeQ');
 openModal('confirmModal')}
-function renderTypes(){$('typesList').innerHTML=D.types.map(ty=>`<div class="type-card"><div class="type-name" style="display:flex;align-items:center">${(()=>{const p=ty.photo_mode==='per_color'?Object.values(ty.photos||{})[0]:ty.photo;return p?`<img class="tp-thumb" src="${p}" alt="">`:''})()}${esc(ty.name)}</div><div style="display:flex;gap:4px"><button class="btn-icon" onclick="openEditType('${ty.id}')">✎</button><button class="btn-icon" onclick="delType('${ty.id}')">✕</button></div></div>`).join('')}
+function renderTypes(){$('typesList').innerHTML=D.types.map(ty=>`<div class="type-card"><div class="type-name" style="display:flex;align-items:center">${(()=>{const p=ty.photo_mode==='per_color'?Object.values(ty.photos||{})[0]:ty.photo;return p?`<img class="tp-thumb" src="${p}" alt="" onclick="event.stopPropagation();openLightbox(this.src,'${esc(ty.name).replace(/'/g,"\\'")}')">`:''})()}${esc(ty.name)}</div><div style="display:flex;gap:4px"><button class="btn-icon" onclick="openEditType('${ty.id}')">✎</button><button class="btn-icon" onclick="delType('${ty.id}')">✕</button></div></div>`).join('')}
 let typePhoto=null,typePhotos={},typeMode='single';
 // Shared: shrink + compress an image file to a small data URL
 function shrinkImg(f,inp,cb){if(!f.type.startsWith('image/')){toast(t('tImgOnly'),'error');if(inp)inp.value='';return}
@@ -1432,7 +1440,7 @@ $('phSingleWrap').style.display=m==='single'?'block':'none';
 $('phPerWrap').style.display=m==='per_color'?'block':'none';
 renderTypePhotoPrev();renderPerColorPhotos()}
 function renderTypePhotoPrev(){const el=$('typePhotoPrev');if(!el)return;
-el.innerHTML=typePhoto?`<div class="tp-prev"><img src="${typePhoto}" alt=""><button class="btn btn-secondary btn-sm" onclick="typePhoto=null;$('typePhotoInput').value='';renderTypePhotoPrev()">${t('removePhoto')}</button></div>`:''}
+el.innerHTML=typePhoto?`<div class="tp-prev"><img src="${typePhoto}" alt="" onclick="openLightbox(this.src,$('typeName').value)"><button class="btn btn-secondary btn-sm" onclick="typePhoto=null;$('typePhotoInput').value='';renderTypePhotoPrev()">${t('removePhoto')}</button></div>`:''}
 function renderPerColorPhotos(){const el=$('phPerWrap');if(!el)return;
 const cols=typeColors();
 if(!cols.length){el.innerHTML=`<p style="font-size:12px;color:var(--text3)">${t('noColorsYet')}</p>`;return}
@@ -1440,7 +1448,7 @@ let split=false;
 el.innerHTML=cols.map((c,ix)=>{const p=typePhotos[c.id];
 let head='';
 if(!c.used&&!split){split=true;head=ix>0?`<div class="pc-sep">${t('otherColors')}</div>`:''}
-return head+`<div class="pc-row">${p?`<img class="pc-img" src="${p}" alt="">`:'<div class="pc-ph"></div>'}
+return head+`<div class="pc-row">${p?`<img class="pc-img" src="${p}" alt="" onclick="openLightbox(this.src,${JSON.stringify(c.name)})">`:'<div class="pc-ph"></div>'}
 <div class="pc-name"><span class="color-dot" style="background:${c.hex_code}"></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.name)}</span></div>
 <input type="file" accept="image/*" id="tpc_${c.id}" onchange="typeColorPhotoPick('${c.id}',this)" style="display:none">
 <button type="button" class="btn btn-secondary btn-sm" onclick="$('tpc_${c.id}').click()">${p?t('changeBtn'):t('uploadBtn')}</button>
@@ -1499,7 +1507,7 @@ async function approveU(id){await SB.from('profiles').update({role:'admin'}).eq(
 async function declineU(id){pendConf=async()=>{await SB.from('profiles').delete().eq('id',id);toast(t('tDeclined'));closeModal('confirmModal');await loadData();renderUsers()};$('confirmText').textContent=t('declineQ');openModal('confirmModal')}
 async function removeU(id){pendConf=async()=>{await SB.from('profiles').delete().eq('id',id);toast(t('tRemoved'));closeModal('confirmModal');await loadData();renderUsers()};$('confirmText').textContent=t('removeUserQ');openModal('confirmModal')}
 async function saveSettings(){const cn=$('sClubName')?.value.trim()||'';const thr=$('sThreshold').value;
-const rows=[{club_id:CID,key:'logo_url',value:clubLogo||''},{club_id:CID,key:'low_stock_threshold',value:thr},{club_id:CID,key:'club_name',value:cn||CLUB?.name||'Club'}];
+const rows=[{club_id:CID,key:'logo_url',value:clubLogo||''},{club_id:CID,key:'low_stock_threshold',value:thr},{club_id:CID,key:'low_stock_on',value:$('sLowOn')?.checked?'1':'0'},{club_id:CID,key:'club_name',value:cn||CLUB?.name||'Club'}];
 await SB.from('app_settings').upsert(rows,{onConflict:'club_id,key'});
 // Keep clubs.name in sync with the club_name setting
 if(cn)await SB.from('clubs').update({name:cn}).eq('id',CID);
@@ -1508,9 +1516,17 @@ toast(t('tSaved'));await loadData()}
 // Basic sticker colours you can actually buy — not the club's garment colours
 const TAGS=[['#ef4444','red'],['#f97316','orange'],['#eab308','yellow'],['#22c55e','green'],['#3b82f6','blue'],['#a855f7','purple'],['#ec4899','pink'],['#000000','black']];
 let boxTag=null,boxTagF=null;
+function toggleLowStock(){$('sThreshWrap').style.display=$('sLowOn').checked?'block':'none'}
+// Palette = the 8 basics + any custom colour already in use + the one being picked
+function tagPalette(){const base=TAGS.map(x=>x[0]);
+const used=[...new Set(D.boxes.map(b=>(b.tag_color||'').toLowerCase()).filter(Boolean))];
+const extra=used.filter(h=>!base.includes(h));
+if(boxTag&&!base.includes(boxTag)&&!extra.includes(boxTag))extra.push(boxTag);
+return base.concat(extra)}
 function renderTagPick(){const el=$('boxTagPick');if(!el)return;
 el.innerHTML=`<button type="button" class="tag-sw none${boxTag?'':' on'}" onclick="setBoxTag(null)" title="${t('none')}">\u2715</button>`
-+TAGS.map(([h])=>`<button type="button" class="tag-sw${boxTag===h?' on':''}" style="background:${h}" onclick="setBoxTag('${h}')"></button>`).join('')}
++tagPalette().map(h=>`<button type="button" class="tag-sw${boxTag===h?' on':''}" style="background:${h}" onclick="setBoxTag('${h}')"></button>`).join('')
++`<button type="button" class="tag-sw custom" onclick="$('tagCustom').click()" title="${t('customColor')}">+</button><input type="color" id="tagCustom" value="${boxTag||'#38b6ff'}" onchange="setBoxTag(this.value.toLowerCase())" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none">`}
 function setBoxTag(h){boxTag=h;renderTagPick()}
 function renderTagFilters(){const el=$('tagFilters');if(!el)return;
 const used=[...new Set(D.boxes.map(b=>b.tag_color).filter(Boolean))];
