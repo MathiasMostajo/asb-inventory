@@ -116,16 +116,16 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .sw-row{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:13.5px;color:var(--text2)}
 .sw-row input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer}
 .tag-pick{display:flex;flex-wrap:wrap;gap:7px}
-.tag-sw{width:30px;height:30px;border-radius:9px;border:2px solid transparent;cursor:pointer;padding:0;position:relative;box-shadow:0 0 0 1px rgba(128,128,128,.55)}
+.tag-sw{width:30px;height:30px;border-radius:9px;border:2px solid transparent;cursor:pointer;padding:0;position:relative;box-shadow:0 0 0 2px rgba(148,163,184,.8)}
 .tag-sw.on{border-color:var(--text);box-shadow:0 0 0 2px var(--bg2) inset}
 .tag-sw.custom{background:var(--bg3);color:var(--accent);font-size:17px;font-weight:700;line-height:26px;border:2px dashed var(--accent-dim2)}
 .tag-sw.none{background:var(--bg3);color:var(--text3);font-size:15px;line-height:26px;border:2px dashed var(--border)}
 .tag-sw.none.on{border-style:solid;border-color:var(--text)}
-.box-tag{display:inline-block;width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-right:7px;vertical-align:middle;box-shadow:0 0 0 1px rgba(128,128,128,.65)}
+.box-tag{display:inline-block;width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-right:7px;vertical-align:middle;box-shadow:0 0 0 2px rgba(148,163,184,.95)}
 .box-card{position:relative;overflow:hidden}
-.box-card .tag-bar{position:absolute;left:0;top:0;bottom:0;width:5px;box-shadow:inset -1px 0 0 rgba(128,128,128,.55)}
+.box-card .tag-bar{position:absolute;left:0;top:0;bottom:0;width:5px;box-shadow:inset -2px 0 0 rgba(148,163,184,.8)}
 .tag-filters{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
-.tag-fb{width:26px;height:26px;border-radius:8px;border:2px solid transparent;cursor:pointer;padding:0;box-shadow:0 0 0 1px rgba(128,128,128,.55)}
+.tag-fb{width:26px;height:26px;border-radius:8px;border:2px solid transparent;cursor:pointer;padding:0;box-shadow:0 0 0 2px rgba(148,163,184,.8)}
 .tag-fb.on{border-color:var(--text)}
 .lightbox{position:fixed;inset:0;background:rgba(4,10,26,.92);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:2500;padding:24px;cursor:zoom-out}
 .lightbox.show{display:flex}
@@ -230,7 +230,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .items-table tr:hover td{background:var(--bg3)}
 .items-table .qty{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text)}
 .items-table .actions-cell{display:flex;gap:4px}
-.color-dot{box-shadow:0 0 0 1px rgba(128,128,128,.5);display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:middle;border:1px solid rgba(255,255,255,.12)}
+.color-dot{box-shadow:0 0 0 1.5px rgba(148,163,184,.85);display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:middle;border:1px solid rgba(255,255,255,.12)}
 body.light .color-dot{border-color:rgba(0,0,0,.12)}
 .empty-state{text-align:center;padding:40px 20px;color:var(--text3)}.empty-state p{font-size:14px;margin-bottom:14px}
 .qr-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:20px;display:flex;align-items:center;gap:18px}
@@ -1260,14 +1260,19 @@ const isC=CBX[id]==='colors',cur=$(id).value;
 const list=cbxSrc(id).filter(x=>x.name.toLowerCase().includes((q||'').toLowerCase()));
 if(!list.length){el.innerHTML=`<div class="cbx-empty">${t('noMatches')}</div>`;return}
 // What the club already owns goes first, so nobody picks a near-duplicate colour by mistake
+// For colours, "in use" means used by the item type being edited — not by the whole club,
+// otherwise nearly every colour shows as used and the hint is worthless
 const key=isC?'color_id':'item_type_id';
-const used=new Set(D.items.filter(i=>i.quantity>0).map(i=>i[key]));
+const tSel=isC?(id==='bulkColor'?$('bulkType')?.value:id==='itemColor'?$('itemType')?.value:''):'';
+const used=new Set(D.items.filter(i=>i.quantity>0&&(!isC||!tSel||i.item_type_id===tSel)).map(i=>i[key]));
 const opt=x=>`<div class="cbx-opt${x.id===cur?' sel':''}" onmousedown="event.preventDefault();cbxPick('${id}','${x.id}')">${isC?`<span class="color-dot" style="background:${x.hex_code}"></span>`:''}${esc(x.name)}</div>`;
 const inUse=list.filter(x=>used.has(x.id)),rest=list.filter(x=>!used.has(x.id));
 if(!inUse.length||!rest.length){el.innerHTML=list.map(opt).join('');return}
 el.innerHTML=`<div class="cbx-sep">${t('usedAlready')}</div>`+inUse.map(opt).join('')
 +`<div class="cbx-sep">${t('otherOnes')}</div>`+rest.map(opt).join('')}
-function cbxPick(id,v){cbxSet(id,v);cbxClose(id)}
+function cbxPick(id,v){cbxSet(id,v);cbxClose(id);
+// Changing the item type changes which colours count as "in use"
+if(id==='itemType')cbxRender('itemColor','');if(id==='bulkType')cbxRender('bulkColor','')}
 function cbxOpen(id){cbxRender(id,'');$('cbx_'+id).classList.add('open')}
 function cbxClose(id){const w=$('cbx_'+id);if(w)w.classList.remove('open');
 // Back to picker mode: no keyboard until the user asks for it again
@@ -1427,7 +1432,7 @@ if(error){toast(error.message,'error');return}
 toast(t('tDeleted'));await loadData();renderSizes()};
 $('confirmText').textContent=used?t('cascadeSizeQ').replace('{n}',used):t('deleteSizeQ');
 openModal('confirmModal')}
-function renderTypes(){$('typesList').innerHTML=D.types.map(ty=>`<div class="type-card"><div class="type-name" style="display:flex;align-items:center">${(()=>{const p=ty.photo_mode==='per_color'?Object.values(ty.photos||{})[0]:ty.photo;return p?`<img class="tp-thumb" src="${p}" alt="" onclick="event.stopPropagation();openLightbox(this.src,'${esc(ty.name).replace(/'/g,"\\'")}')">`:''})()}${esc(ty.name)}</div><div style="display:flex;gap:4px"><button class="btn-icon" onclick="openEditType('${ty.id}')">✎</button><button class="btn-icon" onclick="delType('${ty.id}')">✕</button></div></div>`).join('')}
+function renderTypes(){$('typesList').innerHTML=D.types.map(ty=>`<div class="type-card"><div class="type-name" style="display:flex;align-items:center">${(()=>{const p=ty.photo_mode==='per_color'?Object.values(ty.photos||{})[0]:ty.photo;return p?`<img class="tp-thumb" src="${p}" alt="" data-cap="${escA(ty.name)}" onclick="event.stopPropagation();openLightbox(this.src,this.dataset.cap)">`:''})()}${esc(ty.name)}</div><div style="display:flex;gap:4px"><button class="btn-icon" onclick="openEditType('${ty.id}')">✎</button><button class="btn-icon" onclick="delType('${ty.id}')">✕</button></div></div>`).join('')}
 let typePhoto=null,typePhotos={},typeMode='single';
 // Shared: shrink + compress an image file to a small data URL
 function shrinkImg(f,inp,cb){if(!f.type.startsWith('image/')){toast(t('tImgOnly'),'error');if(inp)inp.value='';return}
@@ -1458,7 +1463,7 @@ let split=false;
 el.innerHTML=cols.map((c,ix)=>{const p=typePhotos[c.id];
 let head='';
 if(!c.used&&!split){split=true;head=ix>0?`<div class="pc-sep">${t('otherColors')}</div>`:''}
-return head+`<div class="pc-row">${p?`<img class="pc-img" src="${p}" alt="" onclick="openLightbox(this.src,${JSON.stringify(c.name)})">`:'<div class="pc-ph"></div>'}
+return head+`<div class="pc-row">${p?`<img class="pc-img" src="${p}" alt="" data-cap="${escA(c.name)}" onclick="openLightbox(this.src,this.dataset.cap)">`:'<div class="pc-ph"></div>'}
 <div class="pc-name"><span class="color-dot" style="background:${c.hex_code}"></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.name)}</span></div>
 <input type="file" accept="image/*" id="tpc_${c.id}" onchange="typeColorPhotoPick('${c.id}',this)" style="display:none">
 <button type="button" class="btn btn-secondary btn-sm" onclick="$('tpc_${c.id}').click()">${p?t('changeBtn'):t('uploadBtn')}</button>
@@ -1696,6 +1701,8 @@ function confirmAction(){if(pendConf)pendConf()}
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show')}));
 function toast(m,t='success'){const e=$('toast');e.textContent=m;e.className='toast toast-'+t+' show';setTimeout(()=>e.classList.remove('show'),3000)}
 function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+// Attribute-safe escape: esc() leaves quotes intact, which breaks inline handlers
+function escA(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 // Apply saved language to static UI + selector on load
 document.documentElement.lang=LANG;const _ls=$('langSel');if(_ls)_ls.value=LANG;const _lsl=$('langSelLd');if(_lsl)_lsl.value=LANG;applyStaticLang();
 checkSession();
