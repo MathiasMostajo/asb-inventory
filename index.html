@@ -113,6 +113,23 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .imp-mode label.on{border-color:var(--accent);background:var(--accent-dim)}
 .imp-mode .t{font-size:13px;font-weight:700}
 .imp-mode .d{font-size:11.5px;color:var(--text3);line-height:1.5}
+.tag-pick{display:flex;flex-wrap:wrap;gap:7px}
+.tag-sw{width:30px;height:30px;border-radius:9px;border:2px solid transparent;cursor:pointer;padding:0;position:relative}
+.tag-sw.on{border-color:var(--text);box-shadow:0 0 0 2px var(--bg2) inset}
+.tag-sw.none{background:var(--bg3);color:var(--text3);font-size:15px;line-height:26px;border:2px dashed var(--border)}
+.tag-sw.none.on{border-style:solid;border-color:var(--text)}
+.box-tag{display:inline-block;width:11px;height:11px;border-radius:50%;flex-shrink:0;margin-right:7px;vertical-align:middle}
+.box-card{position:relative;overflow:hidden}
+.box-card .tag-bar{position:absolute;left:0;top:0;bottom:0;width:5px}
+.tag-filters{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.tag-fb{width:26px;height:26px;border-radius:8px;border:2px solid transparent;cursor:pointer;padding:0}
+.tag-fb.on{border-color:var(--text)}
+.lightbox{position:fixed;inset:0;background:rgba(4,10,26,.92);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:2500;padding:24px;cursor:zoom-out}
+.lightbox.show{display:flex}
+.lb-inner{text-align:center;max-width:100%}
+.lb-inner img{max-width:min(520px,86vw);max-height:74vh;border-radius:14px;background:#fff;display:block;margin:0 auto}
+.lb-cap{margin-top:12px;font-size:13.5px;color:var(--text2);font-weight:600}
+.qv-img{cursor:zoom-in}
 .busy{position:fixed;inset:0;background:rgba(4,10,26,.82);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:3000;padding:20px}
 .busy.show{display:flex}
 .busy-card{background:var(--bg2);border:1px solid var(--accent-dim2);border-radius:16px;padding:26px 30px;text-align:center;max-width:340px;box-shadow:0 16px 48px rgba(0,0,0,.55)}
@@ -171,7 +188,9 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .inv-row{display:flex;gap:8px;align-items:center;margin-top:8px}
 .inv-row input{flex:1;font-size:12px;font-family:'JetBrains Mono',monospace;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2)}
 .qv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
-.qv-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 10px;text-align:center;transition:border-color .15s}
+.qv-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 10px;text-align:center;transition:border-color .15s;position:relative}
+.qv-edit{position:absolute;top:5px;right:5px;width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--bg3);color:var(--text3);font-size:12px;cursor:pointer;padding:0;line-height:1;z-index:2}
+.qv-edit:hover{color:var(--accent);border-color:var(--accent)}
 .qv-card.open{border-color:var(--accent-dim2)}
 .qv-name{font-size:13px;font-weight:700;line-height:1.2;margin-bottom:3px}
 .qv-color{font-size:11px;color:var(--text3);display:flex;align-items:center;justify-content:center;gap:5px;margin-bottom:8px}
@@ -259,7 +278,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 .toast{position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:var(--radius);font-size:13px;font-weight:500;z-index:2000;transform:translateY(20px);opacity:0;transition:all .3s;max-width:360px}.toast.show{transform:translateY(0);opacity:1}
 .toast-success{background:var(--accent-dim2);color:var(--accent);border:1px solid rgba(56,182,255,.3)}
 .toast-error{background:var(--red-dim);color:var(--red);border:1px solid rgba(248,113,113,.3)}
-@media print{@page{margin:0}body{background:#fff!important}.topbar,.toast,.modal-overlay,.checkout-undo{display:none!important}.content{padding:0}.page{display:none!important}#page-print{display:block!important}.print-qr{text-align:center;padding:60px 40px}.print-qr h2{color:#000}.print-qr p{color:#333}}
+@media print{@page{margin:0}body{background:#fff!important}.topbar,.toast,.modal-overlay,.checkout-undo{display:none!important}.content{padding:0}.page{display:none!important}#page-print{display:block!important}.print-qr{text-align:center;padding:48px 24px}.print-qr h2{color:#000;max-width:300px;margin:0 auto 18px;line-height:1.22;text-wrap:balance;overflow-wrap:break-word;hyphens:auto}.print-qr p{color:#333}}
 @media(max-width:768px){
 /* Header: row 1 = brand + controls, row 2 = nav that scrolls sideways */
 .topbar{height:auto;padding:8px 12px;flex-wrap:wrap;row-gap:6px;align-items:center}
@@ -416,6 +435,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="page-header"><h2 class="page-title" data-i18n="boxes">Boxes</h2><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm" onclick="openFilterLocModal()">📍 <span data-i18n="filter">Filter</span></button><button class="btn btn-primary btn-sm" onclick="openAddBoxModal()">+ <span data-i18n="add">Add</span></button></div></div>
 <input type="text" class="co-search" id="boxSearch" data-i18n-ph="searchBoxes" placeholder="Search boxes by name or location..." oninput="renderBoxes()">
 <div class="view-toggle"><button class="active" id="viewCards" onclick="setBoxView('cards')" data-i18n="cards">Cards</button><button id="viewTable" onclick="setBoxView('table')" data-i18n="summary">Summary</button></div>
+<div class="tag-filters" id="tagFilters"></div>
 <div id="boxesList"></div></div>
 
 <!-- BOX DETAIL -->
@@ -483,6 +503,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="modal-overlay" id="boxModal"><div class="modal"><h2 id="boxModalTitle">Add Box</h2>
 <div class="form-group"><label data-i18n="name">Name</label><input type="text" id="boxName" placeholder="Shed 1 - U6 Blue"></div>
 <div class="form-group"><label data-i18n="location">Location</label><select id="boxLocation"><option value="" data-i18n="none">— None —</option></select></div>
+<div class="form-group"><label data-i18n="tagLbl">Sticker colour</label><div class="tag-pick" id="boxTagPick"></div></div>
 <div class="form-group"><label data-i18n="status">Status</label><select id="boxStatus"><option value="clean" data-i18n="clean">Clean</option><option value="dirty" data-i18n="dirty">Dirty</option><option value="na" data-i18n="statusNA">Not applicable</option></select></div>
 <div class="form-group"><label data-i18n="notes">Notes</label><input type="text" id="boxNotes"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('boxModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveBox()" id="saveBoxBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
@@ -527,6 +548,8 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="form-group"><label data-i18n="name">Name</label><input type="text" id="locName" placeholder="Main Shed"></div>
 <div class="form-group"><label data-i18n="description">Description</label><input type="text" id="locDesc"></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('locModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveLoc()" id="saveLocBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()"><div class="lb-inner"><img id="lbImg" alt=""><div class="lb-cap" id="lbCap"></div></div></div>
 
 <div class="busy" id="busyOverlay"><div class="busy-card"><span class="spinner busy-sp"></span><div class="busy-msg" id="busyMsg"></div><div class="busy-sub" data-i18n="busyWait">Please don't close this window</div></div></div>
 
@@ -770,6 +793,7 @@ welcomeS1:{en:"Create a box for each physical container you store equipment in."
 welcomeS2:{en:"Open the box and add what's inside — use Bulk to load many sizes at once.",fr:"Ouvrez la boîte et ajoutez son contenu — utilisez En lot pour charger plusieurs tailles d'un coup.",es:"Abrí la caja y agregá lo que hay adentro — usá En lote para cargar muchas tallas de una vez.",pt:"Abra a caixa e adicione o que há dentro — use Em lote para carregar vários tamanhos de uma vez.",de:"Öffnen Sie die Box und fügen Sie den Inhalt hinzu — nutzen Sie Sammeln für viele Größen auf einmal.",it:"Apri la scatola e aggiungi il contenuto — usa In blocco per caricare più taglie insieme.",nl:"Open de doos en voeg de inhoud toe — gebruik Bulk om veel maten tegelijk te laden."},
 welcomeS3:{en:"Print the QR label and stick it on the box. Scanning it opens the box here.",fr:"Imprimez l'étiquette QR et collez-la sur la boîte. La scanner ouvre la boîte ici.",es:"Imprimí la etiqueta QR y pegala en la caja. Escanearla abre la caja acá.",pt:"Imprima a etiqueta QR e cole na caixa. Escaneá-la abre a caixa aqui.",de:"Drucken Sie das QR-Etikett und kleben Sie es auf die Box. Beim Scannen öffnet sich die Box hier.",it:"Stampa l'etichetta QR e attaccala alla scatola. Scansionandola si apre la scatola qui.",nl:"Print het QR-label en plak het op de doos. Scannen opent de doos hier."},
 welcomeCta:{en:"Create my first box",fr:"Créer ma première boîte",es:"Crear mi primera caja",pt:"Criar minha primeira caixa",de:"Erste Box erstellen",it:"Crea la mia prima scatola",nl:"Maak mijn eerste doos"},
+tagLbl:{en:"Sticker colour",fr:"Couleur de pastille",es:"Color de pegatina",pt:"Cor do adesivo",de:"Aufkleberfarbe",it:"Colore adesivo",nl:"Stickerkleur"},
 busyWorking:{en:"Applying changes\u2026",fr:"Application des modifications\u2026",es:"Aplicando cambios\u2026",pt:"Aplicando alterações\u2026",de:"Änderungen werden angewendet\u2026",it:"Applicazione modifiche\u2026",nl:"Wijzigingen toepassen\u2026"},
 busyImporting:{en:"Importing your inventory\u2026",fr:"Importation de votre inventaire\u2026",es:"Importando tu inventario\u2026",pt:"Importando seu inventário\u2026",de:"Inventar wird importiert\u2026",it:"Importazione inventario\u2026",nl:"Inventaris importeren\u2026"},
 busySetup:{en:"Setting up your club\u2026",fr:"Configuration de votre club\u2026",es:"Configurando tu club\u2026",pt:"Configurando seu clube\u2026",de:"Verein wird eingerichtet\u2026",it:"Configurazione del club\u2026",nl:"Je club instellen\u2026"},
@@ -1094,7 +1118,8 @@ charts[id]=new Chart(c,{type,data,options:{responsive:true,maintainAspectRatio:t
 
 // BOXES
 function setBoxView(v){boxView=v;$('viewCards').className=v==='cards'?'active':'';$('viewTable').className=v==='table'?'active':'';renderBoxes()}
-function renderBoxes(){let bx=D.boxes;if(boxLocF)bx=bx.filter(b=>b.location_id===boxLocF);
+function renderBoxes(){renderTagFilters();let bx=D.boxes;if(boxLocF)bx=bx.filter(b=>b.location_id===boxLocF);
+if(boxTagF)bx=bx.filter(b=>b.tag_color===boxTagF);
 const sq=($('boxSearch')?.value||'').toLowerCase().trim();
 // Searching also looks inside the boxes, so "where are the blue M jerseys?" has an answer
 const hits={};
@@ -1112,19 +1137,19 @@ if(boxView==='table'){
 el.innerHTML=`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('name')}</th><th>${t('location')}</th><th>${t('status')}</th><th>${t('items')}</th><th>${t('types')}</th>${D.types.map(ty=>`<th>${esc(ty.name)}</th>`).join('')}</tr></thead><tbody>${bx.map(b=>{
 const it=D.items.filter(i=>i.box_id===b.id);const tot=it.reduce((s,i)=>s+i.quantity,0);const tc=[...new Set(it.map(i=>i.item_type_id))].length;
 const perType=D.types.map(ty=>{const q=it.filter(i=>i.item_type_id===ty.id).reduce((s,i)=>s+i.quantity,0);return`<td class="qty">${q||'—'}</td>`}).join('');
-return`<tr style="cursor:pointer" onclick="openDetail('${b.id}')"><td style="font-weight:600">${esc(b.name)}</td><td>${esc(gln(b.location_id))}</td><td><span class="status-badge status-${b.status}">${b.status==='na'?t('statusNA'):b.status==='clean'?t('clean'):t('dirty')}</span></td><td class="qty">${tot}</td><td class="qty">${tc}</td>${perType}</tr>`}).join('')}</tbody></table></div>`;return}
+return`<tr style="cursor:pointer" onclick="openDetail('${b.id}')"><td style="font-weight:600">${b.tag_color?`<span class="box-tag" style="background:${b.tag_color}"></span>`:''}${esc(b.name)}</td><td>${esc(gln(b.location_id))}</td><td><span class="status-badge status-${b.status}">${b.status==='na'?t('statusNA'):b.status==='clean'?t('clean'):t('dirty')}</span></td><td class="qty">${tot}</td><td class="qty">${tc}</td>${perType}</tr>`}).join('')}</tbody></table></div>`;return}
 el.innerHTML='<div class="boxes-grid">'+bx.map(b=>{const it=D.items.filter(i=>i.box_id===b.id);const tot=it.reduce((s,i)=>s+i.quantity,0);const tc=[...new Set(it.map(i=>i.item_type_id))].length;const ct={};it.forEach(i=>{const h=gch(i.color_id);ct[h]=(ct[h]||0)+i.quantity});const bar=tot>0?Object.entries(ct).map(([h,q])=>`<div style="width:${(q/tot*100).toFixed(1)}%;background:${h}"></div>`).join(''):'';const loc=gln(b.location_id);
-return`<div class="box-card" onclick="openDetail('${b.id}')"><div class="box-card-header"><div class="box-card-name">${esc(b.name)}</div><span class="status-badge status-${b.status}">${b.status==='na'?t('statusNA'):b.status==='clean'?t('clean'):t('dirty')}</span></div>${loc?`<div class="box-card-loc">📍 ${esc(loc)}</div>`:''}<div class="box-card-stats"><div class="box-card-stat">${t('items')}: <span>${tot}</span></div><div class="box-card-stat">${t('types')}: <span>${tc}</span></div></div>${bar?`<div class="box-card-chart">${bar}</div>`:''}${hitLine(b)}</div>`}).join('')+'</div>'}
+return`<div class="box-card" onclick="openDetail('${b.id}')">${b.tag_color?`<div class="tag-bar" style="background:${b.tag_color}"></div>`:''}<div class="box-card-header"><div class="box-card-name">${esc(b.name)}</div><span class="status-badge status-${b.status}">${b.status==='na'?t('statusNA'):b.status==='clean'?t('clean'):t('dirty')}</span></div>${loc?`<div class="box-card-loc">📍 ${esc(loc)}</div>`:''}<div class="box-card-stats"><div class="box-card-stat">${t('items')}: <span>${tot}</span></div><div class="box-card-stat">${t('types')}: <span>${tc}</span></div></div>${bar?`<div class="box-card-chart">${bar}</div>`:''}${hitLine(b)}</div>`}).join('')+'</div>'}
 function openFilterLocModal(){if(!D.locs.length){toast(t('tNoLocations'),'error');return}pendConf=null;$('confirmText').innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn btn-secondary btn-sm" onclick="boxLocF=null;renderBoxes();closeModal('confirmModal')">${t('all')}</button>${D.locs.map(l=>`<button class="btn btn-secondary btn-sm" onclick="boxLocF='${l.id}';renderBoxes();closeModal('confirmModal')">${esc(l.name)}</button>`).join('')}</div>`;openModal('confirmModal')}
 function popLocDD(v){$('boxLocation').innerHTML='<option value="">— None —</option>'+D.locs.map(l=>`<option value="${l.id}"${l.id===v?' selected':''}>${esc(l.name)}</option>`).join('')}
-function openAddBoxModal(){editBox=null;$('boxModalTitle').textContent=t('addBox');$('boxName').value='';$('boxStatus').value='clean';$('boxNotes').value='';popLocDD('');openModal('boxModal')}
-function openEditBoxModal(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;editBox=b.id;$('boxModalTitle').textContent=t('edit');$('boxName').value=b.name;$('boxStatus').value=b.status;$('boxNotes').value=b.notes||'';popLocDD(b.location_id||'');openModal('boxModal')}
-async function saveBox(){const n=$('boxName').value.trim(),st=$('boxStatus').value,nt=$('boxNotes').value.trim(),loc=$('boxLocation').value||null;if(!n){toast(t('tEnterName'),'error');return}const b=$('saveBoxBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editBox){await SB.from('boxes').update({name:n,status:st,notes:nt||null,location_id:loc}).eq('id',editBox);toast(t('tUpdated'))}else{await ins('boxes',{name:n,status:st,notes:nt||null,location_id:loc,created_by:U.id});toast(t('tAdded'))}b.innerHTML='Save';b.disabled=0;closeModal('boxModal');await loadData();if(editBox)openDetail(editBox)}
+function openAddBoxModal(){editBox=null;boxTag=null;renderTagPick();$('boxModalTitle').textContent=t('addBox');$('boxName').value='';$('boxStatus').value='clean';$('boxNotes').value='';popLocDD('');openModal('boxModal')}
+function openEditBoxModal(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;editBox=b.id;boxTag=b.tag_color||null;renderTagPick();$('boxModalTitle').textContent=t('edit');$('boxName').value=b.name;$('boxStatus').value=b.status;$('boxNotes').value=b.notes||'';popLocDD(b.location_id||'');openModal('boxModal')}
+async function saveBox(){const n=$('boxName').value.trim(),st=$('boxStatus').value,nt=$('boxNotes').value.trim(),loc=$('boxLocation').value||null;if(!n){toast(t('tEnterName'),'error');return}const b=$('saveBoxBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editBox){await SB.from('boxes').update({name:n,status:st,notes:nt||null,location_id:loc,tag_color:boxTag}).eq('id',editBox);toast(t('tUpdated'))}else{await ins('boxes',{name:n,status:st,notes:nt||null,location_id:loc,tag_color:boxTag,created_by:U.id});toast(t('tAdded'))}b.innerHTML='Save';b.disabled=0;closeModal('boxModal');await loadData();if(editBox)openDetail(editBox)}
 async function deleteBox(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;pendConf=async()=>{await SB.from('boxes').delete().eq('id',curBox);toast(t('tDeleted'));closeModal('confirmModal');showPage('boxes');await loadData()};$('confirmText').textContent=t('deleteBoxQ')+' '+b.name;openModal('confirmModal')}
 
 // BOX DETAIL
 function openDetail(id){curBox=id;const b=D.boxes.find(x=>x.id===id);if(!b)return;
-$('detailTitle').textContent=b.name;$('detailStatus').innerHTML=`<span class="status-badge status-${b.status}">${b.status}</span>`;
+$('detailTitle').innerHTML=(b.tag_color?`<span class="box-tag" style="background:${b.tag_color}"></span>`:'')+esc(b.name);$('detailStatus').innerHTML=`<span class="status-badge status-${b.status}">${b.status}</span>`;
 $('detailLocBadge').innerHTML=gln(b.location_id)?`<span style="font-size:12px;color:var(--text3)">📍 ${esc(gln(b.location_id))}</span>`:'';
 const items=D.items.filter(i=>i.box_id===id);const tot=items.reduce((s,i)=>s+i.quantity,0);
 $('detailStats').innerHTML=`<div class="detail-stat"><div class="ds-val">${tot}</div><div class="ds-label">${t('total')}</div></div><div class="detail-stat"><div class="ds-val">${[...new Set(items.map(i=>i.item_type_id))].length}</div><div class="ds-label">${t('types')}</div></div><div class="detail-stat"><div class="ds-val">${[...new Set(items.map(i=>i.color_id))].length}</div><div class="ds-label">${t('colors')}</div></div><div class="detail-stat"><div class="ds-val">${items.length}</div><div class="ds-label">${t('lines')}</div></div>`;
@@ -1143,7 +1168,13 @@ rChart('dSC'+i,'bar',{labels:Object.keys(qc),datasets:[{data:Object.values(qc),b
 const bc={};ti.forEach(x=>{const n=gcn(x.color_id);bc[n]=(bc[n]||0)+x.quantity});
 rChart('dCB'+i,'doughnut',{labels:Object.keys(bc),datasets:[{data:Object.values(bc),backgroundColor:Object.keys(bc).map(n=>{const c=D.colors.find(x=>x.name===n);return c?c.hex_code:'#6b7280'}),borderWidth:0}]},{cut:55})})}else dpc.innerHTML='';
 new QRious({element:$('qrCanvas'),value:boxURL(id),size:100,backgroundAlpha:0,foreground:'#38b6ff',level:'M'});renderItems();showPage('detail')}
-function printBoxQR(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;$('printBoxName').textContent=b.name;new QRious({element:$('printQrCanvas'),value:boxURL(b.id),size:250,level:'M'});window.print()}
+function printBoxQR(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;
+const el=$('printBoxName');el.textContent=b.name;
+// Keep the name inside the QR's width and shrink long names instead of
+// letting them run edge-to-edge and wrap into a stub second line
+const n=b.name.length;
+el.style.fontSize=n<=14?'30px':n<=22?'25px':n<=34?'21px':n<=48?'18px':'15px';
+new QRious({element:$('printQrCanvas'),value:boxURL(b.id),size:250,level:'M'});window.print()}
 // ===== QUICK VIEW: cards grouped by type+color, sizes collapsed inside =====
 let itemView='quick',qvOpen=new Set(),qvBusy=false;
 let dashType=localStorage.getItem('qajon_dash_type')||'';
@@ -1159,8 +1190,10 @@ return Object.values(g).map(x=>{x.sizeList=Object.entries(x.sizes).sort((a,b)=>s
 function qvToggle(k,mode){qvOpen.has(k)?qvOpen.delete(k):qvOpen.add(k);mode==='co'?renderCO():renderItems()}
 function qvCard(g,mode){const single=g.sizeList.length===1,open=qvOpen.has(g.k),sz=single?g.sizeList[0][0]:'';
 const ty0=D.types.find(x=>x.id===g.tid);const ph=ty0?(ty0.photo_mode==='per_color'?(ty0.photos||{})[g.cid]:ty0.photo):null;
+const one=single?D.items.find(i=>(mode==='co'||i.box_id===curBox)&&i.item_type_id===g.tid&&i.color_id===g.cid&&i.size===sz):null;
 return `<div class="qv-card${open?' open':''}">
-${ph?`<img class="qv-img" src="${ph}" alt="">`:''}
+${mode==='box'&&one?`<button class="qv-edit" title="${t('edit')}" onclick="event.stopPropagation();openEditItem('${one.id}')">\u270e</button>`:''}
+${ph?`<img class="qv-img" src="${ph}" alt="" onclick="qvPhoto(event,'${g.tid}','${g.cid}')">`:''}
 <div class="qv-name">${esc(gtn(g.tid))}</div>
 <div class="qv-color"><span class="color-dot" style="background:${gch(g.cid)}"></span>${esc(gcn(g.cid))}</div>
 <div class="qv-total${g.total<=0?' zero':''}" onclick="${single?`qvNum('${mode}','${g.tid}','${g.cid}','${sz}')`:`qvToggle('${g.k}','${mode}')`}">${g.total}</div>
@@ -1472,6 +1505,25 @@ await SB.from('app_settings').upsert(rows,{onConflict:'club_id,key'});
 if(cn)await SB.from('clubs').update({name:cn}).eq('id',CID);
 toast(t('tSaved'));await loadData()}
 // Full-screen busy state for anything that writes a lot of rows at once
+// Basic sticker colours you can actually buy — not the club's garment colours
+const TAGS=[['#ef4444','red'],['#f97316','orange'],['#eab308','yellow'],['#22c55e','green'],['#3b82f6','blue'],['#a855f7','purple'],['#ec4899','pink'],['#000000','black']];
+let boxTag=null,boxTagF=null;
+function renderTagPick(){const el=$('boxTagPick');if(!el)return;
+el.innerHTML=`<button type="button" class="tag-sw none${boxTag?'':' on'}" onclick="setBoxTag(null)" title="${t('none')}">\u2715</button>`
++TAGS.map(([h])=>`<button type="button" class="tag-sw${boxTag===h?' on':''}" style="background:${h}" onclick="setBoxTag('${h}')"></button>`).join('')}
+function setBoxTag(h){boxTag=h;renderTagPick()}
+function renderTagFilters(){const el=$('tagFilters');if(!el)return;
+const used=[...new Set(D.boxes.map(b=>b.tag_color).filter(Boolean))];
+if(!used.length){el.innerHTML='';return}
+el.innerHTML=`<span style="font-size:12px;color:var(--text3)">${t('tagLbl')}:</span>`
++used.map(h=>`<button class="tag-fb${boxTagF===h?' on':''}" style="background:${h}" onclick="setTagF('${h}')"></button>`).join('')
++(boxTagF?`<button class="btn btn-secondary btn-sm" onclick="setTagF(null)">${t('clear')}</button>`:'')}
+function setTagF(h){boxTagF=boxTagF===h?null:h;renderTagFilters();renderBoxes()}
+function openLightbox(src,cap){if(!src)return;$('lbImg').src=src;$('lbCap').textContent=cap||'';$('lightbox').classList.add('show')}
+function closeLightbox(){$('lightbox').classList.remove('show');$('lbImg').src=''}
+function qvPhoto(ev,tid,cid){ev.stopPropagation();const ty=D.types.find(x=>x.id===tid);if(!ty)return;
+const src=ty.photo_mode==='per_color'?(ty.photos||{})[cid]:ty.photo;
+openLightbox(src,gtn(tid)+' · '+gcn(cid))}
 function busy(msgKey){const el=$('busyOverlay');if(!el)return;
 $('busyMsg').textContent=t(msgKey||'busyWorking');el.classList.add('show')}
 function busyOff(){const el=$('busyOverlay');if(el)el.classList.remove('show')}
