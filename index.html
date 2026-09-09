@@ -569,7 +569,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="modal-overlay" id="typeModal"><div class="modal"><h2 id="typeModalTitle">Add Type</h2>
 <div class="form-group"><label data-i18n="name">Name</label><input type="text" id="typeName" placeholder="Shin Guards"></div>
 <div class="form-group"><label data-i18n="familyLbl">Family</label>
-<div class="cbx" id="cbx_fam"><input type="hidden" id="typeFamilyId"><input type="text" class="cbx-in" id="in_fam" autocomplete="off" readonly onclick="famTap()" oninput="famRender(this.value)"><div class="cbx-list" id="ls_fam"></div></div>
+<div class="cbx" id="cbx_fam"><input type="hidden" id="typeFamilyId"><input type="text" class="cbx-in" id="in_fam" autocomplete="off" readonly onclick="famTap()" oninput="famRender(this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();famCommit()}"><div class="cbx-list" id="ls_fam"></div></div>
 <p style="font-size:11px;color:var(--text3);margin-top:3px" data-i18n="familyHint">Groups similar items together. Type a new name to create one, or leave empty.</p></div>
 <div class="form-group"><label data-i18n="photoLbl">Photo (optional)</label>
 <div class="ph-modes"><button type="button" id="phModeSingle" class="active" onclick="setPhotoMode('single')" data-i18n="photoOneAll">One photo for all colors</button><button type="button" id="phModePer" onclick="setPhotoMode('per_color')" data-i18n="photoPerColor">One photo per color</button></div>
@@ -1673,6 +1673,13 @@ el.innerHTML=`<div class="cbx-opt${!typeFamId&&!typeFamNew?' sel':''}" onmousedo
 +list.map(f=>`<div class="cbx-opt${typeFamId===f.id?' sel':''}" onmousedown="event.preventDefault();famPick('${f.id}')">${esc(f.name)}</div>`).join('')
 +`<div class="cbx-opt cbx-new" onmousedown="event.preventDefault();famNewStart()">\u002b ${t('newFamily')}</div>`}
 function famPick(id){famSet(id||null,'');$('cbx_fam').classList.remove('open')}
+// Confirm a typed-in family name (Enter or clicking away)
+function famCommit(){const inp=$('in_fam');if(!inp||inp.readOnly)return;
+const v=inp.value.trim();
+$('cbx_fam').classList.remove('open');
+if(!v){famSet(null,'');return}
+const ex=D.fams.find(f=>f.name.toLowerCase()===v.toLowerCase());
+famSet(ex?ex.id:null,ex?'':v)}
 function famNewStart(){const inp=$('in_fam');typeFamId=null;typeFamNew='';
 inp.readOnly=false;inp.classList.add('typing');inp.value='';inp.placeholder=t('newFamilyPh');inp.focus();
 $('ls_fam').innerHTML=`<div class="cbx-empty">${t('newFamilyHint')}</div>`}
@@ -1680,17 +1687,18 @@ function famTap(){const w=$('cbx_fam'),inp=$('in_fam');
 if(!w.classList.contains('open')){famRender('');w.classList.add('open');return}
 if(inp.readOnly)famNewStart()}
 document.addEventListener('click',e=>{const w=$('cbx_fam');
-if(w&&w.classList.contains('open')&&!w.contains(e.target)){w.classList.remove('open');
-const inp=$('in_fam');
-if(inp&&!inp.readOnly){typeFamNew=inp.value.trim();if(!typeFamNew)famSet(null,'')}}});
+if(w&&w.classList.contains('open')&&!w.contains(e.target))famCommit()});
 function openAddTypeModal(){editType=null;typePhoto=null;typePhotos={};typeMode='single';$('typeMoveBtn').style.display='none';famSet(null,'');
 $('typeModalTitle').textContent=t('addType');$('typeName').value='';const pi=$('typePhotoInput');if(pi)pi.value='';
 setPhotoMode('single');openModal('typeModal')}
 function openEditType(id){const ty=D.types.find(x=>x.id===id);if(!ty)return;editType=id;$('typeMoveBtn').style.display='block';famSet(ty.family_id||null,'');$('typeModalTitle').textContent=t('edit');$('typeName').value=ty.name;
 typePhoto=ty.photo||null;typePhotos=ty.photos&&typeof ty.photos==='object'?{...ty.photos}:{};typeMode=ty.photo_mode==='per_color'?'per_color':'single';
 const pi=$('typePhotoInput');if(pi)pi.value='';setPhotoMode(typeMode);openModal('typeModal')}
-async function saveType(){const n=$('typeName').value.trim();if(!n){toast(t('tEnterName'),'error');return}const b=$('saveTypeBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;// A family typed in that doesn't exist yet is created on the fly
-let famId=typeFamId;const fn=(typeFamNew||'').trim();
+async function saveType(){const n=$('typeName').value.trim();if(!n){toast(t('tEnterName'),'error');return}const b=$('saveTypeBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;// A family typed in that doesn't exist yet is created on the fly.
+// Read the input directly: on Save the field may not have blurred yet.
+const fInp=$('in_fam');
+const fn=((fInp&&!fInp.readOnly?fInp.value:typeFamNew)||'').trim();
+let famId=fn?null:typeFamId;
 if(fn){const ex=D.fams.find(f=>f.name.toLowerCase()===fn.toLowerCase());
 if(ex)famId=ex.id;
 else{const fr=await ins('item_families',{name:fn}).select();
