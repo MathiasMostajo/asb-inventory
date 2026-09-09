@@ -149,9 +149,23 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .cbx-opt.sel{background:var(--accent-dim);color:var(--accent);font-weight:600}
 .cbx-sep{padding:9px 11px 5px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);background:var(--bg3);border-top:1px solid var(--border)}
 .cbx-sep:first-child{border-top:none}
+.cbx-new{color:var(--accent);font-weight:600;border-top:1px solid var(--border)}
 .cbx-empty{padding:10px 11px;font-size:12.5px;color:var(--text3)}
 .box-hit{margin-top:9px;padding-top:8px;border-top:1px dashed var(--border);font-size:11.5px;color:var(--text2);line-height:1.55}
 .box-hit strong{color:var(--accent)}
+.set-search{width:100%;margin-bottom:12px}
+.mv-list{max-height:230px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px 10px}
+.mv-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border)}
+.mv-row:last-child{border-bottom:none}
+.mv-lbl{flex:1;min-width:0;font-size:13px;font-weight:600}
+.mv-sub{font-size:11.5px;color:var(--text3);font-weight:500}
+.mv-qty{width:66px;text-align:center}
+.mv-of{font-size:12px;color:var(--text3);min-width:34px}
+.sel-bar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;background:var(--accent-dim);border:1px solid var(--accent-dim2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px}
+.sel-bar .cnt{font-size:13px;font-weight:700;color:var(--accent)}
+.type-card.picked{border-color:var(--accent);background:var(--accent-dim)}
+.type-card .selbox{width:17px;height:17px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;margin-right:9px}
+.type-card.empty0 .type-name span,.color-card.empty0 .color-names{opacity:.45}
 .fam-head{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--accent);margin:16px 0 7px;padding-bottom:4px;border-bottom:1px solid var(--border)}
 .fam-head:first-child{margin-top:0}
 .size-row{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;margin-bottom:6px}
@@ -444,6 +458,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <input type="text" class="co-search" id="boxSearch" data-i18n-ph="searchBoxes" placeholder="Search boxes by name or location..." oninput="renderBoxes()">
 <div class="view-toggle"><button class="active" id="viewCards" onclick="setBoxView('cards')" data-i18n="cards">Cards</button><button id="viewTable" onclick="setBoxView('table')" data-i18n="summary">Summary</button></div>
 <div class="tag-filters" id="tagFilters"></div>
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><span style="font-size:12px;color:var(--text3)" data-i18n="sortBy">Sort by</span><select class="dash-pick" id="boxSort" onchange="setBoxSort(this.value)"><option value="name" data-i18n="sortName">Name</option><option value="tag" data-i18n="sortTag">Sticker colour</option></select></div>
 <div id="boxesList"></div></div>
 
 <!-- BOX DETAIL -->
@@ -493,11 +508,16 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <button onclick="showSTab('locations',this)" data-i18n="locations">Locations</button>
 <button onclick="showSTab('users',this)" id="usersTabBtn" data-i18n="users">Users</button>
 <button onclick="showSTab('general',this)" data-i18n="general">General</button></div>
-<div class="settings-section active" id="settings-colors"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="colors">Colors</h3><button class="btn btn-secondary btn-sm" onclick="openAddColorModal()">+ <span data-i18n="add">Add</span></button></div><div class="colors-grid" id="colorsList"></div></div>
+<div class="settings-section active" id="settings-colors"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="colors">Colors</h3><button class="btn btn-secondary btn-sm" onclick="openAddColorModal()">+ <span data-i18n="add">Add</span></button></div>
+<input type="text" class="set-search" id="colorSearch" data-i18n-ph="searchColors" placeholder="Search..." oninput="renderColors()">
+<div class="colors-grid" id="colorsList"></div></div>
 <div class="settings-section" id="settings-sizes"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="sizesTab">Sizes</h3><button class="btn btn-secondary btn-sm" onclick="openAddSizeModal()">+ <span data-i18n="add">Add</span></button></div>
 <p style="font-size:12px;color:var(--text3);margin-bottom:12px" data-i18n="sizesHint">These are the sizes available when adding items. Use the arrows to reorder them.</p>
 <div id="sizesList"></div></div>
-<div class="settings-section" id="settings-types"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="itemTypes">Item Types</h3><button class="btn btn-secondary btn-sm" onclick="openAddTypeModal()">+ <span data-i18n="add">Add</span></button></div><div class="types-grid" id="typesList"></div></div>
+<div class="settings-section" id="settings-types"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="itemTypes">Item Types</h3><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm" id="selModeBtn" onclick="toggleSelMode()" data-i18n="selectMode">Select</button><button class="btn btn-secondary btn-sm" onclick="openAddTypeModal()">+ <span data-i18n="add">Add</span></button></div></div>
+<input type="text" class="set-search" id="typeSearch" data-i18n-ph="searchItems" placeholder="Search..." oninput="renderTypes()">
+<div id="selBar" class="sel-bar" style="display:none"></div>
+<div class="types-grid" id="typesList"></div></div>
 <div class="settings-section" id="settings-locations"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="locations">Locations</h3><button class="btn btn-secondary btn-sm" onclick="openAddLocModal()">+ <span data-i18n="add">Add</span></button></div><div class="locations-grid" id="locList"></div></div>
 <div class="settings-section" id="settings-users"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="users">Users</h3></div><div id="inviteBox"></div><div id="pendingUsers"></div><div class="users-grid" id="usersList"></div></div>
 <div class="settings-section" id="settings-general"><div style="max-width:400px"><div class="form-group"><label data-i18n="clubName">Club Name</label><input type="text" id="sClubName" placeholder="AS Blainville"></div><div class="form-group"><label data-i18n="clubLogoUrl">Club Logo</label><input type="file" accept="image/*" id="sLogoFile" onchange="logoPick(this)" style="font-size:12px"><div id="sLogoPrev"></div><p style="font-size:11px;color:var(--text3);margin-top:3px"><span data-i18n="logoHint">Shown in topbar & login screen</span></p></div><div class="form-group"><label class="sw-row"><input type="checkbox" id="sLowOn" onchange="toggleLowStock()"><span data-i18n="lowStockOn">Warn me about low stock</span></label>
@@ -543,15 +563,19 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="modal-overlay" id="colorModal"><div class="modal"><h2 id="colorModalTitle">Add Color</h2>
 <div class="form-group"><label data-i18n="colorNameLbl">Color Name</label><input type="text" id="colorName" placeholder="Blue"></div>
 <div class="form-group"><label data-i18n="color">Color</label><input type="color" id="colorHex" value="#3b82f6" style="height:44px;padding:3px;cursor:pointer;width:100%"></div>
+<button class="btn btn-secondary btn-sm" style="width:100%;margin-bottom:10px" onclick="closeModal('colorModal');openMoveStock('color',editColor)" id="colorMoveBtn" data-i18n="moveStock">Move stock</button>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('colorModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveColor()" id="saveColorBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
 
 <div class="modal-overlay" id="typeModal"><div class="modal"><h2 id="typeModalTitle">Add Type</h2>
 <div class="form-group"><label data-i18n="name">Name</label><input type="text" id="typeName" placeholder="Shin Guards"></div>
-<div class="form-group"><label data-i18n="familyLbl">Family</label><input type="text" id="typeFamily" list="famList" autocomplete="off" placeholder="Jersey"><datalist id="famList"></datalist><p style="font-size:11px;color:var(--text3);margin-top:3px" data-i18n="familyHint">Groups similar items together. Type a new name to create one, or leave empty.</p></div>
+<div class="form-group"><label data-i18n="familyLbl">Family</label>
+<div class="cbx" id="cbx_fam"><input type="hidden" id="typeFamilyId"><input type="text" class="cbx-in" id="in_fam" autocomplete="off" readonly onclick="famTap()" oninput="famRender(this.value)"><div class="cbx-list" id="ls_fam"></div></div>
+<p style="font-size:11px;color:var(--text3);margin-top:3px" data-i18n="familyHint">Groups similar items together. Type a new name to create one, or leave empty.</p></div>
 <div class="form-group"><label data-i18n="photoLbl">Photo (optional)</label>
 <div class="ph-modes"><button type="button" id="phModeSingle" class="active" onclick="setPhotoMode('single')" data-i18n="photoOneAll">One photo for all colors</button><button type="button" id="phModePer" onclick="setPhotoMode('per_color')" data-i18n="photoPerColor">One photo per color</button></div>
 <div id="phSingleWrap"><input type="file" accept="image/*" id="typePhotoInput" onchange="typePhotoPick(this)" style="font-size:12px"><div id="typePhotoPrev"></div></div>
 <div id="phPerWrap" style="display:none"></div></div>
+<button class="btn btn-secondary btn-sm" style="width:100%;margin-bottom:10px" onclick="closeModal('typeModal');openMoveStock('type',editType)" id="typeMoveBtn" data-i18n="moveStock">Move stock</button>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('typeModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveType()" id="saveTypeBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
 
 <div class="modal-overlay" id="locModal"><div class="modal"><h2 id="locModalTitle">Add Location</h2>
@@ -576,11 +600,13 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div id="impStep2" style="display:none"></div>
 </div></div>
 
-<div class="modal-overlay" id="moveTypeModal"><div class="modal"><h2 data-i18n="moveStock">Move stock</h2>
+<div class="modal-overlay" id="moveModal"><div class="modal" style="max-width:560px"><h2 id="moveTitle">Move stock</h2>
 <p style="font-size:13px;color:var(--text2);margin-bottom:12px" id="moveDesc"></p>
-<div class="form-group"><label data-i18n="moveTo">Move everything into</label><select id="moveTarget"></select></div>
-<label class="sw-row" style="margin-bottom:14px"><input type="checkbox" id="moveDel" checked><span data-i18n="moveDelSrc">Delete the empty item afterwards</span></label>
-<div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('moveTypeModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" id="moveBtn" onclick="runMoveType()" style="width:auto" data-i18n="moveStock">Move stock</button></div></div></div>
+<div class="form-group"><label data-i18n="moveTo">Move into</label><select id="moveTarget"></select></div>
+<div class="mv-list" id="moveRows"></div>
+<div style="font-size:12.5px;color:var(--accent);font-weight:600;margin:10px 0" id="moveCount"></div>
+<label class="sw-row" id="moveDelWrap" style="margin-bottom:14px"><input type="checkbox" id="moveDel" checked><span data-i18n="moveDelSrc">Delete the empty item afterwards</span></label>
+<div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('moveModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" id="moveBtn" onclick="runMoveStock()" style="width:auto" data-i18n="moveStock">Move stock</button></div></div></div>
 
 <div class="modal-overlay" id="sizeModal"><div class="modal"><h2 id="sizeModalTitle">Add Size</h2>
 <div class="form-group"><label data-i18n="name">Name</label><input type="text" id="sizeName" placeholder="3XL" maxlength="12" autocomplete="off"></div>
@@ -810,6 +836,20 @@ welcomeS2:{en:"Open the box and add what's inside — use Bulk to load many size
 welcomeS3:{en:"Print the QR label and stick it on the box. Scanning it opens the box here.",fr:"Imprimez l'étiquette QR et collez-la sur la boîte. La scanner ouvre la boîte ici.",es:"Imprimí la etiqueta QR y pegala en la caja. Escanearla abre la caja acá.",pt:"Imprima a etiqueta QR e cole na caixa. Escaneá-la abre a caixa aqui.",de:"Drucken Sie das QR-Etikett und kleben Sie es auf die Box. Beim Scannen öffnet sich die Box hier.",it:"Stampa l'etichetta QR e attaccala alla scatola. Scansionandola si apre la scatola qui.",nl:"Print het QR-label en plak het op de doos. Scannen opent de doos hier."},
 welcomeCta:{en:"Create my first box",fr:"Créer ma première boîte",es:"Crear mi primera caja",pt:"Criar minha primeira caixa",de:"Erste Box erstellen",it:"Crea la mia prima scatola",nl:"Maak mijn eerste doos"},
 lowStockOn:{en:"Warn me about low stock",fr:"M'avertir des stocks bas",es:"Avisarme cuando haya poco stock",pt:"Avisar sobre estoque baixo",de:"Bei niedrigem Bestand warnen",it:"Avvisami sulle scorte basse",nl:"Waarschuw bij lage voorraad"},
+newFamily:{en:"New family",fr:"Nouvelle famille",es:"Nueva familia",pt:"Nova família",de:"Neue Familie",it:"Nuova famiglia",nl:"Nieuwe familie"},
+newFamilyPh:{en:"Family name",fr:"Nom de la famille",es:"Nombre de la familia",pt:"Nome da família",de:"Familienname",it:"Nome famiglia",nl:"Familienaam"},
+newFamilyHint:{en:"Type the new family name, then save.",fr:"Saisissez le nom de la nouvelle famille, puis enregistrez.",es:"Escribí el nombre de la familia nueva y guardá.",pt:"Digite o nome da nova família e salve.",de:"Neuen Familiennamen eingeben und speichern.",it:"Scrivi il nome della nuova famiglia e salva.",nl:"Typ de nieuwe familienaam en sla op."},
+selectMode:{en:"Select",fr:"Sélectionner",es:"Seleccionar",pt:"Selecionar",de:"Auswählen",it:"Seleziona",nl:"Selecteren"},
+selectAll:{en:"Select all",fr:"Tout sélectionner",es:"Seleccionar todo",pt:"Selecionar tudo",de:"Alle auswählen",it:"Seleziona tutto",nl:"Alles selecteren"},
+selectedCount:{en:"selected",fr:"sélectionnés",es:"seleccionados",pt:"selecionados",de:"ausgewählt",it:"selezionati",nl:"geselecteerd"},
+applyBtn:{en:"Apply",fr:"Appliquer",es:"Aplicar",pt:"Aplicar",de:"Anwenden",it:"Applica",nl:"Toepassen"},
+searchColors:{en:"Search colours...",fr:"Rechercher une couleur...",es:"Buscar colores...",pt:"Buscar cores...",de:"Farben suchen...",it:"Cerca colori...",nl:"Zoek kleuren..."},
+moveDesc2:{en:"Choose where the stock of \u201c{name}\u201d should go. Untick a row or lower its number to move only part of it.",fr:"Choisissez où doit aller le stock de \u00ab {name} \u00bb. Décochez une ligne ou baissez le nombre pour n'en déplacer qu'une partie.",es:"Elegí a dónde va el stock de \u201c{name}\u201d. Destildá una fila o bajá el número para mover solo una parte.",pt:"Escolha para onde vai o estoque de \u201c{name}\u201d. Desmarque uma linha ou reduza o número para mover só uma parte.",de:"Wählen Sie, wohin der Bestand von \u201e{name}\u201c soll. Zeile abwählen oder Zahl verringern, um nur einen Teil zu verschieben.",it:"Scegli dove spostare le scorte di \u201c{name}\u201d. Deseleziona una riga o abbassa il numero per spostarne solo una parte.",nl:"Kies waar de voorraad van \u201c{name}\u201d heen gaat. Vink een regel uit of verlaag het aantal om slechts een deel te verplaatsen."},
+moveTally:{en:"{n} units will move",fr:"{n} unités seront déplacées",es:"Se moverán {n} unidades",pt:"{n} unidades serão movidas",de:"{n} Einheiten werden verschoben",it:"Verranno spostate {n} unità",nl:"{n} stuks worden verplaatst"},
+tNothingToMove:{en:"There is no stock to move",fr:"Aucun stock à déplacer",es:"No hay stock para mover",pt:"Não há estoque para mover",de:"Kein Bestand zum Verschieben",it:"Nessuna scorta da spostare",nl:"Geen voorraad om te verplaatsen"},
+sortBy:{en:"Sort by",fr:"Trier par",es:"Ordenar por",pt:"Ordenar por",de:"Sortieren nach",it:"Ordina per",nl:"Sorteer op"},
+sortName:{en:"Name",fr:"Nom",es:"Nombre",pt:"Nome",de:"Name",it:"Nome",nl:"Naam"},
+sortTag:{en:"Sticker colour",fr:"Couleur de pastille",es:"Color de pegatina",pt:"Cor do adesivo",de:"Aufkleberfarbe",it:"Colore adesivo",nl:"Stickerkleur"},
 familyLbl:{en:"Family",fr:"Famille",es:"Familia",pt:"Família",de:"Familie",it:"Famiglia",nl:"Familie"},
 familyHint:{en:"Groups similar items together. Type a new name to create one, or leave empty.",fr:"Regroupe les articles similaires. Tapez un nouveau nom pour en créer une, ou laissez vide.",es:"Agrupa artículos similares. Escribí un nombre nuevo para crearla, o dejalo vacío.",pt:"Agrupa itens semelhantes. Digite um nome novo para criar, ou deixe vazio.",de:"Gruppiert ähnliche Artikel. Neuen Namen eingeben, um eine anzulegen, oder leer lassen.",it:"Raggruppa articoli simili. Scrivi un nuovo nome per crearla, o lascia vuoto.",nl:"Groepeert vergelijkbare artikelen. Typ een nieuwe naam om er een te maken, of laat leeg."},
 noFamily:{en:"Ungrouped",fr:"Sans famille",es:"Sin familia",pt:"Sem família",de:"Ohne Familie",it:"Senza famiglia",nl:"Zonder familie"},
@@ -1077,6 +1117,10 @@ if(pendingBoxLink){const target=D.boxes.find(b=>b.id===pendingBoxLink);pendingBo
 function sizeNames(){return D.sizes.map(s=>s.name)}
 // Families group the ~24 item types into ~10 real-world categories
 function famName(id){return D.fams.find(f=>f.id===id)?.name||''}
+function shortName(ty){const f=famName(ty.family_id);if(!f)return ty.name;
+const n=ty.name.trim();
+if(n.toLowerCase().startsWith(f.toLowerCase())){const r=n.slice(f.length).replace(/^[\s\-\u2013\u2014:]+/,'');if(r)return r}
+return n}
 function typeFam(tid){return D.types.find(t=>t.id===tid)?.family_id||null}
 // Types sorted by family, then name; unfiled ones last
 function typesGrouped(list){const L=(list||D.types).slice();
@@ -1155,7 +1199,9 @@ charts[id]=new Chart(c,{type,data,options:{responsive:true,maintainAspectRatio:t
 
 // BOXES
 function setBoxView(v){boxView=v;$('viewCards').className=v==='cards'?'active':'';$('viewTable').className=v==='table'?'active':'';renderBoxes()}
-function renderBoxes(){renderTagFilters();let bx=D.boxes;if(boxLocF)bx=bx.filter(b=>b.location_id===boxLocF);
+let boxSortMode=localStorage.getItem('qajon_box_sort')||'name';
+function setBoxSort(v){boxSortMode=v;localStorage.setItem('qajon_box_sort',v);renderBoxes()}
+function renderBoxes(){renderTagFilters();const bs=$('boxSort');if(bs)bs.value=boxSortMode;let bx=D.boxes;if(boxLocF)bx=bx.filter(b=>b.location_id===boxLocF);
 if(boxTagF)bx=bx.filter(b=>b.tag_color===boxTagF);
 const sq=($('boxSearch')?.value||'').toLowerCase().trim();
 // Searching also looks inside the boxes, so "where are the blue M jerseys?" has an answer
@@ -1165,6 +1211,9 @@ if(`${gtn(i.item_type_id)} ${gcn(i.color_id)} ${i.size==='—'?'':i.size}`.toLow
 bx=bx.filter(b=>(b.name||'').toLowerCase().includes(sq)||(gln(b.location_id)||'').toLowerCase().includes(sq)||hits[b.id]);
 // Boxes that actually contain the searched item come first
 bx=bx.slice().sort((a,b)=>(hits[b.id]?1:0)-(hits[a.id]?1:0))}
+if(boxSortMode==='tag'){const TO=TAGS.map(x=>x[0]);
+const rk=h=>{if(!h)return 999;const i=TO.indexOf(h);return i<0?500:i};
+bx=bx.slice().sort((a,b)=>rk(a.tag_color)-rk(b.tag_color)||(a.name||'').localeCompare(b.name||''))}
 const hitLine=b=>{const h=hits[b.id];if(!h)return '';
 const tot=h.reduce((s,i)=>s+i.quantity,0);
 return `<div class="box-hit">${h.slice(0,3).map(i=>`<div>${esc(gtn(i.item_type_id))} · ${esc(gcn(i.color_id))}${i.size&&i.size!=='—'?' · '+esc(i.size):''} — <strong>${i.quantity}</strong></div>`).join('')}${h.length>3?`<div>+${h.length-3} ${t('more')} · ${t('total')}: ${tot}</div>`:''}</div>`};
@@ -1279,11 +1328,14 @@ const CBX={itemType:'types',itemColor:'colors',bulkType:'types',bulkColor:'color
 function cbxSrc(id){return CBX[id]==='colors'?D.colors:D.types}
 function cbxAfter(id){if(id==='itemColor')updCP();if(id==='bulkColor')updBCP()}
 function cbxSet(id,v){const src=cbxSrc(id),o=src.find(x=>x.id===v)||src[0];
-$(id).value=o?o.id:'';const inp=$('in_'+id);if(inp){inp.value=o?o.name:'';inp.readOnly=true;inp.classList.remove('typing')}
+$(id).value=o?o.id:'';const inp=$('in_'+id);
+const lbl=o?((CBX[id]==='types'&&famName(o.family_id))?famName(o.family_id)+' \u203a '+shortName(o):o.name):'';
+if(inp){inp.value=lbl;inp.readOnly=true;inp.classList.remove('typing')}
 cbxRender(id,'');cbxAfter(id)}
 function cbxRender(id,q){const el=$('ls_'+id);if(!el)return;
 const isC=CBX[id]==='colors',cur=$(id).value;
-const list=cbxSrc(id).filter(x=>x.name.toLowerCase().includes((q||'').toLowerCase()));
+const ql=(q||'').toLowerCase();
+const list=cbxSrc(id).filter(x=>x.name.toLowerCase().includes(ql)||(CBX[id]==='types'&&famName(x.family_id).toLowerCase().includes(ql)));
 if(!list.length){el.innerHTML=`<div class="cbx-empty">${t('noMatches')}</div>`;return}
 // What the club already owns goes first, so nobody picks a near-duplicate colour by mistake
 // For colours, "in use" means used by the item type being edited — not by the whole club,
@@ -1407,9 +1459,12 @@ b.innerHTML='Save';b.disabled=0;toast(t('tSnapSaved'));closeModal('snapModal');r
 async function delSnap(id){pendConf=async()=>{await SB.from('inventory_snapshots').delete().eq('id',id);D.snaps=D.snaps.filter(s=>s.id!==id);toast(t('tDeleted'));closeModal('confirmModal');renderSnaps()};$('confirmText').textContent=t('deleteSnapQ');openModal('confirmModal')}
 
 // SETTINGS
-function renderColors(){$('colorsList').innerHTML=D.colors.map(c=>`<div class="color-card"><div class="color-swatch" style="background:${c.hex_code}"></div><div class="color-names"><div class="en">${esc(c.name)}</div></div><button class="btn-icon" onclick="openEditColor('${c.id}')">✎</button><button class="btn-icon" onclick="delColor('${c.id}')">✕</button></div>`).join('')}
-function openAddColorModal(){editColor=null;$('colorModalTitle').textContent=t('addColor');$('colorName').value='';$('colorHex').value='#3b82f6';openModal('colorModal')}
-function openEditColor(id){const c=D.colors.find(x=>x.id===id);if(!c)return;editColor=id;$('colorModalTitle').textContent=t('edit');$('colorName').value=c.name;$('colorHex').value=c.hex_code;openModal('colorModal')}
+function renderColors(){const q=($('colorSearch')?.value||'').toLowerCase().trim();
+const list=D.colors.filter(c=>!q||c.name.toLowerCase().includes(q));
+$('colorsList').innerHTML=list.length?list.map(c=>{const n=D.items.filter(i=>i.color_id===c.id).reduce((s,i)=>s+i.quantity,0);
+return `<div class="color-card${n?'':' empty0'}"><div class="color-swatch" style="background:${c.hex_code}"></div><div class="color-names"><div class="en">${esc(c.name)} <span style="color:var(--text3);font-weight:500">\u00b7 ${n}</span></div></div><button class="btn-icon" onclick="openEditColor('${c.id}')">\u270e</button><button class="btn-icon" onclick="delColor('${c.id}')">\u2715</button></div>`}).join(''):`<div class="empty-state"><p>${t('noSearchHit')}</p></div>`}
+function openAddColorModal(){editColor=null;$('colorMoveBtn').style.display='none';$('colorModalTitle').textContent=t('addColor');$('colorName').value='';$('colorHex').value='#3b82f6';openModal('colorModal')}
+function openEditColor(id){const c=D.colors.find(x=>x.id===id);if(!c)return;editColor=id;$('colorMoveBtn').style.display='block';$('colorModalTitle').textContent=t('edit');$('colorName').value=c.name;$('colorHex').value=c.hex_code;openModal('colorModal')}
 async function saveColor(){const nm=$('colorName').value.trim(),hx=$('colorHex').value;if(!nm){toast(t('tEnterName'),'error');return}const b=$('saveColorBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editColor)await SB.from('colors').update({name:nm,hex_code:hx}).eq('id',editColor);else await ins('colors',{name:nm,hex_code:hx});b.innerHTML='Save';b.disabled=0;toast(t('tSaved'));closeModal('colorModal');await loadData();renderColors()}
 async function delColor(id){pendConf=async()=>{const{error}=await SB.from('colors').delete().eq('id',id);closeModal('confirmModal');
 if(error&&error.code==='23503'){pendConf=async()=>{closeModal('confirmModal');busy('busyWorking');
@@ -1421,29 +1476,66 @@ toast(t('tDeleted'));await loadData();renderColors()};
 $('confirmText').textContent=t('cascadeColorQ');openModal('confirmModal');return}
 if(error){toast(error.message,'error');return}
 toast(t('tDeleted'));await loadData();renderColors()};$('confirmText').textContent=t('deleteColorQ');openModal('confirmModal')}
-let moveSrc=null;
-function openMoveType(id){const ty=D.types.find(x=>x.id===id);if(!ty)return;moveSrc=id;
-const qty=D.items.filter(i=>i.item_type_id===id).reduce((s,i)=>s+i.quantity,0);
-$('moveDesc').textContent=t('moveDesc').replace('{name}',ty.name).replace('{n}',qty);
-$('moveTarget').innerHTML=typesGrouped(D.types.filter(x=>x.id!==id))
-.map(x=>`<option value="${x.id}">${escA((famName(x.family_id)?famName(x.family_id)+' \u203a ':'')+x.name)}</option>`).join('');
-$('moveDel').checked=true;openModal('moveTypeModal')}
-async function runMoveType(){const dst=$('moveTarget').value;if(!moveSrc||!dst)return;
+let moveKind='type',moveSrc=null;
+// Move stock, all of it or just part, into another item or colour
+function openMoveStock(kind,id){moveKind=kind;moveSrc=id;
+const rows=moveRows();
+if(!rows.length){toast(t('tNothingToMove'),'error');return}
+const src=kind==='type'?D.types.find(x=>x.id===id):D.colors.find(x=>x.id===id);
+$('moveTitle').textContent=t('moveStock');
+$('moveDesc').textContent=t('moveDesc2').replace('{name}',src?src.name:'');
+const opts=kind==='type'
+?typesGrouped(D.types.filter(x=>x.id!==id)).map(x=>`<option value="${x.id}">${escA((famName(x.family_id)?famName(x.family_id)+' \u203a ':'')+x.name)}</option>`).join('')
+:D.colors.filter(x=>x.id!==id).map(x=>`<option value="${x.id}">${escA(x.name)}</option>`).join('');
+$('moveTarget').innerHTML=opts;
+$('moveRows').innerHTML=rows.map((r,ix)=>`<div class="mv-row">
+<input type="checkbox" class="selbox" id="mv_on_${ix}" checked onchange="moveTally()">
+<div class="mv-lbl"><div>${esc(r.label)}</div><div class="mv-sub">${esc(r.sub)}</div></div>
+<input type="number" class="mv-qty" id="mv_q_${ix}" min="0" max="${r.qty}" value="${r.qty}" oninput="moveTally()">
+<span class="mv-of">/ ${r.qty}</span></div>`).join('');
+moveTally();openModal('moveModal')}
+function moveRows(){const key=moveKind==='type'?'item_type_id':'color_id';
+return D.items.filter(i=>i[key]===moveSrc&&i.quantity>0).map(i=>{const b=D.boxes.find(x=>x.id===i.box_id);
+return{id:i.id,qty:i.quantity,box_id:i.box_id,tid:i.item_type_id,cid:i.color_id,size:i.size,
+label:b?b.name:'?',
+sub:(moveKind==='type'?gcn(i.color_id):gtn(i.item_type_id))+(i.size&&i.size!=='\u2014'?' \u00b7 '+i.size:'')}})
+.sort((a,b)=>a.label.localeCompare(b.label)||a.sub.localeCompare(b.sub))}
+function movePicked(){const rows=moveRows();const out=[];
+rows.forEach((r,ix)=>{if(!$('mv_on_'+ix)?.checked)return;
+const n=Math.min(r.qty,Math.max(0,parseInt($('mv_q_'+ix)?.value)||0));
+if(n>0)out.push({...r,move:n})});return out}
+function moveTally(){const picked=movePicked(),rows=moveRows();
+const tot=picked.reduce((s,r)=>s+r.move,0);
+const full=rows.length===picked.length&&picked.every(r=>r.move===r.qty);
+$('moveCount').textContent=t('moveTally').replace('{n}',tot);
+$('moveDelWrap').style.display=full?'flex':'none';
+$('moveBtn').disabled=!tot}
+async function runMoveStock(){const dst=$('moveTarget').value,picked=movePicked();
+if(!dst||!picked.length)return;
 const b=$('moveBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;busy('busyWorking');
+const key=moveKind==='type'?'item_type_id':'color_id';
 try{
-// Merge into any row that already holds the same colour+size in the same box
-const src=D.items.filter(i=>i.item_type_id===moveSrc);
-for(const it of src){
-const twin=D.items.find(x=>x.item_type_id===dst&&x.box_id===it.box_id&&x.color_id===it.color_id&&x.size===it.size);
-if(twin){const r1=await SB.from('box_items').update({quantity:twin.quantity+it.quantity}).eq('id',twin.id);if(r1.error)throw r1.error;
-twin.quantity+=it.quantity;
-const r2=await SB.from('box_items').delete().eq('id',it.id);if(r2.error)throw r2.error}
-else{const r=await SB.from('box_items').update({item_type_id:dst}).eq('id',it.id);if(r.error)throw r.error}}
-await SB.from('activity_log').update({item_type_id:dst}).eq('item_type_id',moveSrc);
-if($('moveDel').checked){const r=await SB.from('item_types').delete().eq('id',moveSrc);if(r.error)throw r.error}
-await loadData();closeModal('moveTypeModal');renderTypes();toast(t('tMoved'))}
+for(const r of picked){
+// Find a row in the same box that already holds the destination combination
+const twin=D.items.find(x=>x.id!==r.id&&x.box_id===r.box_id&&x.size===r.size
+&&(moveKind==='type'?(x.item_type_id===dst&&x.color_id===r.cid):(x.color_id===dst&&x.item_type_id===r.tid)));
+if(r.move===r.qty&&!twin){const u=await SB.from('box_items').update({[key]:dst}).eq('id',r.id);if(u.error)throw u.error;continue}
+if(twin){const u=await SB.from('box_items').update({quantity:twin.quantity+r.move}).eq('id',twin.id);if(u.error)throw u.error;twin.quantity+=r.move}
+else{const nw={box_id:r.box_id,size:r.size,quantity:r.move,
+item_type_id:moveKind==='type'?dst:r.tid,color_id:moveKind==='color'?dst:r.cid};
+const i2=await ins('box_items',nw);if(i2.error)throw i2.error}
+if(r.move===r.qty){const d2=await SB.from('box_items').delete().eq('id',r.id);if(d2.error)throw d2.error}
+else{const u2=await SB.from('box_items').update({quantity:r.qty-r.move}).eq('id',r.id);if(u2.error)throw u2.error}}
+await loadData();
+// Source now empty: carry its history over so nothing is lost if it gets deleted
+const left=D.items.filter(i=>i[key]===moveSrc&&i.quantity>0).length;
+if(!left){await SB.from('activity_log').update({[key]:dst}).eq(key,moveSrc);
+if($('moveDel')?.checked){const tbl=moveKind==='type'?'item_types':'colors';
+const d3=await SB.from(tbl).delete().eq('id',moveSrc);if(d3.error)throw d3.error}
+await loadData()}
+closeModal('moveModal');renderTypes();renderColors();toast(t('tMoved'))}
 catch(e){toast(e.message||'Move failed','error')}
-finally{busyOff();b.innerHTML=t('moveStock');b.disabled=0;moveSrc=null}}
+finally{busyOff();b.innerHTML=t('moveStock');b.disabled=0}}
 let editSize=null;
 function sizeUsage(n){return D.items.filter(i=>i.size===n).reduce((s,i)=>s+i.quantity,0)}
 function renderSizes(){const el=$('sizesList');if(!el)return;
@@ -1487,14 +1579,49 @@ if(error){toast(error.message,'error');return}
 toast(t('tDeleted'));await loadData();renderSizes()};
 $('confirmText').textContent=used?t('cascadeSizeQ').replace('{n}',used):t('deleteSizeQ');
 openModal('confirmModal')}
-function renderTypes(){const el=$('typesList');if(!el)return;
-const gs=typesGrouped();let out='',cur='\u0000';
+let selMode=false,selIds=new Set();
+function toggleSelMode(){selMode=!selMode;selIds.clear();renderTypes()}
+function toggleSel(id){selIds.has(id)?selIds.delete(id):selIds.add(id);renderTypes()}
+function selAll(){const vis=visibleTypes();const all=vis.every(x=>selIds.has(x.id));
+vis.forEach(x=>all?selIds.delete(x.id):selIds.add(x.id));renderTypes()}
+function visibleTypes(){const q=($('typeSearch')?.value||'').toLowerCase().trim();
+return typesGrouped().filter(ty=>!q||ty.name.toLowerCase().includes(q)||famName(ty.family_id).toLowerCase().includes(q))}
+async function applyFamToSel(){const v=$('selFamPick').value;
+if(!selIds.size)return;busy('busyWorking');
+try{let fid=v;
+if(v==='__new'){const n=($('selFamNew').value||'').trim();if(!n){toast(t('tEnterName'),'error');return}
+const ex=D.fams.find(f=>f.name.toLowerCase()===n.toLowerCase());
+if(ex)fid=ex.id;else{const r=await ins('item_families',{name:n}).select();if(r.error)throw r.error;fid=r.data?.[0]?.id}}
+const r=await SB.from('item_types').update({family_id:fid==='__none'?null:fid}).in('id',[...selIds]);
+if(r.error)throw r.error;
+await loadData();selIds.clear();selMode=false;renderTypes();toast(t('tSaved'))}
+catch(e){toast(e.message||'Failed','error')}finally{busyOff()}}
+function renderSelBar(){const el=$('selBar');if(!el)return;
+if(!selMode){el.style.display='none';return}
+el.style.display='flex';
+el.innerHTML=`<span class="cnt">${selIds.size} ${t('selectedCount')}</span>
+<button class="btn btn-secondary btn-sm" onclick="selAll()">${t('selectAll')}</button>
+<select id="selFamPick" class="dash-pick" onchange="$('selFamNew').style.display=this.value==='__new'?'block':'none'">
+<option value="__none">${t('noFamily')}</option>
+${D.fams.map(f=>`<option value="${f.id}">${escA(f.name)}</option>`).join('')}
+<option value="__new">\u002b ${t('newFamily')}</option></select>
+<input type="text" id="selFamNew" placeholder="${escA(t('newFamilyPh'))}" style="display:none;max-width:150px">
+<button class="btn btn-primary btn-sm"${selIds.size?'':' disabled'} onclick="applyFamToSel()">${t('applyBtn')}</button>
+<button class="btn btn-secondary btn-sm" onclick="toggleSelMode()">${t('cancel')}</button>`}
+function renderTypes(){const el=$('typesList');if(!el)return;renderSelBar();
+const gs=visibleTypes();let out='',cur='\u0000';
 gs.forEach(ty=>{const f=famName(ty.family_id)||t('noFamily');
 if(f!==cur){cur=f;out+=`<div class="fam-head">${esc(f)}</div>`}
 const p=ty.photo_mode==='per_color'?Object.values(ty.photos||{})[0]:ty.photo;
 const n=D.items.filter(i=>i.item_type_id===ty.id).reduce((s,i)=>s+i.quantity,0);
-out+=`<div class="type-card"><div class="type-name" style="display:flex;align-items:center">${p?`<img class="tp-thumb" src="${p}" alt="" data-cap="${escA(ty.name)}" onclick="event.stopPropagation();openLightbox(this.src,this.dataset.cap)">`:''}<span>${esc(ty.name)}${n?` <span style="color:var(--text3);font-weight:500">· ${n}</span>`:''}</span></div><div style="display:flex;gap:4px"><button class="btn-icon" title="${t('moveStock')}" onclick="openMoveType('${ty.id}')">\u21c4</button><button class="btn-icon" onclick="openEditType('${ty.id}')">\u270e</button><button class="btn-icon" onclick="delType('${ty.id}')">\u2715</button></div></div>`});
-el.innerHTML=out||`<div class="empty-state"><p>${t('noItems')}</p></div>`}
+out+=`<div class="type-card${n?'':' empty0'}${selIds.has(ty.id)?' picked':''}"${selMode?` onclick="toggleSel('${ty.id}')" style="cursor:pointer"`:''}>
+<div class="type-name" style="display:flex;align-items:center">
+${selMode?`<input type="checkbox" class="selbox"${selIds.has(ty.id)?' checked':''} onclick="event.stopPropagation();toggleSel('${ty.id}')">`:''}
+${p?`<img class="tp-thumb" src="${p}" alt="" data-cap="${escA(ty.name)}" onclick="event.stopPropagation();openLightbox(this.src,this.dataset.cap)">`:''}
+<span>${esc(ty.name)} <span style="color:var(--text3);font-weight:500">\u00b7 ${n}</span></span></div>
+${selMode?'':`<div style="display:flex;gap:4px"><button class="btn-icon" onclick="openEditType('${ty.id}')">\u270e</button><button class="btn-icon" onclick="delType('${ty.id}')">\u2715</button></div>`}</div>`});
+el.innerHTML=out||`<div class="empty-state"><p>${t('noSearchHit')}</p></div>`}
+
 let typePhoto=null,typePhotos={},typeMode='single';
 // Shared: shrink + compress an image file to a small data URL
 function shrinkImg(f,inp,cb){if(!f.type.startsWith('image/')){toast(t('tImgOnly'),'error');if(inp)inp.value='';return}
@@ -1507,7 +1634,7 @@ cb(cv.toDataURL('image/jpeg',0.72))};
 img.onerror=()=>{toast(t('tImgOnly'),'error');if(inp)inp.value=''};
 img.src=ev.target.result};
 rd.readAsDataURL(f)}
-// Colors relevant to the type being edited (fall back to all when it has no items yet)
+// Colours relevant to the type being edited: used ones first, then the rest
 function typeColors(){const used=new Set(D.items.filter(i=>i.item_type_id===editType&&i.quantity>0).map(i=>i.color_id));
 return D.colors.map(c=>({...c,used:used.has(c.id)}))
 .sort((a,b)=>(b.used?1:0)-(a.used?1:0)||a.name.localeCompare(b.name))}
@@ -1529,20 +1656,41 @@ return head+`<div class="pc-row">${p?`<img class="pc-img" src="${p}" alt="" data
 <div class="pc-name"><span class="color-dot" style="background:${c.hex_code}"></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.name)}</span></div>
 <input type="file" accept="image/*" id="tpc_${c.id}" onchange="typeColorPhotoPick('${c.id}',this)" style="display:none">
 <button type="button" class="btn btn-secondary btn-sm" onclick="$('tpc_${c.id}').click()">${p?t('changeBtn'):t('uploadBtn')}</button>
-${p?`<button type="button" class="btn-icon" onclick="delete typePhotos['${c.id}'];renderPerColorPhotos()">✕</button>`:''}</div>`}).join('')}
+${p?`<button type="button" class="btn-icon" onclick="delete typePhotos['${c.id}'];renderPerColorPhotos()">\u2715</button>`:''}</div>`}).join('')}
 function typeColorPhotoPick(cid,inp){const f=inp.files&&inp.files[0];if(!f)return;
 shrinkImg(f,inp,d=>{typePhotos[cid]=d;inp.value='';renderPerColorPhotos()})}
 function typePhotoPick(inp){const f=inp.files&&inp.files[0];if(!f)return;
 shrinkImg(f,inp,d=>{typePhoto=d;renderTypePhotoPrev()})}
-function fillFamList(){const dl=$('famList');if(dl)dl.innerHTML=D.fams.map(f=>`<option value="${escA(f.name)}">`).join('')}
-function openAddTypeModal(){editType=null;typePhoto=null;typePhotos={};typeMode='single';fillFamList();$('typeFamily').value='';
+// Family picker: same behaviour as the item/colour dropdowns, plus "create new"
+let typeFamId=null,typeFamNew='';
+function famSet(id,newName){typeFamId=id;typeFamNew=newName||'';
+const inp=$('in_fam');if(!inp)return;
+inp.readOnly=true;inp.classList.remove('typing');
+inp.value=newName?newName:(id?famName(id):t('noFamily'))}
+function famRender(q){const el=$('ls_fam');if(!el)return;
+const list=D.fams.filter(f=>f.name.toLowerCase().includes((q||'').toLowerCase()));
+el.innerHTML=`<div class="cbx-opt${!typeFamId&&!typeFamNew?' sel':''}" onmousedown="event.preventDefault();famPick('')">${t('noFamily')}</div>`
++list.map(f=>`<div class="cbx-opt${typeFamId===f.id?' sel':''}" onmousedown="event.preventDefault();famPick('${f.id}')">${esc(f.name)}</div>`).join('')
++`<div class="cbx-opt cbx-new" onmousedown="event.preventDefault();famNewStart()">\u002b ${t('newFamily')}</div>`}
+function famPick(id){famSet(id||null,'');$('cbx_fam').classList.remove('open')}
+function famNewStart(){const inp=$('in_fam');typeFamId=null;typeFamNew='';
+inp.readOnly=false;inp.classList.add('typing');inp.value='';inp.placeholder=t('newFamilyPh');inp.focus();
+$('ls_fam').innerHTML=`<div class="cbx-empty">${t('newFamilyHint')}</div>`}
+function famTap(){const w=$('cbx_fam'),inp=$('in_fam');
+if(!w.classList.contains('open')){famRender('');w.classList.add('open');return}
+if(inp.readOnly)famNewStart()}
+document.addEventListener('click',e=>{const w=$('cbx_fam');
+if(w&&w.classList.contains('open')&&!w.contains(e.target)){w.classList.remove('open');
+const inp=$('in_fam');
+if(inp&&!inp.readOnly){typeFamNew=inp.value.trim();if(!typeFamNew)famSet(null,'')}}});
+function openAddTypeModal(){editType=null;typePhoto=null;typePhotos={};typeMode='single';$('typeMoveBtn').style.display='none';famSet(null,'');
 $('typeModalTitle').textContent=t('addType');$('typeName').value='';const pi=$('typePhotoInput');if(pi)pi.value='';
 setPhotoMode('single');openModal('typeModal')}
-function openEditType(id){const ty=D.types.find(x=>x.id===id);if(!ty)return;editType=id;fillFamList();$('typeModalTitle').textContent=t('edit');$('typeName').value=ty.name;$('typeFamily').value=famName(ty.family_id);
+function openEditType(id){const ty=D.types.find(x=>x.id===id);if(!ty)return;editType=id;$('typeMoveBtn').style.display='block';famSet(ty.family_id||null,'');$('typeModalTitle').textContent=t('edit');$('typeName').value=ty.name;
 typePhoto=ty.photo||null;typePhotos=ty.photos&&typeof ty.photos==='object'?{...ty.photos}:{};typeMode=ty.photo_mode==='per_color'?'per_color':'single';
 const pi=$('typePhotoInput');if(pi)pi.value='';setPhotoMode(typeMode);openModal('typeModal')}
 async function saveType(){const n=$('typeName').value.trim();if(!n){toast(t('tEnterName'),'error');return}const b=$('saveTypeBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;// A family typed in that doesn't exist yet is created on the fly
-let famId=null;const fn=($('typeFamily').value||'').trim();
+let famId=typeFamId;const fn=(typeFamNew||'').trim();
 if(fn){const ex=D.fams.find(f=>f.name.toLowerCase()===fn.toLowerCase());
 if(ex)famId=ex.id;
 else{const fr=await ins('item_families',{name:fn}).select();
