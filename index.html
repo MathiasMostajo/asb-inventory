@@ -147,10 +147,13 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .cbx-opt{display:flex;align-items:center;gap:8px;padding:9px 11px;font-size:13.5px;cursor:pointer;color:var(--text2)}
 .cbx-opt:hover{background:var(--bg3);color:var(--text)}
 .cbx-opt.sel{background:var(--accent-dim);color:var(--accent);font-weight:600}
-.cbx-sep{padding:8px 11px 4px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);background:var(--bg3);position:sticky;top:0}
+.cbx-sep{padding:9px 11px 5px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);background:var(--bg3);border-top:1px solid var(--border)}
+.cbx-sep:first-child{border-top:none}
 .cbx-empty{padding:10px 11px;font-size:12.5px;color:var(--text3)}
 .box-hit{margin-top:9px;padding-top:8px;border-top:1px dashed var(--border);font-size:11.5px;color:var(--text2);line-height:1.55}
 .box-hit strong{color:var(--accent)}
+.fam-head{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--accent);margin:16px 0 7px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.fam-head:first-child{margin-top:0}
 .size-row{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;margin-bottom:6px}
 .size-row .sz-name{flex:1;font-size:14px;font-weight:600;font-family:'JetBrains Mono',monospace}
 .size-row .sz-use{font-size:11px;color:var(--text3)}
@@ -544,6 +547,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 
 <div class="modal-overlay" id="typeModal"><div class="modal"><h2 id="typeModalTitle">Add Type</h2>
 <div class="form-group"><label data-i18n="name">Name</label><input type="text" id="typeName" placeholder="Shin Guards"></div>
+<div class="form-group"><label data-i18n="familyLbl">Family</label><input type="text" id="typeFamily" list="famList" autocomplete="off" placeholder="Jersey"><datalist id="famList"></datalist><p style="font-size:11px;color:var(--text3);margin-top:3px" data-i18n="familyHint">Groups similar items together. Type a new name to create one, or leave empty.</p></div>
 <div class="form-group"><label data-i18n="photoLbl">Photo (optional)</label>
 <div class="ph-modes"><button type="button" id="phModeSingle" class="active" onclick="setPhotoMode('single')" data-i18n="photoOneAll">One photo for all colors</button><button type="button" id="phModePer" onclick="setPhotoMode('per_color')" data-i18n="photoPerColor">One photo per color</button></div>
 <div id="phSingleWrap"><input type="file" accept="image/*" id="typePhotoInput" onchange="typePhotoPick(this)" style="font-size:12px"><div id="typePhotoPrev"></div></div>
@@ -571,6 +575,12 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 </div>
 <div id="impStep2" style="display:none"></div>
 </div></div>
+
+<div class="modal-overlay" id="moveTypeModal"><div class="modal"><h2 data-i18n="moveStock">Move stock</h2>
+<p style="font-size:13px;color:var(--text2);margin-bottom:12px" id="moveDesc"></p>
+<div class="form-group"><label data-i18n="moveTo">Move everything into</label><select id="moveTarget"></select></div>
+<label class="sw-row" style="margin-bottom:14px"><input type="checkbox" id="moveDel" checked><span data-i18n="moveDelSrc">Delete the empty item afterwards</span></label>
+<div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('moveTypeModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" id="moveBtn" onclick="runMoveType()" style="width:auto" data-i18n="moveStock">Move stock</button></div></div></div>
 
 <div class="modal-overlay" id="sizeModal"><div class="modal"><h2 id="sizeModalTitle">Add Size</h2>
 <div class="form-group"><label data-i18n="name">Name</label><input type="text" id="sizeName" placeholder="3XL" maxlength="12" autocomplete="off"></div>
@@ -800,6 +810,14 @@ welcomeS2:{en:"Open the box and add what's inside — use Bulk to load many size
 welcomeS3:{en:"Print the QR label and stick it on the box. Scanning it opens the box here.",fr:"Imprimez l'étiquette QR et collez-la sur la boîte. La scanner ouvre la boîte ici.",es:"Imprimí la etiqueta QR y pegala en la caja. Escanearla abre la caja acá.",pt:"Imprima a etiqueta QR e cole na caixa. Escaneá-la abre a caixa aqui.",de:"Drucken Sie das QR-Etikett und kleben Sie es auf die Box. Beim Scannen öffnet sich die Box hier.",it:"Stampa l'etichetta QR e attaccala alla scatola. Scansionandola si apre la scatola qui.",nl:"Print het QR-label en plak het op de doos. Scannen opent de doos hier."},
 welcomeCta:{en:"Create my first box",fr:"Créer ma première boîte",es:"Crear mi primera caja",pt:"Criar minha primeira caixa",de:"Erste Box erstellen",it:"Crea la mia prima scatola",nl:"Maak mijn eerste doos"},
 lowStockOn:{en:"Warn me about low stock",fr:"M'avertir des stocks bas",es:"Avisarme cuando haya poco stock",pt:"Avisar sobre estoque baixo",de:"Bei niedrigem Bestand warnen",it:"Avvisami sulle scorte basse",nl:"Waarschuw bij lage voorraad"},
+familyLbl:{en:"Family",fr:"Famille",es:"Familia",pt:"Família",de:"Familie",it:"Famiglia",nl:"Familie"},
+familyHint:{en:"Groups similar items together. Type a new name to create one, or leave empty.",fr:"Regroupe les articles similaires. Tapez un nouveau nom pour en créer une, ou laissez vide.",es:"Agrupa artículos similares. Escribí un nombre nuevo para crearla, o dejalo vacío.",pt:"Agrupa itens semelhantes. Digite um nome novo para criar, ou deixe vazio.",de:"Gruppiert ähnliche Artikel. Neuen Namen eingeben, um eine anzulegen, oder leer lassen.",it:"Raggruppa articoli simili. Scrivi un nuovo nome per crearla, o lascia vuoto.",nl:"Groepeert vergelijkbare artikelen. Typ een nieuwe naam om er een te maken, of laat leeg."},
+noFamily:{en:"Ungrouped",fr:"Sans famille",es:"Sin familia",pt:"Sem família",de:"Ohne Familie",it:"Senza famiglia",nl:"Zonder familie"},
+moveStock:{en:"Move stock",fr:"Déplacer le stock",es:"Mover stock",pt:"Mover estoque",de:"Bestand verschieben",it:"Sposta scorte",nl:"Voorraad verplaatsen"},
+moveTo:{en:"Move everything into",fr:"Tout déplacer vers",es:"Mover todo a",pt:"Mover tudo para",de:"Alles verschieben nach",it:"Sposta tutto in",nl:"Alles verplaatsen naar"},
+moveDesc:{en:"All stock of \u201c{name}\u201d ({n} units) will become the item you choose, in every box. Its history moves too.",fr:"Tout le stock de \u00ab {name} \u00bb ({n} unités) deviendra l'article choisi, dans chaque boîte. Son historique suit.",es:"Todo el stock de \u201c{name}\u201d ({n} unidades) pasará al artículo que elijas, en todas las cajas. Su historial también.",pt:"Todo o estoque de \u201c{name}\u201d ({n} unidades) passará para o item escolhido, em todas as caixas. O histórico também.",de:"Der gesamte Bestand von \u201e{name}\u201c ({n} Einheiten) wird zum gewählten Artikel, in jeder Box. Der Verlauf ebenfalls.",it:"Tutte le scorte di \u201c{name}\u201d ({n} unità) passeranno all'articolo scelto, in ogni scatola. Anche la cronologia.",nl:"Alle voorraad van \u201c{name}\u201d ({n} stuks) gaat naar het gekozen artikel, in elke doos. De geschiedenis ook."},
+moveDelSrc:{en:"Delete the empty item afterwards",fr:"Supprimer l'article vide ensuite",es:"Eliminar el artículo vacío después",pt:"Excluir o item vazio depois",de:"Leeren Artikel danach löschen",it:"Elimina l'articolo vuoto dopo",nl:"Verwijder het lege artikel daarna"},
+tMoved:{en:"Stock moved",fr:"Stock déplacé",es:"Stock movido",pt:"Estoque movido",de:"Bestand verschoben",it:"Scorte spostate",nl:"Voorraad verplaatst"},
 usedAlready:{en:"Already in use",fr:"Déjà utilisés",es:"Ya en uso",pt:"Já em uso",de:"Bereits verwendet",it:"Già in uso",nl:"Al in gebruik"},
 otherOnes:{en:"Others",fr:"Autres",es:"Otros",pt:"Outros",de:"Weitere",it:"Altri",nl:"Overige"},
 customColor:{en:"Custom colour",fr:"Couleur personnalisée",es:"Color personalizado",pt:"Cor personalizada",de:"Eigene Farbe",it:"Colore personalizzato",nl:"Aangepaste kleur"},
@@ -882,7 +900,7 @@ function setLang(code){LANG=code;localStorage.setItem('qajon_lang',code);documen
 if(U&&UP&&UP.role!=='pending'){const active=document.querySelector('.page.active');const pid=active?active.id.replace('page-',''):'dashboard';applyLogo();
 if(pid==='dashboard')loadDash();else if(pid==='boxes')renderBoxes();else if(pid==='checkout')renderCO();else if(pid==='history')renderHistory();else if(pid==='snapshots')renderSnaps();else if(pid==='settings'){renderColors();renderTypes();renderLocs();if(isSA())renderUsers()}else if(pid==='detail'&&curBox)openDetail(curBox)}}
 
-let U=null,UP=null,CID=null,CLUB=null,D={boxes:[],items:[],colors:[],types:[],locs:[],sizes:[],profiles:[],logs:[],snaps:[],settings:{}};
+let U=null,UP=null,CID=null,CLUB=null,D={boxes:[],items:[],colors:[],types:[],locs:[],sizes:[],fams:[],profiles:[],logs:[],snaps:[],settings:{}};
 let allClubs=[]; // for join-club picker
 // Club-scoped insert: automatically stamps club_id on every row
 function ins(table,rows){const arr=Array.isArray(rows)?rows:[rows];const stamped=arr.map(r=>({...r,club_id:CID}));return SB.from(table).insert(stamped)}
@@ -1051,12 +1069,20 @@ else{const d=trialDaysLeft();
 el.innerHTML=`<h4 style="font-size:13px;color:var(--text2);margin-bottom:10px">${t('billing')}</h4><p style="font-size:13px;color:var(--text3);margin-bottom:10px">⏳ ${d<=1?t('trialLastDay'):d+' '+t('trialDaysLeft')}</p><button class="btn btn-primary btn-sm" onclick="startCheckout()" id="subBtn">${t('subscribeNow')}</button>`}}
 
 // DATA
-async function loadData(){const[bx,it,co,ty,lo,lg,pr,st,sn,sz]=await Promise.all([SB.from('boxes').select('*').order('created_at',{ascending:false}),SB.from('box_items').select('*'),SB.from('colors').select('*').order('name'),SB.from('item_types').select('*').order('name'),SB.from('storage_locations').select('*').order('name'),SB.from('activity_log').select('*').order('created_at',{ascending:false}),SB.from('profiles').select('*').eq('club_id',CID).order('created_at'),SB.from('app_settings').select('*'),SB.from('inventory_snapshots').select('*').order('created_at',{ascending:false}),SB.from('sizes').select('*').order('position')]);
-D.boxes=bx.data||[];D.items=it.data||[];D.colors=co.data||[];D.types=ty.data||[];D.locs=lo.data||[];D.sizes=sz.data||[];D.logs=lg.data||[];D.profiles=pr.data||[];D.snaps=sn.data||[];D.settings={};(st.data||[]).forEach(s=>D.settings[s.key]=s.value);applyLogo();loadDash();renderBoxes();
+async function loadData(){const[bx,it,co,ty,lo,lg,pr,st,sn,sz,fm]=await Promise.all([SB.from('boxes').select('*').order('created_at',{ascending:false}),SB.from('box_items').select('*'),SB.from('colors').select('*').order('name'),SB.from('item_types').select('*').order('name'),SB.from('storage_locations').select('*').order('name'),SB.from('activity_log').select('*').order('created_at',{ascending:false}),SB.from('profiles').select('*').eq('club_id',CID).order('created_at'),SB.from('app_settings').select('*'),SB.from('inventory_snapshots').select('*').order('created_at',{ascending:false}),SB.from('sizes').select('*').order('position'),SB.from('item_families').select('*').order('name')]);
+D.boxes=bx.data||[];D.items=it.data||[];D.colors=co.data||[];D.types=ty.data||[];D.locs=lo.data||[];D.sizes=sz.data||[];D.fams=fm.data||[];D.logs=lg.data||[];D.profiles=pr.data||[];D.snaps=sn.data||[];D.settings={};(st.data||[]).forEach(s=>D.settings[s.key]=s.value);applyLogo();loadDash();renderBoxes();
 // QR deep link: open the scanned box if it belongs to this club
 if(pendingBoxLink){const target=D.boxes.find(b=>b.id===pendingBoxLink);pendingBoxLink=null;if(target)openDetail(target.id)}}
 // The club's size list drives every dropdown, chart and sort in the app
 function sizeNames(){return D.sizes.map(s=>s.name)}
+// Families group the ~24 item types into ~10 real-world categories
+function famName(id){return D.fams.find(f=>f.id===id)?.name||''}
+function typeFam(tid){return D.types.find(t=>t.id===tid)?.family_id||null}
+// Types sorted by family, then name; unfiled ones last
+function typesGrouped(list){const L=(list||D.types).slice();
+return L.sort((a,b)=>{const fa=famName(a.family_id),fb=famName(b.family_id);
+if(!fa&&fb)return 1;if(fa&&!fb)return -1;
+return fa.localeCompare(fb)||a.name.localeCompare(b.name)})}
 function sizeRank(s){if(s==='—')return -1;const i=D.sizes.findIndex(x=>x.name===s);return i<0?999:i}
 function gc(id){return D.colors.find(x=>x.id===id)||{name:'Unknown',hex_code:'#6b7280'}}
 function gcn(id){return gc(id).name}
@@ -1266,6 +1292,12 @@ const key=isC?'color_id':'item_type_id';
 const tSel=isC?(id==='bulkColor'?$('bulkType')?.value:id==='itemColor'?$('itemType')?.value:''):'';
 const used=new Set(D.items.filter(i=>i.quantity>0&&(!isC||!tSel||i.item_type_id===tSel)).map(i=>i[key]));
 const opt=x=>`<div class="cbx-opt${x.id===cur?' sel':''}" onmousedown="event.preventDefault();cbxPick('${id}','${x.id}')">${isC?`<span class="color-dot" style="background:${x.hex_code}"></span>`:''}${esc(x.name)}</div>`;
+if(!isC){// Item types are grouped by family: "Jersey" then its variants underneath
+const gs=typesGrouped(list);let out='',cur='\u0000';
+gs.forEach(x=>{const f=famName(x.family_id)||t('noFamily');
+if(f!==cur){cur=f;out+=`<div class="cbx-sep">${esc(f)}</div>`}
+out+=opt(x)});
+el.innerHTML=out;return}
 const inUse=list.filter(x=>used.has(x.id)),rest=list.filter(x=>!used.has(x.id));
 if(!inUse.length||!rest.length){el.innerHTML=list.map(opt).join('');return}
 el.innerHTML=`<div class="cbx-sep">${t('usedAlready')}</div>`+inUse.map(opt).join('')
@@ -1389,6 +1421,29 @@ toast(t('tDeleted'));await loadData();renderColors()};
 $('confirmText').textContent=t('cascadeColorQ');openModal('confirmModal');return}
 if(error){toast(error.message,'error');return}
 toast(t('tDeleted'));await loadData();renderColors()};$('confirmText').textContent=t('deleteColorQ');openModal('confirmModal')}
+let moveSrc=null;
+function openMoveType(id){const ty=D.types.find(x=>x.id===id);if(!ty)return;moveSrc=id;
+const qty=D.items.filter(i=>i.item_type_id===id).reduce((s,i)=>s+i.quantity,0);
+$('moveDesc').textContent=t('moveDesc').replace('{name}',ty.name).replace('{n}',qty);
+$('moveTarget').innerHTML=typesGrouped(D.types.filter(x=>x.id!==id))
+.map(x=>`<option value="${x.id}">${escA((famName(x.family_id)?famName(x.family_id)+' \u203a ':'')+x.name)}</option>`).join('');
+$('moveDel').checked=true;openModal('moveTypeModal')}
+async function runMoveType(){const dst=$('moveTarget').value;if(!moveSrc||!dst)return;
+const b=$('moveBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;busy('busyWorking');
+try{
+// Merge into any row that already holds the same colour+size in the same box
+const src=D.items.filter(i=>i.item_type_id===moveSrc);
+for(const it of src){
+const twin=D.items.find(x=>x.item_type_id===dst&&x.box_id===it.box_id&&x.color_id===it.color_id&&x.size===it.size);
+if(twin){const r1=await SB.from('box_items').update({quantity:twin.quantity+it.quantity}).eq('id',twin.id);if(r1.error)throw r1.error;
+twin.quantity+=it.quantity;
+const r2=await SB.from('box_items').delete().eq('id',it.id);if(r2.error)throw r2.error}
+else{const r=await SB.from('box_items').update({item_type_id:dst}).eq('id',it.id);if(r.error)throw r.error}}
+await SB.from('activity_log').update({item_type_id:dst}).eq('item_type_id',moveSrc);
+if($('moveDel').checked){const r=await SB.from('item_types').delete().eq('id',moveSrc);if(r.error)throw r.error}
+await loadData();closeModal('moveTypeModal');renderTypes();toast(t('tMoved'))}
+catch(e){toast(e.message||'Move failed','error')}
+finally{busyOff();b.innerHTML=t('moveStock');b.disabled=0;moveSrc=null}}
 let editSize=null;
 function sizeUsage(n){return D.items.filter(i=>i.size===n).reduce((s,i)=>s+i.quantity,0)}
 function renderSizes(){const el=$('sizesList');if(!el)return;
@@ -1432,7 +1487,14 @@ if(error){toast(error.message,'error');return}
 toast(t('tDeleted'));await loadData();renderSizes()};
 $('confirmText').textContent=used?t('cascadeSizeQ').replace('{n}',used):t('deleteSizeQ');
 openModal('confirmModal')}
-function renderTypes(){$('typesList').innerHTML=D.types.map(ty=>`<div class="type-card"><div class="type-name" style="display:flex;align-items:center">${(()=>{const p=ty.photo_mode==='per_color'?Object.values(ty.photos||{})[0]:ty.photo;return p?`<img class="tp-thumb" src="${p}" alt="" data-cap="${escA(ty.name)}" onclick="event.stopPropagation();openLightbox(this.src,this.dataset.cap)">`:''})()}${esc(ty.name)}</div><div style="display:flex;gap:4px"><button class="btn-icon" onclick="openEditType('${ty.id}')">✎</button><button class="btn-icon" onclick="delType('${ty.id}')">✕</button></div></div>`).join('')}
+function renderTypes(){const el=$('typesList');if(!el)return;
+const gs=typesGrouped();let out='',cur='\u0000';
+gs.forEach(ty=>{const f=famName(ty.family_id)||t('noFamily');
+if(f!==cur){cur=f;out+=`<div class="fam-head">${esc(f)}</div>`}
+const p=ty.photo_mode==='per_color'?Object.values(ty.photos||{})[0]:ty.photo;
+const n=D.items.filter(i=>i.item_type_id===ty.id).reduce((s,i)=>s+i.quantity,0);
+out+=`<div class="type-card"><div class="type-name" style="display:flex;align-items:center">${p?`<img class="tp-thumb" src="${p}" alt="" data-cap="${escA(ty.name)}" onclick="event.stopPropagation();openLightbox(this.src,this.dataset.cap)">`:''}<span>${esc(ty.name)}${n?` <span style="color:var(--text3);font-weight:500">· ${n}</span>`:''}</span></div><div style="display:flex;gap:4px"><button class="btn-icon" title="${t('moveStock')}" onclick="openMoveType('${ty.id}')">\u21c4</button><button class="btn-icon" onclick="openEditType('${ty.id}')">\u270e</button><button class="btn-icon" onclick="delType('${ty.id}')">\u2715</button></div></div>`});
+el.innerHTML=out||`<div class="empty-state"><p>${t('noItems')}</p></div>`}
 let typePhoto=null,typePhotos={},typeMode='single';
 // Shared: shrink + compress an image file to a small data URL
 function shrinkImg(f,inp,cb){if(!f.type.startsWith('image/')){toast(t('tImgOnly'),'error');if(inp)inp.value='';return}
@@ -1472,13 +1534,21 @@ function typeColorPhotoPick(cid,inp){const f=inp.files&&inp.files[0];if(!f)retur
 shrinkImg(f,inp,d=>{typePhotos[cid]=d;inp.value='';renderPerColorPhotos()})}
 function typePhotoPick(inp){const f=inp.files&&inp.files[0];if(!f)return;
 shrinkImg(f,inp,d=>{typePhoto=d;renderTypePhotoPrev()})}
-function openAddTypeModal(){editType=null;typePhoto=null;typePhotos={};typeMode='single';
+function fillFamList(){const dl=$('famList');if(dl)dl.innerHTML=D.fams.map(f=>`<option value="${escA(f.name)}">`).join('')}
+function openAddTypeModal(){editType=null;typePhoto=null;typePhotos={};typeMode='single';fillFamList();$('typeFamily').value='';
 $('typeModalTitle').textContent=t('addType');$('typeName').value='';const pi=$('typePhotoInput');if(pi)pi.value='';
 setPhotoMode('single');openModal('typeModal')}
-function openEditType(id){const ty=D.types.find(x=>x.id===id);if(!ty)return;editType=id;$('typeModalTitle').textContent=t('edit');$('typeName').value=ty.name;
+function openEditType(id){const ty=D.types.find(x=>x.id===id);if(!ty)return;editType=id;fillFamList();$('typeModalTitle').textContent=t('edit');$('typeName').value=ty.name;$('typeFamily').value=famName(ty.family_id);
 typePhoto=ty.photo||null;typePhotos=ty.photos&&typeof ty.photos==='object'?{...ty.photos}:{};typeMode=ty.photo_mode==='per_color'?'per_color':'single';
 const pi=$('typePhotoInput');if(pi)pi.value='';setPhotoMode(typeMode);openModal('typeModal')}
-async function saveType(){const n=$('typeName').value.trim();if(!n){toast(t('tEnterName'),'error');return}const b=$('saveTypeBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;const payload={name:n,photo:typePhoto,photo_mode:typeMode,photos:typePhotos};
+async function saveType(){const n=$('typeName').value.trim();if(!n){toast(t('tEnterName'),'error');return}const b=$('saveTypeBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;// A family typed in that doesn't exist yet is created on the fly
+let famId=null;const fn=($('typeFamily').value||'').trim();
+if(fn){const ex=D.fams.find(f=>f.name.toLowerCase()===fn.toLowerCase());
+if(ex)famId=ex.id;
+else{const fr=await ins('item_families',{name:fn}).select();
+if(fr.error){b.innerHTML='Save';b.disabled=0;toast(fr.error.message,'error');return}
+famId=fr.data?.[0]?.id||null}}
+const payload={name:n,photo:typePhoto,photo_mode:typeMode,photos:typePhotos,family_id:famId};
 const r=editType?await SB.from('item_types').update(payload).eq('id',editType):await ins('item_types',payload);b.innerHTML='Save';b.disabled=0;if(r.error){toast(r.error.message,'error');return}toast(t('tSaved'));closeModal('typeModal');await loadData();renderTypes()}
 async function delType(id){pendConf=async()=>{const{error}=await SB.from('item_types').delete().eq('id',id);closeModal('confirmModal');
 if(error&&error.code==='23503'){pendConf=async()=>{closeModal('confirmModal');busy('busyWorking');
