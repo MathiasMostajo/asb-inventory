@@ -115,6 +115,9 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .imp-mode .d{font-size:11.5px;color:var(--text3);line-height:1.5}
 .sw-row{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:13.5px;color:var(--text2)}
 .sw-row input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer}
+.tone-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.tone-row input[type=color]{flex:1;height:38px;padding:3px;cursor:pointer;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm)}
+.tone-row .tn{font-size:11.5px;color:var(--text3);min-width:52px}
 .tag-pick{display:flex;flex-wrap:wrap;gap:7px}
 .tag-sw{width:30px;height:30px;border-radius:9px;border:2px solid transparent;cursor:pointer;padding:0;position:relative;box-shadow:0 0 0 2px rgba(148,163,184,.8)}
 .tag-sw.on{border-color:var(--text);box-shadow:0 0 0 2px var(--bg2) inset}
@@ -585,7 +588,12 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 
 <div class="modal-overlay" id="colorModal"><div class="modal"><h2 id="colorModalTitle">Add Color</h2>
 <div class="form-group"><label data-i18n="colorNameLbl">Color Name</label><input type="text" id="colorName" placeholder="Blue"></div>
-<div class="form-group"><label data-i18n="color">Color</label><input type="color" id="colorHex" value="#3b82f6" style="height:44px;padding:3px;cursor:pointer;width:100%"></div>
+<div class="form-group"><label data-i18n="color">Color</label><input type="color" id="colorHex" value="#3b82f6" style="height:44px;padding:3px;cursor:pointer;width:100%" oninput="updColorPrev()"></div>
+<div class="form-group"><label data-i18n="extraTones">Extra tones</label>
+<p style="font-size:11px;color:var(--text3);margin:-2px 0 8px" data-i18n="extraTonesHint">For garments with more than one colour. Leave empty for a plain colour.</p>
+<div id="toneRows"></div>
+<button type="button" class="btn btn-secondary btn-sm" id="addToneBtn" onclick="addTone()" style="margin-top:6px">+ <span data-i18n="addTone">Add tone</span></button>
+<div style="display:flex;align-items:center;gap:9px;margin-top:12px"><span style="font-size:12px;color:var(--text3)" data-i18n="previewLbl">Preview</span><span id="colorPrev2" style="width:38px;height:38px;border-radius:10px;box-shadow:0 0 0 2px rgba(148,163,184,.8)"></span></div></div>
 <button class="btn btn-secondary btn-sm" style="width:100%;margin-bottom:10px" onclick="closeModal('colorModal');openMoveStock('color',editColor)" id="colorMoveBtn" data-i18n="moveStock">Move stock</button>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('colorModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveColor()" id="saveColorBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
 
@@ -873,6 +881,11 @@ tNothingToMove:{en:"There is no stock to move",fr:"Aucun stock à déplacer",es:
 sortBy:{en:"Sort by",fr:"Trier par",es:"Ordenar por",pt:"Ordenar por",de:"Sortieren nach",it:"Ordina per",nl:"Sorteer op"},
 sortName:{en:"Name",fr:"Nom",es:"Nombre",pt:"Nome",de:"Name",it:"Nome",nl:"Naam"},
 sortTag:{en:"Sticker colour",fr:"Couleur de pastille",es:"Color de pegatina",pt:"Cor do adesivo",de:"Aufkleberfarbe",it:"Colore adesivo",nl:"Stickerkleur"},
+extraTones:{en:"Extra tones",fr:"Tons supplémentaires",es:"Tonos adicionales",pt:"Tons adicionais",de:"Weitere Töne",it:"Toni aggiuntivi",nl:"Extra tinten"},
+extraTonesHint:{en:"For garments with more than one colour. Leave empty for a plain colour.",fr:"Pour les vêtements de plusieurs couleurs. Laissez vide pour une couleur unie.",es:"Para prendas de más de un color. Dejalo vacío para un color liso.",pt:"Para peças com mais de uma cor. Deixe vazio para cor lisa.",de:"Für Kleidung mit mehreren Farben. Für einfarbig leer lassen.",it:"Per capi con più di un colore. Lascia vuoto per tinta unita.",nl:"Voor kleding met meer dan één kleur. Laat leeg voor effen kleur."},
+addTone:{en:"Add tone",fr:"Ajouter un ton",es:"Agregar tono",pt:"Adicionar tom",de:"Ton hinzufügen",it:"Aggiungi tono",nl:"Tint toevoegen"},
+toneNo:{en:"Tone {n}",fr:"Ton {n}",es:"Tono {n}",pt:"Tom {n}",de:"Ton {n}",it:"Tono {n}",nl:"Tint {n}"},
+previewLbl:{en:"Preview",fr:"Aperçu",es:"Vista previa",pt:"Prévia",de:"Vorschau",it:"Anteprima",nl:"Voorbeeld"},
 reports:{en:"Reports",fr:"Rapports",es:"Informes",pt:"Relatórios",de:"Berichte",it:"Report",nl:"Rapporten"},
 reportsIntro:{en:"Your inventory is recorded automatically every day. Pick two dates to see what went up and what went down.",fr:"Votre inventaire est enregistré automatiquement chaque jour. Choisissez deux dates pour voir ce qui a monté et ce qui a baissé.",es:"Tu inventario se registra automáticamente todos los días. Elegí dos fechas para ver qué subió y qué bajó.",pt:"Seu inventário é registrado automaticamente todos os dias. Escolha duas datas para ver o que subiu e o que desceu.",de:"Ihr Inventar wird täglich automatisch erfasst. Wählen Sie zwei Daten, um zu sehen, was gestiegen und gesunken ist.",it:"Il tuo inventario viene registrato automaticamente ogni giorno. Scegli due date per vedere cosa è salito e cosa è sceso.",nl:"Je inventaris wordt elke dag automatisch vastgelegd. Kies twee datums om te zien wat is gestegen en gedaald."},
 exportExcel:{en:"Export (Excel)",fr:"Exporter (Excel)",es:"Exportar (Excel)",pt:"Exportar (Excel)",de:"Exportieren (Excel)",it:"Esporta (Excel)",nl:"Exporteren (Excel)"},
@@ -1178,6 +1191,17 @@ function sizeRank(s){if(s==='—')return -1;const i=D.sizes.findIndex(x=>x.name=
 function gc(id){return D.colors.find(x=>x.id===id)||{name:'Unknown',hex_code:'#6b7280'}}
 function gcn(id){return gc(id).name}
 function gch(id){return gc(id).hex_code}
+// Two-tone colours (e.g. blue body with white sleeves) paint as a split swatch.
+// Charts keep using gch() so a single flat colour is always available.
+function toneList(co){if(!co)return [];
+const extra=Array.isArray(co.tones)?co.tones.filter(Boolean):[];
+return [co.hex_code,...extra].filter(Boolean)}
+function swatchCSS(co){if(!co)return '#6b7280';
+const T=toneList(co);if(T.length<2)return T[0]||'#6b7280';
+const step=100/T.length;
+const stops=T.map((h,i)=>`${h} ${(i*step).toFixed(2)}% ${((i+1)*step).toFixed(2)}%`).join(',');
+return `linear-gradient(135deg,${stops})`}
+function gcs(id){return swatchCSS(gc(id))}
 function gtn(id){const t=D.types.find(x=>x.id===id);return t?t.name:'Unknown'}
 function gln(id){const l=D.locs.find(x=>x.id===id);return l?l.name:''}
 function getEmail(uid){const p=D.profiles.find(x=>x.id===uid);return p?p.email:'?'}
@@ -1328,7 +1352,7 @@ return `<div class="qv-card${open?' open':''}">
 ${mode==='box'&&one?`<button class="qv-edit" title="${t('edit')}" onclick="event.stopPropagation();openEditItem('${one.id}')">\u270e</button>`:''}
 ${ph?`<img class="qv-img" src="${ph}" alt="" onclick="qvPhoto(event,'${g.tid}','${g.cid}')">`:''}
 <div class="qv-name">${esc(gtn(g.tid))}</div>
-<div class="qv-color"><span class="color-dot" style="background:${gch(g.cid)}"></span>${esc(gcn(g.cid))}</div>
+<div class="qv-color"><span class="color-dot" style="background:${gcs(g.cid)}"></span>${esc(gcn(g.cid))}</div>
 <div class="qv-total${g.total<=0?' zero':''}" onclick="${single?`qvNum('${mode}','${g.tid}','${g.cid}','${sz}')`:`qvToggle('${g.k}','${mode}')`}">${g.total}</div>
 ${single
 ?`<div class="qv-ctrl"><button class="qv-btn"${g.total>0?'':' disabled'} onclick="qvAdj('${mode}','${g.tid}','${g.cid}','${sz}',-1)">−</button><button class="qv-btn" onclick="qvAdj('${mode}','${g.tid}','${g.cid}','${sz}',1)">+</button></div>`
@@ -1366,7 +1390,7 @@ openDetail(curBox)}
 function renderItems(){const items=D.items.filter(i=>i.box_id===curBox);
 if(!items.length){$('itemsTable').innerHTML=`<div class="empty-state"><p>${t('noItems')}</p></div>`;return}
 if(itemView==='quick'){$('itemsTable').innerHTML=`<div class="qv-grid">${groupItems(items,true).map(g=>qvCard(g,'box')).join('')}</div>`;return}
-$('itemsTable').innerHTML=`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('type')}</th><th>${t('color')}</th><th>${t('size')}</th><th>${t('qty')}</th><th style="width:80px"></th></tr></thead><tbody>${items.map(i=>`<tr><td>${esc(gtn(i.item_type_id))}</td><td><span class="color-dot" style="background:${gch(i.color_id)}"></span>${esc(gcn(i.color_id))}</td><td>${i.size}</td><td class="qty">${i.quantity}</td><td><div class="actions-cell"><button class="btn-icon" onclick="event.stopPropagation();openEditItem('${i.id}')">✎</button><button class="btn-icon" onclick="event.stopPropagation();delItem('${i.id}')">✕</button></div></td></tr>`).join('')}</tbody></table></div>`}
+$('itemsTable').innerHTML=`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('type')}</th><th>${t('color')}</th><th>${t('size')}</th><th>${t('qty')}</th><th style="width:80px"></th></tr></thead><tbody>${items.map(i=>`<tr><td>${esc(gtn(i.item_type_id))}</td><td><span class="color-dot" style="background:${gcs(i.color_id)}"></span>${esc(gcn(i.color_id))}</td><td>${i.size}</td><td class="qty">${i.quantity}</td><td><div class="actions-cell"><button class="btn-icon" onclick="event.stopPropagation();openEditItem('${i.id}')">✎</button><button class="btn-icon" onclick="event.stopPropagation();delItem('${i.id}')">✕</button></div></td></tr>`).join('')}</tbody></table></div>`}
 
 // ITEMS
 // Searchable dropdown. The hidden input keeps the original id, so every
@@ -1390,7 +1414,7 @@ if(!list.length){el.innerHTML=`<div class="cbx-empty">${t('noMatches')}</div>`;r
 const key=isC?'color_id':'item_type_id';
 const tSel=isC?(id==='bulkColor'?$('bulkType')?.value:id==='itemColor'?$('itemType')?.value:''):'';
 const used=new Set(D.items.filter(i=>i.quantity>0&&(!isC||!tSel||i.item_type_id===tSel)).map(i=>i[key]));
-const opt=x=>`<div class="cbx-opt${x.id===cur?' sel':''}" onmousedown="event.preventDefault();cbxPick('${id}','${x.id}')">${isC?`<span class="color-dot" style="background:${x.hex_code}"></span>`:''}${esc(x.name)}</div>`;
+const opt=x=>`<div class="cbx-opt${x.id===cur?' sel':''}" onmousedown="event.preventDefault();cbxPick('${id}','${x.id}')">${isC?`<span class="color-dot" style="background:${swatchCSS(x)}"></span>`:''}${esc(x.name)}</div>`;
 if(!isC){// Item types are grouped by family: "Jersey" then its variants underneath
 const gs=typesGrouped(list);let out='',cur='\u0000';
 gs.forEach(x=>{const f=famName(x.family_id)||t('noFamily');
@@ -1419,8 +1443,8 @@ if(w&&w.classList.contains('open')&&!w.contains(e.target)){cbxClose(id);
 const o=cbxSrc(id).find(x=>x.id===$(id).value);const inp=$('in_'+id);if(inp)inp.value=o?o.name:''}})});
 function popTDD(s,v){cbxSet(s,v)}
 function popCDD(s,v){cbxSet(s,v)}
-function updCP(){const c=D.colors.find(x=>x.id===$('itemColor').value);$('colorPreview').style.background=c?c.hex_code:'#6b7280'}
-function updBCP(){const c=D.colors.find(x=>x.id===$('bulkColor').value);$('bulkCP').style.background=c?c.hex_code:'#6b7280'}
+function updCP(){const c=D.colors.find(x=>x.id===$('itemColor').value);$('colorPreview').style.background=swatchCSS(c)}
+function updBCP(){const c=D.colors.find(x=>x.id===$('bulkColor').value);$('bulkCP').style.background=swatchCSS(c)}
 // Fill the size dropdown from the club's own list
 function popSizeDD(sel,v){const el=$(sel);if(!el)return;
 el.innerHTML=`<option value="—">${t('noSize')}</option>`+D.sizes.map(s=>`<option value="${esc(s.name)}">${esc(s.name)}</option>`).join('');
@@ -1474,7 +1498,7 @@ toast(t('tUndone'));renderCO()}
 
 // HISTORY
 function renderHistory(){try{const af=$('histAction').value;const df=$('histDate').value;let logs=[...D.logs];if(af)logs=logs.filter(l=>l.action_type===af);if(df)logs=logs.filter(l=>l.created_at&&l.created_at.startsWith(df));
-$('historyList').innerHTML=logs.length?`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('action')}</th><th>${t('item')}</th><th>${t('color')}</th><th>${t('size')}</th><th>${t('qty')}</th><th>${t('by')}</th><th>${t('date')}</th></tr></thead><tbody>${logs.slice(0,200).map(l=>{const cls=l.action_type==='checkout'?'color:var(--red)':'color:var(--accent)';return`<tr><td><span style="${cls};font-weight:600;font-size:12px;text-transform:uppercase">${l.action_type.replace('_',' ')}</span></td><td>${esc(gtn(l.item_type_id))}</td><td><span class="color-dot" style="background:${gch(l.color_id)}"></span>${esc(gcn(l.color_id))}</td><td>${l.size||''}</td><td class="qty">${l.quantity}</td><td style="font-size:12px">${esc(getEmail(l.created_by))}</td><td style="font-size:12px">${new Date(l.created_at).toLocaleString()}</td></tr>`}).join('')}</tbody></table></div>`:`<div class="empty-state"><p>${t('noActivity')}</p><p style="font-size:13px">${t('activityHint')}</p></div>`}catch(e){console.error('History error:',e);$('historyList').innerHTML=`<div class="empty-state"><p>${t('errLoadHist')}</p></div>`}}
+$('historyList').innerHTML=logs.length?`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('action')}</th><th>${t('item')}</th><th>${t('color')}</th><th>${t('size')}</th><th>${t('qty')}</th><th>${t('by')}</th><th>${t('date')}</th></tr></thead><tbody>${logs.slice(0,200).map(l=>{const cls=l.action_type==='checkout'?'color:var(--red)':'color:var(--accent)';return`<tr><td><span style="${cls};font-weight:600;font-size:12px;text-transform:uppercase">${l.action_type.replace('_',' ')}</span></td><td>${esc(gtn(l.item_type_id))}</td><td><span class="color-dot" style="background:${gcs(l.color_id)}"></span>${esc(gcn(l.color_id))}</td><td>${l.size||''}</td><td class="qty">${l.quantity}</td><td style="font-size:12px">${esc(getEmail(l.created_by))}</td><td style="font-size:12px">${new Date(l.created_at).toLocaleString()}</td></tr>`}).join('')}</tbody></table></div>`:`<div class="empty-state"><p>${t('noActivity')}</p><p style="font-size:13px">${t('activityHint')}</p></div>`}catch(e){console.error('History error:',e);$('historyList').innerHTML=`<div class="empty-state"><p>${t('errLoadHist')}</p></div>`}}
 
 // SNAPSHOTS
 // ============ REPORTS ============
@@ -1557,10 +1581,23 @@ async function delSnap(id){pendConf=async()=>{await SB.from('inventory_snapshots
 function renderColors(){const q=($('colorSearch')?.value||'').toLowerCase().trim();
 const list=D.colors.filter(c=>!q||c.name.toLowerCase().includes(q));
 $('colorsList').innerHTML=list.length?list.map(c=>{const n=D.items.filter(i=>i.color_id===c.id).reduce((s,i)=>s+i.quantity,0);
-return `<div class="color-card${n?'':' empty0'}"><div class="color-swatch" style="background:${c.hex_code}"></div><div class="color-names"><div class="en">${esc(c.name)} <span style="color:var(--text3);font-weight:500">\u00b7 ${n}</span></div></div><button class="btn-icon" onclick="openEditColor('${c.id}')">\u270e</button><button class="btn-icon" onclick="delColor('${c.id}')">\u2715</button></div>`}).join(''):`<div class="empty-state"><p>${t('noSearchHit')}</p></div>`}
-function openAddColorModal(){editColor=null;$('colorMoveBtn').style.display='none';$('colorModalTitle').textContent=t('addColor');$('colorName').value='';$('colorHex').value='#3b82f6';openModal('colorModal')}
-function openEditColor(id){const c=D.colors.find(x=>x.id===id);if(!c)return;editColor=id;$('colorMoveBtn').style.display='block';$('colorModalTitle').textContent=t('edit');$('colorName').value=c.name;$('colorHex').value=c.hex_code;openModal('colorModal')}
-async function saveColor(){const nm=$('colorName').value.trim(),hx=$('colorHex').value;if(!nm){toast(t('tEnterName'),'error');return}const b=$('saveColorBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editColor)await SB.from('colors').update({name:nm,hex_code:hx}).eq('id',editColor);else await ins('colors',{name:nm,hex_code:hx});b.innerHTML='Save';b.disabled=0;toast(t('tSaved'));closeModal('colorModal');await loadData();renderColors()}
+return `<div class="color-card${n?'':' empty0'}"><div class="color-swatch" style="background:${swatchCSS(c)}"></div><div class="color-names"><div class="en">${esc(c.name)} <span style="color:var(--text3);font-weight:500">\u00b7 ${n}</span></div></div><button class="btn-icon" onclick="openEditColor('${c.id}')">\u270e</button><button class="btn-icon" onclick="delColor('${c.id}')">\u2715</button></div>`}).join(''):`<div class="empty-state"><p>${t('noSearchHit')}</p></div>`}
+function openAddColorModal(){editColor=null;$('colorMoveBtn').style.display='none';colorTones=[];setTimeout(renderTones,0);$('colorModalTitle').textContent=t('addColor');$('colorName').value='';$('colorHex').value='#3b82f6';openModal('colorModal')}
+// A colour can carry extra tones so garments with two or three colours read correctly
+const MAX_TONES=4;
+let colorTones=[];
+function renderTones(){const el=$('toneRows');if(!el)return;
+el.innerHTML=colorTones.map((h,i)=>`<div class="tone-row"><span class="tn">${t('toneNo').replace('{n}',i+2)}</span><input type="color" value="${h}" oninput="colorTones[${i}]=this.value;updColorPrev()"><button type="button" class="btn-icon" onclick="colorTones.splice(${i},1);renderTones()">\u2715</button></div>`).join('');
+$('addToneBtn').style.display=colorTones.length>=MAX_TONES?'none':'inline-flex';
+updColorPrev()}
+function addTone(){if(colorTones.length>=MAX_TONES)return;colorTones.push('#ffffff');renderTones()}
+function updColorPrev(){const p=$('colorPrev2');if(!p)return;
+p.style.background=swatchCSS({hex_code:$('colorHex').value,tones:colorTones})}
+function openEditColor(id){const c=D.colors.find(x=>x.id===id);if(!c)return;editColor=id;$('colorMoveBtn').style.display='block';$('colorModalTitle').textContent=t('edit');$('colorName').value=c.name;$('colorHex').value=c.hex_code;
+colorTones=Array.isArray(c.tones)?c.tones.filter(Boolean).slice(0,MAX_TONES):[];renderTones();openModal('colorModal')}
+async function saveColor(){const nm=$('colorName').value.trim(),hx=$('colorHex').value;if(!nm){toast(t('tEnterName'),'error');return}
+const tones=colorTones.filter(Boolean).slice(0,MAX_TONES);
+const b=$('saveColorBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;if(editColor)await SB.from('colors').update({name:nm,hex_code:hx,tones}).eq('id',editColor);else await ins('colors',{name:nm,hex_code:hx,tones});b.innerHTML='Save';b.disabled=0;toast(t('tSaved'));closeModal('colorModal');await loadData();renderColors()}
 async function delColor(id){pendConf=async()=>{const{error}=await SB.from('colors').delete().eq('id',id);closeModal('confirmModal');
 if(error&&error.code==='23503'){pendConf=async()=>{closeModal('confirmModal');busy('busyWorking');
 await SB.from('box_items').delete().eq('color_id',id);
@@ -1752,7 +1789,7 @@ el.innerHTML=cols.map((c,ix)=>{const p=typePhotos[c.id];
 let head='';
 if(!c.used&&!split){split=true;head=ix>0?`<div class="pc-sep">${t('otherColors')}</div>`:''}
 return head+`<div class="pc-row">${p?`<img class="pc-img" src="${p}" alt="" data-cap="${escA(c.name)}" onclick="openLightbox(this.src,this.dataset.cap)">`:'<div class="pc-ph"></div>'}
-<div class="pc-name"><span class="color-dot" style="background:${c.hex_code}"></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.name)}</span></div>
+<div class="pc-name"><span class="color-dot" style="background:${swatchCSS(c)}"></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.name)}</span></div>
 <input type="file" accept="image/*" id="tpc_${c.id}" onchange="typeColorPhotoPick('${c.id}',this)" style="display:none">
 <button type="button" class="btn btn-secondary btn-sm" onclick="$('tpc_${c.id}').click()">${p?t('changeBtn'):t('uploadBtn')}</button>
 ${p?`<button type="button" class="btn-icon" onclick="delete typePhotos['${c.id}'];renderPerColorPhotos()">\u2715</button>`:''}</div>`}).join('')}
