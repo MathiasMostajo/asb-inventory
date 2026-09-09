@@ -153,21 +153,36 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .cbx-empty{padding:10px 11px;font-size:12.5px;color:var(--text3)}
 .box-hit{margin-top:9px;padding-top:8px;border-top:1px dashed var(--border);font-size:11.5px;color:var(--text2);line-height:1.55}
 .box-hit strong{color:var(--accent)}
-.set-search{width:100%;margin-bottom:12px}
+.set-search{width:100%;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;outline:none;margin-bottom:12px;transition:border-color .2s}
+.set-search:focus{border-color:var(--accent)}
 .mv-list{max-height:230px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px 10px}
 .mv-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border)}
 .mv-row:last-child{border-bottom:none}
 .mv-lbl{flex:1;min-width:0;font-size:13px;font-weight:600}
 .mv-sub{font-size:11.5px;color:var(--text3);font-weight:500}
-.mv-qty{width:66px;text-align:center}
+.mv-qty{width:70px;text-align:center;padding:7px 6px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none}
+.mv-qty:focus{border-color:var(--accent)}
+.mv-list{background:var(--bg2)}
 .mv-of{font-size:12px;color:var(--text3);min-width:34px}
 .sel-bar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;background:var(--accent-dim);border:1px solid var(--accent-dim2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px}
 .sel-bar .cnt{font-size:13px;font-weight:700;color:var(--accent)}
+.sel-bar input[type=text]{padding:7px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none}
 .type-card.picked{border-color:var(--accent);background:var(--accent-dim)}
 .type-card .selbox{width:17px;height:17px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;margin-right:9px}
 .type-card.empty0 .type-name span,.color-card.empty0 .color-names{opacity:.45}
-.fam-head{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--accent);margin:16px 0 7px;padding-bottom:4px;border-bottom:1px solid var(--border)}
-.fam-head:first-child{margin-top:0}
+.rep-bar{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
+.rep-bar label{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--text3);font-weight:600}
+.rep-bar label.sw-row{flex-direction:row;align-items:center;font-size:13px;color:var(--text2);font-weight:500}
+.rep-bar .dash-pick{max-width:none;min-width:150px}
+.rep-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.rep-tbl th{text-align:left;font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:var(--text3);padding:6px 8px;border-bottom:1px solid var(--border)}
+.rep-tbl td{padding:8px;border-bottom:1px solid var(--border)}
+.rep-tbl td.n{text-align:right;font-family:'JetBrains Mono',monospace}
+.rep-up{color:#34d399;font-weight:700}.rep-dn{color:#f87171;font-weight:700}.rep-eq{color:var(--text3)}
+.fam-sec{margin-bottom:18px}
+.fam-head{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--accent);margin:0 0 8px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.fam-head .fc{font-size:10.5px;font-weight:600;color:var(--text3);letter-spacing:0;text-transform:none}
+.fam-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
 .size-row{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;margin-bottom:6px}
 .size-row .sz-name{flex:1;font-size:14px;font-weight:600;font-family:'JetBrains Mono',monospace}
 .size-row .sz-use{font-size:11px;color:var(--text3)}
@@ -430,7 +445,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <button data-page="boxes" onclick="showPage('boxes')" data-i18n="boxes">Boxes</button>
 <button data-page="checkout" onclick="showPage('checkout')" data-i18n="checkout">Checkout</button>
 <button data-page="history" onclick="showPage('history')" data-i18n="history">History</button>
-<button data-page="snapshots" onclick="showPage('snapshots')" data-i18n="snapshots">Snapshots</button>
+<button data-page="snapshots" onclick="showPage('snapshots')" data-i18n="reports">Reports</button>
 <button data-page="settings" onclick="showPage('settings')" data-i18n="settings">Settings</button>
 </nav></div>
 <div class="topbar-right"><select class="lang-select" id="langSel" onchange="setLang(this.value)"><option value="en">🌐 English</option><option value="fr">Français</option><option value="es">Español</option><option value="pt">Português</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="nl">Nederlands</option></select><button class="theme-toggle" onclick="toggleTheme()" title="Light/Dark">☀</button><span class="topbar-user" id="userEmail"></span><button class="topbar-logout" onclick="handleLogout()" id="btnLogout" data-i18n="out">Out</button></div></div>
@@ -492,10 +507,18 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 
 <!-- SNAPSHOTS -->
 <div class="page" id="page-snapshots">
-<div class="page-header"><h2 class="page-title" data-i18n="snapshots">Snapshots</h2><button class="btn btn-primary btn-sm" onclick="openSnapModal()">📸 <span data-i18n="takeSnapshot">Take Snapshot</span></button></div>
-<p style="font-size:13px;color:var(--text3);margin-bottom:14px" data-i18n="snapshotIntro">Save a point-in-time record of your inventory. Compare any two snapshots to see what changed.</p>
-<div id="snapCompare"></div>
-<div id="snapList"></div>
+<div class="page-header"><h2 class="page-title" data-i18n="reports">Reports</h2><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm" onclick="exportReport()">📥 <span data-i18n="exportExcel">Export (Excel)</span></button><button class="btn btn-secondary btn-sm" onclick="openSnapModal()">📸 <span data-i18n="takeSnapshot">Take Snapshot</span></button></div></div>
+<p style="font-size:13px;color:var(--text3);margin-bottom:14px" data-i18n="reportsIntro">Your inventory is recorded automatically every day. Pick two dates to see what went up and what went down.</p>
+<div class="rep-bar">
+<label><span data-i18n="fromLbl">From</span><select class="dash-pick" id="repFrom" onchange="renderReport()"></select></label>
+<label><span data-i18n="toLbl">To</span><select class="dash-pick" id="repTo" onchange="renderReport()"></select></label>
+<label><span data-i18n="groupLbl">Group by</span><select class="dash-pick" id="repGroup" onchange="renderReport()"><option value="type" data-i18n="byItem">Item</option><option value="tc" data-i18n="byItemColour">Item + colour</option><option value="fam" data-i18n="byFamily">Family</option></select></label>
+<label class="sw-row" style="margin-left:auto"><input type="checkbox" id="repOnlyChanged" checked onchange="renderReport()"><span data-i18n="onlyChanged">Only changed</span></label>
+</div>
+<div id="repStats" class="stats-row" style="margin-bottom:14px"></div>
+<div class="charts-grid" style="margin-bottom:14px"><div class="chart-card"><h3 data-i18n="stockOverTime">Total stock over time</h3><canvas id="repLine"></canvas></div><div class="chart-card"><h3 data-i18n="biggestChanges">Biggest changes</h3><canvas id="repBars"></canvas></div></div>
+<div class="chart-card"><h3 data-i18n="changesTable">Changes</h3><div id="repTable"></div></div>
+<p style="font-size:11.5px;color:var(--text3);margin-top:10px" id="repFoot"></p>
 </div>
 
 <!-- SETTINGS -->
@@ -517,7 +540,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="settings-section" id="settings-types"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="itemTypes">Item Types</h3><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm" id="selModeBtn" onclick="toggleSelMode()" data-i18n="selectMode">Select</button><button class="btn btn-secondary btn-sm" onclick="openAddTypeModal()">+ <span data-i18n="add">Add</span></button></div></div>
 <input type="text" class="set-search" id="typeSearch" data-i18n-ph="searchItems" placeholder="Search..." oninput="renderTypes()">
 <div id="selBar" class="sel-bar" style="display:none"></div>
-<div class="types-grid" id="typesList"></div></div>
+<div id="typesList"></div></div>
 <div class="settings-section" id="settings-locations"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="locations">Locations</h3><button class="btn btn-secondary btn-sm" onclick="openAddLocModal()">+ <span data-i18n="add">Add</span></button></div><div class="locations-grid" id="locList"></div></div>
 <div class="settings-section" id="settings-users"><div class="page-header"><h3 style="font-size:15px;font-weight:600;color:var(--text2)" data-i18n="users">Users</h3></div><div id="inviteBox"></div><div id="pendingUsers"></div><div class="users-grid" id="usersList"></div></div>
 <div class="settings-section" id="settings-general"><div style="max-width:400px"><div class="form-group"><label data-i18n="clubName">Club Name</label><input type="text" id="sClubName" placeholder="AS Blainville"></div><div class="form-group"><label data-i18n="clubLogoUrl">Club Logo</label><input type="file" accept="image/*" id="sLogoFile" onchange="logoPick(this)" style="font-size:12px"><div id="sLogoPrev"></div><p style="font-size:11px;color:var(--text3);margin-top:3px"><span data-i18n="logoHint">Shown in topbar & login screen</span></p></div><div class="form-group"><label class="sw-row"><input type="checkbox" id="sLowOn" onchange="toggleLowStock()"><span data-i18n="lowStockOn">Warn me about low stock</span></label>
@@ -575,7 +598,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="ph-modes"><button type="button" id="phModeSingle" class="active" onclick="setPhotoMode('single')" data-i18n="photoOneAll">One photo for all colors</button><button type="button" id="phModePer" onclick="setPhotoMode('per_color')" data-i18n="photoPerColor">One photo per color</button></div>
 <div id="phSingleWrap"><input type="file" accept="image/*" id="typePhotoInput" onchange="typePhotoPick(this)" style="font-size:12px"><div id="typePhotoPrev"></div></div>
 <div id="phPerWrap" style="display:none"></div></div>
-<button class="btn btn-secondary btn-sm" style="width:100%;margin-bottom:10px" onclick="closeModal('typeModal');openMoveStock('type',editType)" id="typeMoveBtn" data-i18n="moveStock">Move stock</button>
+<div id="typeMoveBtn" style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-secondary btn-sm" style="flex:1" onclick="closeModal('typeModal');openMoveStock('type',editType)">⇄ <span data-i18n="moveToItem">Move to another item</span></button><button class="btn btn-secondary btn-sm" style="flex:1" onclick="closeModal('typeModal');openMoveStock('recolor',editType)">● <span data-i18n="changeColour">Change colour</span></button></div>
 <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('typeModal')" data-i18n="cancel">Cancel</button><button class="btn btn-primary" onclick="saveType()" id="saveTypeBtn" style="width:auto" data-i18n="save">Save</button></div></div></div>
 
 <div class="modal-overlay" id="locModal"><div class="modal"><h2 id="locModalTitle">Add Location</h2>
@@ -602,7 +625,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 
 <div class="modal-overlay" id="moveModal"><div class="modal" style="max-width:560px"><h2 id="moveTitle">Move stock</h2>
 <p style="font-size:13px;color:var(--text2);margin-bottom:12px" id="moveDesc"></p>
-<div class="form-group"><label data-i18n="moveTo">Move into</label><select id="moveTarget"></select></div>
+<div class="form-group"><label id="moveToLbl" data-i18n="moveTo">Move into</label><select id="moveTarget"></select></div>
 <div class="mv-list" id="moveRows"></div>
 <div style="font-size:12.5px;color:var(--accent);font-weight:600;margin:10px 0" id="moveCount"></div>
 <label class="sw-row" id="moveDelWrap" style="margin-bottom:14px"><input type="checkbox" id="moveDel" checked><span data-i18n="moveDelSrc">Delete the empty item afterwards</span></label>
@@ -850,6 +873,30 @@ tNothingToMove:{en:"There is no stock to move",fr:"Aucun stock à déplacer",es:
 sortBy:{en:"Sort by",fr:"Trier par",es:"Ordenar por",pt:"Ordenar por",de:"Sortieren nach",it:"Ordina per",nl:"Sorteer op"},
 sortName:{en:"Name",fr:"Nom",es:"Nombre",pt:"Nome",de:"Name",it:"Nome",nl:"Naam"},
 sortTag:{en:"Sticker colour",fr:"Couleur de pastille",es:"Color de pegatina",pt:"Cor do adesivo",de:"Aufkleberfarbe",it:"Colore adesivo",nl:"Stickerkleur"},
+reports:{en:"Reports",fr:"Rapports",es:"Informes",pt:"Relatórios",de:"Berichte",it:"Report",nl:"Rapporten"},
+reportsIntro:{en:"Your inventory is recorded automatically every day. Pick two dates to see what went up and what went down.",fr:"Votre inventaire est enregistré automatiquement chaque jour. Choisissez deux dates pour voir ce qui a monté et ce qui a baissé.",es:"Tu inventario se registra automáticamente todos los días. Elegí dos fechas para ver qué subió y qué bajó.",pt:"Seu inventário é registrado automaticamente todos os dias. Escolha duas datas para ver o que subiu e o que desceu.",de:"Ihr Inventar wird täglich automatisch erfasst. Wählen Sie zwei Daten, um zu sehen, was gestiegen und gesunken ist.",it:"Il tuo inventario viene registrato automaticamente ogni giorno. Scegli due date per vedere cosa è salito e cosa è sceso.",nl:"Je inventaris wordt elke dag automatisch vastgelegd. Kies twee datums om te zien wat is gestegen en gedaald."},
+exportExcel:{en:"Export (Excel)",fr:"Exporter (Excel)",es:"Exportar (Excel)",pt:"Exportar (Excel)",de:"Exportieren (Excel)",it:"Esporta (Excel)",nl:"Exporteren (Excel)"},
+fromLbl:{en:"From",fr:"Du",es:"Desde",pt:"De",de:"Von",it:"Da",nl:"Van"},
+toLbl:{en:"To",fr:"Au",es:"Hasta",pt:"Até",de:"Bis",it:"A",nl:"Tot"},
+groupLbl:{en:"Group by",fr:"Grouper par",es:"Agrupar por",pt:"Agrupar por",de:"Gruppieren nach",it:"Raggruppa per",nl:"Groeperen op"},
+byItem:{en:"Item",fr:"Article",es:"Artículo",pt:"Item",de:"Artikel",it:"Articolo",nl:"Artikel"},
+byItemColour:{en:"Item + colour",fr:"Article + couleur",es:"Artículo + color",pt:"Item + cor",de:"Artikel + Farbe",it:"Articolo + colore",nl:"Artikel + kleur"},
+byFamily:{en:"Family",fr:"Famille",es:"Familia",pt:"Família",de:"Familie",it:"Famiglia",nl:"Familie"},
+onlyChanged:{en:"Only what changed",fr:"Seulement ce qui a changé",es:"Solo lo que cambió",pt:"Só o que mudou",de:"Nur Änderungen",it:"Solo ciò che è cambiato",nl:"Alleen wijzigingen"},
+stockOverTime:{en:"Total stock over time",fr:"Stock total dans le temps",es:"Stock total en el tiempo",pt:"Estoque total ao longo do tempo",de:"Gesamtbestand im Zeitverlauf",it:"Scorte totali nel tempo",nl:"Totale voorraad door de tijd"},
+biggestChanges:{en:"Biggest changes",fr:"Plus grands changements",es:"Mayores cambios",pt:"Maiores mudanças",de:"Größte Änderungen",it:"Maggiori cambiamenti",nl:"Grootste wijzigingen"},
+changesTable:{en:"Changes",fr:"Changements",es:"Cambios",pt:"Mudanças",de:"Änderungen",it:"Cambiamenti",nl:"Wijzigingen"},
+changeLbl:{en:"Change",fr:"Variation",es:"Cambio",pt:"Variação",de:"Änderung",it:"Variazione",nl:"Verschil"},
+wentUp:{en:"Went up",fr:"En hausse",es:"Subió",pt:"Subiu",de:"Gestiegen",it:"In aumento",nl:"Gestegen"},
+wentDown:{en:"Went down",fr:"En baisse",es:"Bajó",pt:"Desceu",de:"Gesunken",it:"In calo",nl:"Gedaald"},
+noChanges:{en:"Nothing changed between these dates.",fr:"Rien n'a changé entre ces dates.",es:"Nada cambió entre esas fechas.",pt:"Nada mudou entre essas datas.",de:"Zwischen diesen Daten hat sich nichts geändert.",it:"Niente è cambiato tra queste date.",nl:"Niets veranderd tussen deze datums."},
+repNeedTwo:{en:"Come back tomorrow \u2014 reports need at least two days of records. You can also take a snapshot now to start the history.",fr:"Revenez demain \u2014 les rapports ont besoin d'au moins deux jours de données. Vous pouvez aussi prendre une capture maintenant pour commencer l'historique.",es:"Volvé mañana \u2014 los informes necesitan al menos dos días de registros. También podés tomar una captura ahora para empezar el historial.",pt:"Volte amanhã \u2014 os relatórios precisam de pelo menos dois dias de registros. Você também pode tirar uma captura agora para iniciar o histórico.",de:"Kommen Sie morgen wieder \u2014 Berichte brauchen mindestens zwei Tage Daten. Sie können jetzt auch eine Aufnahme machen, um den Verlauf zu starten.",it:"Torna domani \u2014 i report richiedono almeno due giorni di dati. Puoi anche fare un'istantanea ora per iniziare la cronologia.",nl:"Kom morgen terug \u2014 rapporten hebben minstens twee dagen aan gegevens nodig. Je kunt nu ook een momentopname maken om de geschiedenis te starten."},
+repFoot:{en:"{n} records stored since {d}. Daily records are taken automatically the first time the club opens the app each day.",fr:"{n} enregistrements depuis le {d}. Un enregistrement quotidien est pris automatiquement à la première ouverture de l'app chaque jour.",es:"{n} registros guardados desde el {d}. El registro diario se toma solo la primera vez que el club abre la app cada día.",pt:"{n} registros desde {d}. O registro diário é feito automaticamente na primeira vez que o clube abre o app a cada dia.",de:"{n} Aufzeichnungen seit {d}. Die tägliche Aufzeichnung erfolgt automatisch beim ersten Öffnen der App am Tag.",it:"{n} registrazioni dal {d}. La registrazione giornaliera avviene automaticamente alla prima apertura dell'app ogni giorno.",nl:"{n} registraties sinds {d}. De dagelijkse registratie gebeurt automatisch bij de eerste keer openen van de app per dag."},
+moveToItem:{en:"Move to another item",fr:"Déplacer vers un autre article",es:"Mover a otro artículo",pt:"Mover para outro item",de:"Zu anderem Artikel",it:"Sposta in altro articolo",nl:"Naar ander artikel"},
+changeColour:{en:"Change colour",fr:"Changer la couleur",es:"Cambiar color",pt:"Mudar cor",de:"Farbe ändern",it:"Cambia colore",nl:"Kleur wijzigen"},
+newColourLbl:{en:"New colour",fr:"Nouvelle couleur",es:"Color nuevo",pt:"Nova cor",de:"Neue Farbe",it:"Nuovo colore",nl:"Nieuwe kleur"},
+recolorDesc:{en:"Pick the correct colour for the stock of \u201c{name}\u201d. Untick a row or lower its number to change only part of it.",fr:"Choisissez la bonne couleur pour le stock de \u00ab {name} \u00bb. Décochez une ligne ou baissez le nombre pour n'en changer qu'une partie.",es:"Elegí el color correcto para el stock de \u201c{name}\u201d. Destildá una fila o bajá el número para cambiar solo una parte.",pt:"Escolha a cor correta para o estoque de \u201c{name}\u201d. Desmarque uma linha ou reduza o número para mudar só uma parte.",de:"Wählen Sie die richtige Farbe für den Bestand von \u201e{name}\u201c. Zeile abwählen oder Zahl verringern, um nur einen Teil zu ändern.",it:"Scegli il colore corretto per le scorte di \u201c{name}\u201d. Deseleziona una riga o abbassa il numero per cambiarne solo una parte.",nl:"Kies de juiste kleur voor de voorraad van \u201c{name}\u201d. Vink een regel uit of verlaag het aantal om slechts een deel te wijzigen."},
+unitsLbl:{en:"units",fr:"unités",es:"unidades",pt:"unidades",de:"Stück",it:"unità",nl:"stuks"},
 familyLbl:{en:"Family",fr:"Famille",es:"Familia",pt:"Família",de:"Familie",it:"Famiglia",nl:"Familie"},
 familyHint:{en:"Groups similar items together. Type a new name to create one, or leave empty.",fr:"Regroupe les articles similaires. Tapez un nouveau nom pour en créer une, ou laissez vide.",es:"Agrupa artículos similares. Escribí un nombre nuevo para crearla, o dejalo vacío.",pt:"Agrupa itens semelhantes. Digite um nome novo para criar, ou deixe vazio.",de:"Gruppiert ähnliche Artikel. Neuen Namen eingeben, um eine anzulegen, oder leer lassen.",it:"Raggruppa articoli simili. Scrivi un nuovo nome per crearla, o lascia vuoto.",nl:"Groepeert vergelijkbare artikelen. Typ een nieuwe naam om er een te maken, of laat leeg."},
 noFamily:{en:"Ungrouped",fr:"Sans famille",es:"Sin familia",pt:"Sem família",de:"Ohne Familie",it:"Senza famiglia",nl:"Zonder familie"},
@@ -1110,7 +1157,7 @@ el.innerHTML=`<h4 style="font-size:13px;color:var(--text2);margin-bottom:10px">$
 
 // DATA
 async function loadData(){const[bx,it,co,ty,lo,lg,pr,st,sn,sz,fm]=await Promise.all([SB.from('boxes').select('*').order('created_at',{ascending:false}),SB.from('box_items').select('*'),SB.from('colors').select('*').order('name'),SB.from('item_types').select('*').order('name'),SB.from('storage_locations').select('*').order('name'),SB.from('activity_log').select('*').order('created_at',{ascending:false}),SB.from('profiles').select('*').eq('club_id',CID).order('created_at'),SB.from('app_settings').select('*'),SB.from('inventory_snapshots').select('*').order('created_at',{ascending:false}),SB.from('sizes').select('*').order('position'),SB.from('item_families').select('*').order('name')]);
-D.boxes=bx.data||[];D.items=it.data||[];D.colors=co.data||[];D.types=ty.data||[];D.locs=lo.data||[];D.sizes=sz.data||[];D.fams=fm.data||[];D.logs=lg.data||[];D.profiles=pr.data||[];D.snaps=sn.data||[];D.settings={};(st.data||[]).forEach(s=>D.settings[s.key]=s.value);applyLogo();loadDash();renderBoxes();
+D.boxes=bx.data||[];D.items=it.data||[];D.colors=co.data||[];D.types=ty.data||[];D.locs=lo.data||[];D.sizes=sz.data||[];D.fams=fm.data||[];D.logs=lg.data||[];D.profiles=pr.data||[];D.snaps=sn.data||[];D.settings={};(st.data||[]).forEach(s=>D.settings[s.key]=s.value);applyLogo();loadDash();renderBoxes();autoSnapshot();
 // QR deep link: open the scanned box if it belongs to this club
 if(pendingBoxLink){const target=D.boxes.find(b=>b.id===pendingBoxLink);pendingBoxLink=null;if(target)openDetail(target.id)}}
 // The club's size list drives every dropdown, chart and sort in the app
@@ -1430,25 +1477,73 @@ function renderHistory(){try{const af=$('histAction').value;const df=$('histDate
 $('historyList').innerHTML=logs.length?`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('action')}</th><th>${t('item')}</th><th>${t('color')}</th><th>${t('size')}</th><th>${t('qty')}</th><th>${t('by')}</th><th>${t('date')}</th></tr></thead><tbody>${logs.slice(0,200).map(l=>{const cls=l.action_type==='checkout'?'color:var(--red)':'color:var(--accent)';return`<tr><td><span style="${cls};font-weight:600;font-size:12px;text-transform:uppercase">${l.action_type.replace('_',' ')}</span></td><td>${esc(gtn(l.item_type_id))}</td><td><span class="color-dot" style="background:${gch(l.color_id)}"></span>${esc(gcn(l.color_id))}</td><td>${l.size||''}</td><td class="qty">${l.quantity}</td><td style="font-size:12px">${esc(getEmail(l.created_by))}</td><td style="font-size:12px">${new Date(l.created_at).toLocaleString()}</td></tr>`}).join('')}</tbody></table></div>`:`<div class="empty-state"><p>${t('noActivity')}</p><p style="font-size:13px">${t('activityHint')}</p></div>`}catch(e){console.error('History error:',e);$('historyList').innerHTML=`<div class="empty-state"><p>${t('errLoadHist')}</p></div>`}}
 
 // SNAPSHOTS
-function renderSnaps(){const el=$('snapList');const cmp=$('snapCompare');
-if(!D.snaps.length){el.innerHTML=`<div class="empty-state"><p>${t('noSnapshots')}</p><p style="font-size:13px">${t('takeSnapHint')}</p></div>`;cmp.innerHTML='';return}
-// D.snaps comes newest-first. For comparison we want chronological (oldest first) so signs make sense.
-const chrono=[...D.snaps].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
-if(chrono.length>=2){
-// Default: oldest on left (A), newest on right (B)
-cmp.innerHTML=`<div class="chart-card" style="margin-bottom:14px"><h3>Compare Snapshots</h3><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center"><span style="font-size:12px;color:var(--text3)">From:</span><select id="snapA" onchange="compareSnaps()" style="flex:1;padding:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:Outfit">${chrono.map((s,i)=>`<option value="${s.id}"${i===0?' selected':''}>${esc(s.name)} (${new Date(s.created_at).toLocaleDateString()})</option>`).join('')}</select><span style="font-size:12px;color:var(--text3)">→ To:</span><select id="snapB" onchange="compareSnaps()" style="flex:1;padding:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:Outfit">${chrono.map((s,i)=>`<option value="${s.id}"${i===chrono.length-1?' selected':''}>${esc(s.name)} (${new Date(s.created_at).toLocaleDateString()})</option>`).join('')}</select></div><div id="snapDiff"></div></div>`;
-// Auto-run comparison immediately
-setTimeout(compareSnaps,0);
-}else cmp.innerHTML='<p style="font-size:13px;color:var(--text3);margin-bottom:14px">Take a second snapshot to compare changes over time.</p>';
-el.innerHTML=chrono.slice().reverse().map(s=>`<div class="snapshot-card"><div class="snapshot-header"><div><div class="snapshot-name">${esc(s.name)}</div><span style="font-size:11px;color:var(--text3)">${new Date(s.created_at).toLocaleString()}</span></div><button class="btn-icon" onclick="delSnap('${s.id}')">✕</button></div></div>`).join('')}
-function compareSnaps(){const a=D.snaps.find(s=>s.id===$('snapA').value);const b=D.snaps.find(s=>s.id===$('snapB').value);if(!a||!b)return;
-// Ensure chronological: a should be older. If user picked them backwards, swap so signs stay correct.
-let older=a,newer=b;if(new Date(a.created_at)>new Date(b.created_at)){older=b;newer=a}
-const am={},bm={};older.data.forEach(i=>am[`${i.tid}|${i.cid}|${i.size}`]=i.qty);newer.data.forEach(i=>bm[`${i.tid}|${i.cid}|${i.size}`]=i.qty);
-const ak=new Set([...Object.keys(am),...Object.keys(bm)]);const rows=[];
-ak.forEach(k=>{const[t,c,s]=k.split('|');const av=am[k]||0,bv=bm[k]||0,d=bv-av;if(d!==0)rows.push({type:gtn(t),color:gcn(c),hex:gch(c),size:s,a:av,b:bv,diff:d})});
-rows.sort((x,y)=>x.type.localeCompare(y.type));
-$('snapDiff').innerHTML=rows.length?`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('type')}</th><th>${t('color')}</th><th>${t('size')}</th><th>${esc(older.name)}</th><th>${esc(newer.name)}</th><th>${t('diff')}</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.type)}</td><td><span class="color-dot" style="background:${r.hex}"></span>${esc(r.color)}</td><td>${r.size}</td><td class="qty">${r.a}</td><td class="qty">${r.b}</td><td class="qty" style="color:${r.diff<0?'var(--red)':r.diff>0?'var(--green)':'var(--text3)'}">${r.diff>0?'+':''}${r.diff}</td></tr>`).join('')}</tbody></table></div>`:`<p style="color:var(--text3);font-size:13px">${t('noDifferences')}</p>`}
+// ============ REPORTS ============
+// Every snapshot is a point-in-time list of {tid,cid,size,qty}
+function snapChrono(){return [...D.snaps].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))}
+function snapLabel(s){const d=new Date(s.created_at);const auto=(s.name||'').startsWith('auto:');
+return d.toLocaleDateString()+(auto?'':' \u00b7 '+s.name)}
+// Silent daily record so reports always have data, even if nobody presses the button
+async function autoSnapshot(){if(!CID||!D.items.length)return;
+const today=new Date().toISOString().split('T')[0];
+if(D.snaps.some(s=>(s.name||'')==='auto:'+today))return;
+const agg={};D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}`;
+if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,qty:0};agg[k].qty+=i.quantity});
+const{data}=await ins('inventory_snapshots',{name:'auto:'+today,data:Object.values(agg),created_by:U.id}).select();
+if(data?.[0])D.snaps.unshift(data[0])}
+function repKey(row,mode){if(mode==='fam')return typeFam(row.tid)||'__none';if(mode==='tc')return row.tid+'|'+row.cid;return row.tid}
+function repName(key,mode){if(mode==='fam')return key==='__none'?t('noFamily'):famName(key);
+if(mode==='tc'){const[a,b]=key.split('|');return gtn(a)+' \u00b7 '+gcn(b)}return gtn(key)}
+function repAgg(snap,mode){const m={};(snap?.data||[]).forEach(r=>{const k=repKey(r,mode);m[k]=(m[k]||0)+r.qty});return m}
+let repRows=[];
+function renderSnaps(){const chrono=snapChrono();
+const fromS=$('repFrom'),toS=$('repTo');
+if(chrono.length<2){$('repStats').innerHTML='';$('repTable').innerHTML=`<div class="empty-state"><p>${t('repNeedTwo')}</p></div>`;
+$('repFoot').textContent='';fromS.innerHTML=toS.innerHTML=chrono.map(s=>`<option value="${s.id}">${escA(snapLabel(s))}</option>`).join('');
+if(charts.repLine)charts.repLine.destroy();if(charts.repBars)charts.repBars.destroy();return}
+const keepF=fromS.value,keepT=toS.value;
+fromS.innerHTML=toS.innerHTML=chrono.map(s=>`<option value="${s.id}">${escA(snapLabel(s))}</option>`).join('');
+// Default window: last 30 days if we have it, otherwise everything
+const cut=Date.now()-30*864e5;const first30=chrono.find(s=>new Date(s.created_at)>=cut)||chrono[0];
+fromS.value=chrono.some(s=>s.id===keepF)?keepF:first30.id;
+toS.value=chrono.some(s=>s.id===keepT)?keepT:chrono[chrono.length-1].id;
+renderReport()}
+function renderReport(){const chrono=snapChrono();if(chrono.length<2)return;
+let A=D.snaps.find(s=>s.id===$('repFrom').value),B=D.snaps.find(s=>s.id===$('repTo').value);
+if(!A||!B)return;
+if(new Date(A.created_at)>new Date(B.created_at)){[A,B]=[B,A]}
+const mode=$('repGroup').value,only=$('repOnlyChanged').checked;
+const a=repAgg(A,mode),b=repAgg(B,mode);
+const keys=[...new Set([...Object.keys(a),...Object.keys(b)])];
+repRows=keys.map(k=>({k,name:repName(k,mode),from:a[k]||0,to:b[k]||0,d:(b[k]||0)-(a[k]||0)}))
+.filter(r=>!only||r.d!==0)
+.sort((x,y)=>Math.abs(y.d)-Math.abs(x.d)||x.name.localeCompare(y.name));
+const totA=Object.values(a).reduce((s,v)=>s+v,0),totB=Object.values(b).reduce((s,v)=>s+v,0);
+const up=repRows.filter(r=>r.d>0).reduce((s,r)=>s+r.d,0),dn=repRows.filter(r=>r.d<0).reduce((s,r)=>s+r.d,0);
+$('repStats').innerHTML=`<div class="stat-card"><div class="stat-label">${t('fromLbl')}</div><div class="stat-value">${totA}</div></div>
+<div class="stat-card"><div class="stat-label">${t('toLbl')}</div><div class="stat-value">${totB}</div></div>
+<div class="stat-card"><div class="stat-label">${t('wentUp')}</div><div class="stat-value rep-up">+${up}</div></div>
+<div class="stat-card"><div class="stat-label">${t('wentDown')}</div><div class="stat-value rep-dn">${dn}</div></div>`;
+// Table
+$('repTable').innerHTML=repRows.length?`<div class="items-table-wrap"><table class="rep-tbl"><thead><tr><th>${t('itemsTab')}</th><th style="text-align:right">${t('fromLbl')}</th><th style="text-align:right">${t('toLbl')}</th><th style="text-align:right">${t('changeLbl')}</th></tr></thead><tbody>
+${repRows.map(r=>`<tr><td>${esc(r.name)}</td><td class="n">${r.from}</td><td class="n">${r.to}</td><td class="n ${r.d>0?'rep-up':r.d<0?'rep-dn':'rep-eq'}">${r.d>0?'+':''}${r.d}</td></tr>`).join('')}</tbody></table></div>`
+:`<div class="empty-state"><p>${t('noChanges')}</p></div>`;
+// Line: total stock across every snapshot in the window
+const win=chrono.filter(s=>new Date(s.created_at)>=new Date(A.created_at)&&new Date(s.created_at)<=new Date(B.created_at));
+rChart('repLine','line',{labels:win.map(s=>new Date(s.created_at).toLocaleDateString(undefined,{month:'short',day:'numeric'})),
+datasets:[{data:win.map(s=>(s.data||[]).reduce((x,r)=>x+r.qty,0)),borderColor:'#38b6ff',backgroundColor:'#38b6ff22',fill:true,tension:.3,pointRadius:3}]},{pl:false});
+// Bars: top 10 movers, green up / red down
+const top=repRows.slice(0,10);
+rChart('repBars','bar',{labels:top.map(r=>r.name.length>22?r.name.slice(0,21)+'\u2026':r.name),
+datasets:[{data:top.map(r=>r.d),backgroundColor:top.map(r=>r.d>=0?'#34d399':'#f87171'),borderRadius:4,borderSkipped:false}]},{pl:false,horiz:true});
+$('repFoot').textContent=t('repFoot').replace('{n}',D.snaps.length).replace('{d}',new Date(chrono[0].created_at).toLocaleDateString())}
+function exportReport(){if(!repRows.length){toast(t('noChanges'),'error');return}
+const q=s=>`"${String(s??'').replace(/"/g,'""')}"`;
+const A=D.snaps.find(s=>s.id===$('repFrom').value),B=D.snaps.find(s=>s.id===$('repTo').value);
+let csv=[t('itemsTab'),t('fromLbl')+' ('+new Date(A.created_at).toLocaleDateString()+')',t('toLbl')+' ('+new Date(B.created_at).toLocaleDateString()+')',t('changeLbl')].map(q).join(',')+'\n';
+repRows.forEach(r=>{csv+=[q(r.name),r.from,r.to,r.d].join(',')+'\n'});
+const slug=(D.settings.club_name||CLUB?.name||'qajon').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'qajon';
+const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));
+a.download=`${slug}-report-${new Date().toISOString().split('T')[0]}.csv`;a.click();toast(t('tExported'))}
 function openSnapModal(){$('snapName').value='';openModal('snapModal')}
 async function takeSnap(){const n=$('snapName').value.trim();if(!n){toast(t('tEnterName'),'error');return}
 const agg={};D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}`;if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,qty:0};agg[k].qty+=i.quantity});
@@ -1481,12 +1576,13 @@ let moveKind='type',moveSrc=null;
 function openMoveStock(kind,id){moveKind=kind;moveSrc=id;
 const rows=moveRows();
 if(!rows.length){toast(t('tNothingToMove'),'error');return}
-const src=kind==='type'?D.types.find(x=>x.id===id):D.colors.find(x=>x.id===id);
-$('moveTitle').textContent=t('moveStock');
-$('moveDesc').textContent=t('moveDesc2').replace('{name}',src?src.name:'');
+const src=kind==='color'?D.colors.find(x=>x.id===id):D.types.find(x=>x.id===id);
+$('moveTitle').textContent=kind==='recolor'?t('changeColour'):t('moveStock');
+$('moveDesc').textContent=(kind==='recolor'?t('recolorDesc'):t('moveDesc2')).replace('{name}',src?src.name:'');
+$('moveToLbl').textContent=kind==='recolor'?t('newColourLbl'):t('moveTo');
 const opts=kind==='type'
 ?typesGrouped(D.types.filter(x=>x.id!==id)).map(x=>`<option value="${x.id}">${escA((famName(x.family_id)?famName(x.family_id)+' \u203a ':'')+x.name)}</option>`).join('')
-:D.colors.filter(x=>x.id!==id).map(x=>`<option value="${x.id}">${escA(x.name)}</option>`).join('');
+:D.colors.filter(x=>kind==='recolor'||x.id!==id).map(x=>`<option value="${x.id}">${escA(x.name)}</option>`).join('');
 $('moveTarget').innerHTML=opts;
 $('moveRows').innerHTML=rows.map((r,ix)=>`<div class="mv-row">
 <input type="checkbox" class="selbox" id="mv_on_${ix}" checked onchange="moveTally()">
@@ -1494,11 +1590,11 @@ $('moveRows').innerHTML=rows.map((r,ix)=>`<div class="mv-row">
 <input type="number" class="mv-qty" id="mv_q_${ix}" min="0" max="${r.qty}" value="${r.qty}" oninput="moveTally()">
 <span class="mv-of">/ ${r.qty}</span></div>`).join('');
 moveTally();openModal('moveModal')}
-function moveRows(){const key=moveKind==='type'?'item_type_id':'color_id';
+function moveRows(){const key=moveKind==='color'?'color_id':'item_type_id';
 return D.items.filter(i=>i[key]===moveSrc&&i.quantity>0).map(i=>{const b=D.boxes.find(x=>x.id===i.box_id);
 return{id:i.id,qty:i.quantity,box_id:i.box_id,tid:i.item_type_id,cid:i.color_id,size:i.size,
 label:b?b.name:'?',
-sub:(moveKind==='type'?gcn(i.color_id):gtn(i.item_type_id))+(i.size&&i.size!=='\u2014'?' \u00b7 '+i.size:'')}})
+sub:(moveKind==='color'?gtn(i.item_type_id):gcn(i.color_id))+(i.size&&i.size!=='\u2014'?' \u00b7 '+i.size:'')}})
 .sort((a,b)=>a.label.localeCompare(b.label)||a.sub.localeCompare(b.sub))}
 function movePicked(){const rows=moveRows();const out=[];
 rows.forEach((r,ix)=>{if(!$('mv_on_'+ix)?.checked)return;
@@ -1508,27 +1604,29 @@ function moveTally(){const picked=movePicked(),rows=moveRows();
 const tot=picked.reduce((s,r)=>s+r.move,0);
 const full=rows.length===picked.length&&picked.every(r=>r.move===r.qty);
 $('moveCount').textContent=t('moveTally').replace('{n}',tot);
-$('moveDelWrap').style.display=full?'flex':'none';
+$('moveDelWrap').style.display=(full&&moveKind!=='recolor')?'flex':'none';
 $('moveBtn').disabled=!tot}
 async function runMoveStock(){const dst=$('moveTarget').value,picked=movePicked();
 if(!dst||!picked.length)return;
 const b=$('moveBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;busy('busyWorking');
 const key=moveKind==='type'?'item_type_id':'color_id';
+const recolor=moveKind==='recolor';
 try{
 for(const r of picked){
 // Find a row in the same box that already holds the destination combination
+if(recolor&&r.cid===dst)continue;// already that colour
 const twin=D.items.find(x=>x.id!==r.id&&x.box_id===r.box_id&&x.size===r.size
 &&(moveKind==='type'?(x.item_type_id===dst&&x.color_id===r.cid):(x.color_id===dst&&x.item_type_id===r.tid)));
 if(r.move===r.qty&&!twin){const u=await SB.from('box_items').update({[key]:dst}).eq('id',r.id);if(u.error)throw u.error;continue}
 if(twin){const u=await SB.from('box_items').update({quantity:twin.quantity+r.move}).eq('id',twin.id);if(u.error)throw u.error;twin.quantity+=r.move}
 else{const nw={box_id:r.box_id,size:r.size,quantity:r.move,
-item_type_id:moveKind==='type'?dst:r.tid,color_id:moveKind==='color'?dst:r.cid};
+item_type_id:moveKind==='type'?dst:r.tid,color_id:moveKind!=='type'?dst:r.cid};
 const i2=await ins('box_items',nw);if(i2.error)throw i2.error}
 if(r.move===r.qty){const d2=await SB.from('box_items').delete().eq('id',r.id);if(d2.error)throw d2.error}
 else{const u2=await SB.from('box_items').update({quantity:r.qty-r.move}).eq('id',r.id);if(u2.error)throw u2.error}}
 await loadData();
 // Source now empty: carry its history over so nothing is lost if it gets deleted
-const left=D.items.filter(i=>i[key]===moveSrc&&i.quantity>0).length;
+const left=recolor?1:D.items.filter(i=>i[key]===moveSrc&&i.quantity>0).length;
 if(!left){await SB.from('activity_log').update({[key]:dst}).eq(key,moveSrc);
 if($('moveDel')?.checked){const tbl=moveKind==='type'?'item_types':'colors';
 const d3=await SB.from(tbl).delete().eq('id',moveSrc);if(d3.error)throw d3.error}
@@ -1609,21 +1707,22 @@ ${D.fams.map(f=>`<option value="${f.id}">${escA(f.name)}</option>`).join('')}
 <button class="btn btn-primary btn-sm"${selIds.size?'':' disabled'} onclick="applyFamToSel()">${t('applyBtn')}</button>
 <button class="btn btn-secondary btn-sm" onclick="toggleSelMode()">${t('cancel')}</button>`}
 function renderTypes(){const el=$('typesList');if(!el)return;renderSelBar();
-const gs=visibleTypes();let out='',cur='\u0000';
-gs.forEach(ty=>{const f=famName(ty.family_id)||t('noFamily');
-if(f!==cur){cur=f;out+=`<div class="fam-head">${esc(f)}</div>`}
-const p=ty.photo_mode==='per_color'?Object.values(ty.photos||{})[0]:ty.photo;
+const gs=visibleTypes();
+// One block per family: full-width header, then its own grid of cards underneath
+const groups=[];let cur=null;
+gs.forEach(ty=>{const f=famName(ty.family_id)||'';
+if(!cur||cur.f!==f){cur={f,items:[]};groups.push(cur)}cur.items.push(ty)});
+const card=ty=>{const p=ty.photo_mode==='per_color'?Object.values(ty.photos||{})[0]:ty.photo;
 const n=D.items.filter(i=>i.item_type_id===ty.id).reduce((s,i)=>s+i.quantity,0);
-out+=`<div class="type-card${n?'':' empty0'}${selIds.has(ty.id)?' picked':''}"${selMode?` onclick="toggleSel('${ty.id}')" style="cursor:pointer"`:''}>
+return `<div class="type-card${n?'':' empty0'}${selIds.has(ty.id)?' picked':''}"${selMode?` onclick="toggleSel('${ty.id}')" style="cursor:pointer"`:''}>
 <div class="type-name" style="display:flex;align-items:center">
 ${selMode?`<input type="checkbox" class="selbox"${selIds.has(ty.id)?' checked':''} onclick="event.stopPropagation();toggleSel('${ty.id}')">`:''}
 ${p?`<img class="tp-thumb" src="${p}" alt="" data-cap="${escA(ty.name)}" onclick="event.stopPropagation();openLightbox(this.src,this.dataset.cap)">`:''}
 <span>${esc(ty.name)} <span style="color:var(--text3);font-weight:500">\u00b7 ${n}</span></span></div>
-${selMode?'':`<div style="display:flex;gap:4px"><button class="btn-icon" onclick="openEditType('${ty.id}')">\u270e</button><button class="btn-icon" onclick="delType('${ty.id}')">\u2715</button></div>`}</div>`});
-el.innerHTML=out||`<div class="empty-state"><p>${t('noSearchHit')}</p></div>`}
-
-let typePhoto=null,typePhotos={},typeMode='single';
-// Shared: shrink + compress an image file to a small data URL
+${selMode?'':`<div style="display:flex;gap:4px"><button class="btn-icon" onclick="openEditType('${ty.id}')">\u270e</button><button class="btn-icon" onclick="delType('${ty.id}')">\u2715</button></div>`}</div>`};
+el.innerHTML=groups.length?groups.map(g=>{const tot=g.items.reduce((s,ty)=>s+D.items.filter(i=>i.item_type_id===ty.id).reduce((a,i)=>a+i.quantity,0),0);
+return `<div class="fam-sec"><div class="fam-head">${esc(g.f||t('noFamily'))}<span class="fc">\u00b7 ${g.items.length} \u00b7 ${tot} ${t('unitsLbl')}</span></div><div class="fam-grid">${g.items.map(card).join('')}</div></div>`}).join('')
+:`<div class="empty-state"><p>${t('noSearchHit')}</p></div>`}
 function shrinkImg(f,inp,cb){if(!f.type.startsWith('image/')){toast(t('tImgOnly'),'error');if(inp)inp.value='';return}
 const rd=new FileReader();
 rd.onload=ev=>{const img=new Image();
@@ -1691,7 +1790,7 @@ if(w&&w.classList.contains('open')&&!w.contains(e.target))famCommit()});
 function openAddTypeModal(){editType=null;typePhoto=null;typePhotos={};typeMode='single';$('typeMoveBtn').style.display='none';famSet(null,'');
 $('typeModalTitle').textContent=t('addType');$('typeName').value='';const pi=$('typePhotoInput');if(pi)pi.value='';
 setPhotoMode('single');openModal('typeModal')}
-function openEditType(id){const ty=D.types.find(x=>x.id===id);if(!ty)return;editType=id;$('typeMoveBtn').style.display='block';famSet(ty.family_id||null,'');$('typeModalTitle').textContent=t('edit');$('typeName').value=ty.name;
+function openEditType(id){const ty=D.types.find(x=>x.id===id);if(!ty)return;editType=id;$('typeMoveBtn').style.display='flex';famSet(ty.family_id||null,'');$('typeModalTitle').textContent=t('edit');$('typeName').value=ty.name;
 typePhoto=ty.photo||null;typePhotos=ty.photos&&typeof ty.photos==='object'?{...ty.photos}:{};typeMode=ty.photo_mode==='per_color'?'per_color':'single';
 const pi=$('typePhotoInput');if(pi)pi.value='';setPhotoMode(typeMode);openModal('typeModal')}
 async function saveType(){const n=$('typeName').value.trim();if(!n){toast(t('tEnterName'),'error');return}const b=$('saveTypeBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;// A family typed in that doesn't exist yet is created on the fly.
