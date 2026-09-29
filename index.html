@@ -173,6 +173,8 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .type-card.picked{border-color:var(--accent);background:var(--accent-dim)}
 .type-card .selbox{width:17px;height:17px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;margin-right:9px}
 .type-card.empty0 .type-name span,.color-card.empty0 .color-names{opacity:.45}
+.det-charts{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.ch-sub{font-size:12px;font-weight:500;color:var(--text3)}
 .rep-bar{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
 .rep-bar label{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--text3);font-weight:600}
 .rep-bar label.sw-row{flex-direction:row;align-items:center;font-size:13px;color:var(--text2);font-weight:500}
@@ -181,6 +183,14 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .rep-tbl th{text-align:left;font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:var(--text3);padding:6px 8px;border-bottom:1px solid var(--border)}
 .rep-tbl td{padding:8px;border-bottom:1px solid var(--border)}
 .rep-tbl td.n{text-align:right;font-family:'JetBrains Mono',monospace}
+.rep-row{cursor:pointer}
+.rep-row:hover td{background:var(--bg3)}
+.rep-row.on td{background:var(--accent-dim)}
+.rep-row .chev{display:inline-block;width:14px;color:var(--text3);font-size:10px;transition:transform .15s}
+.rep-row.on .chev{transform:rotate(90deg);color:var(--accent)}
+.rep-sub td{padding:5px 8px;font-size:12px;color:var(--text2);border-bottom:1px dashed var(--border);background:var(--bg2)}
+.rep-sub td:first-child{padding-left:28px}
+.rep-sub .bx{color:var(--text3);font-size:11px}
 .rep-up{color:#34d399;font-weight:700}.rep-dn{color:#f87171;font-weight:700}.rep-eq{color:var(--text3)}
 .fam-sec{margin-bottom:18px}
 .fam-head{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--accent);margin:0 0 8px;padding-bottom:5px;border-bottom:1px solid var(--border)}
@@ -503,7 +513,7 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 <div class="page" id="page-history">
 <div class="page-header"><h2 class="page-title" data-i18n="history">History</h2></div>
 <div class="history-filters">
-<select id="histAction" onchange="renderHistory()"><option value="" data-i18n="allActions">All Actions</option><option value="checkout" data-i18n="checkout">Checkout</option><option value="item_added" data-i18n="addedAct">Added</option><option value="item_removed" data-i18n="removedAct">Removed</option></select>
+<select id="histAction" onchange="renderHistory()"><option value="" data-i18n="allActions">All Actions</option><option value="checkout" data-i18n="checkout">Checkout</option><option value="item_added" data-i18n="addedAct">Added</option><option value="item_removed" data-i18n="removedAct">Removed</option><option value="item_updated" data-i18n="updatedAct">Edited</option></select>
 <input type="date" id="histDate" onchange="renderHistory()">
 <button class="btn btn-secondary btn-sm" onclick="$('histDate').value='';$('histAction').value='';renderHistory()" data-i18n="clear">Clear</button></div>
 <div id="historyList"></div></div>
@@ -520,7 +530,8 @@ body.light .color-card .color-swatch{border-color:rgba(0,0,0,.1)}
 </div>
 <div id="repStats" class="stats-row" style="margin-bottom:14px"></div>
 <div class="charts-grid" style="margin-bottom:14px"><div class="chart-card"><h3 data-i18n="stockOverTime">Total stock over time</h3><canvas id="repLine"></canvas></div><div class="chart-card"><h3 data-i18n="biggestChanges">Biggest changes</h3><canvas id="repBars"></canvas></div></div>
-<div class="chart-card"><h3 data-i18n="changesTable">Changes</h3><div id="repTable"></div></div>
+<div class="chart-card" id="repFocusCard" style="margin-bottom:14px;display:none"><h3 id="repFocusTitle"></h3><canvas id="repFocus"></canvas></div>
+<div class="chart-card"><h3 data-i18n="changesTable">Changes</h3><p style="font-size:11.5px;color:var(--text3);margin:-4px 0 8px" data-i18n="repTapHint">Tap a row to see its colours and sizes.</p><div id="repTable"></div></div>
 <p style="font-size:11.5px;color:var(--text3);margin-top:10px" id="repFoot"></p>
 </div>
 
@@ -886,6 +897,19 @@ extraTonesHint:{en:"For garments with more than one colour. Leave empty for a pl
 addTone:{en:"Add tone",fr:"Ajouter un ton",es:"Agregar tono",pt:"Adicionar tom",de:"Ton hinzufügen",it:"Aggiungi tono",nl:"Tint toevoegen"},
 toneNo:{en:"Tone {n}",fr:"Ton {n}",es:"Tono {n}",pt:"Tom {n}",de:"Ton {n}",it:"Tono {n}",nl:"Tint {n}"},
 previewLbl:{en:"Preview",fr:"Aperçu",es:"Vista previa",pt:"Prévia",de:"Vorschau",it:"Anteprima",nl:"Voorbeeld"},
+busyExporting:{en:"Preparing your Excel file\u2026",fr:"Préparation du fichier Excel\u2026",es:"Preparando tu archivo Excel\u2026",pt:"Preparando seu arquivo Excel\u2026",de:"Excel-Datei wird erstellt\u2026",it:"Preparazione del file Excel\u2026",nl:"Excel-bestand voorbereiden\u2026"},
+xlInventory:{en:"Inventory",fr:"Inventaire",es:"Inventario",pt:"Inventário",de:"Inventar",it:"Inventario",nl:"Inventaris"},
+xlSummary:{en:"By item",fr:"Par article",es:"Por artículo",pt:"Por item",de:"Nach Artikel",it:"Per articolo",nl:"Per artikel"},
+xlInBoxes:{en:"In boxes",fr:"Dans boîtes",es:"En cajas",pt:"Em caixas",de:"In Boxen",it:"In scatole",nl:"In dozen"},
+xlKinds:{en:"Item kinds",fr:"Types d'articles",es:"Tipos de artículo",pt:"Tipos de item",de:"Artikelarten",it:"Tipi di articolo",nl:"Soorten"},
+xlDetail:{en:"Detail",fr:"Détail",es:"Detalle",pt:"Detalhe",de:"Detail",it:"Dettaglio",nl:"Detail"},
+xlChanges:{en:"What changed",fr:"Ce qui a changé",es:"Lo que cambió",pt:"O que mudou",de:"Änderungen",it:"Cosa è cambiato",nl:"Wat veranderde"},
+xlDate:{en:"Date",fr:"Date",es:"Fecha",pt:"Data",de:"Datum",it:"Data",nl:"Datum"},
+xlAuto:{en:"Automatic daily record",fr:"Enregistrement quotidien automatique",es:"Registro diario automático",pt:"Registro diário automático",de:"Automatische Tagesaufnahme",it:"Registrazione giornaliera automatica",nl:"Automatische dagregistratie"},
+repTapHint:{en:"Tap a row to see its colours and sizes.",fr:"Touchez une ligne pour voir ses couleurs et tailles.",es:"Tocá una fila para ver sus colores y tallas.",pt:"Toque numa linha para ver cores e tamanhos.",de:"Zeile antippen für Farben und Größen.",it:"Tocca una riga per vedere colori e taglie.",nl:"Tik op een regel voor kleuren en maten."},
+beforeAfter:{en:"before vs after",fr:"avant vs après",es:"antes vs después",pt:"antes vs depois",de:"vorher vs nachher",it:"prima vs dopo",nl:"voor vs na"},
+deletedBox:{en:"deleted box",fr:"boîte supprimée",es:"caja eliminada",pt:"caixa excluída",de:"gelöschte Box",it:"scatola eliminata",nl:"verwijderde doos"},
+updatedAct:{en:"Edited",fr:"Modifié",es:"Editado",pt:"Editado",de:"Bearbeitet",it:"Modificato",nl:"Bewerkt"},
 reports:{en:"Reports",fr:"Rapports",es:"Informes",pt:"Relatórios",de:"Berichte",it:"Report",nl:"Rapporten"},
 reportsIntro:{en:"Your inventory is recorded automatically every day. Pick two dates to see what went up and what went down.",fr:"Votre inventaire est enregistré automatiquement chaque jour. Choisissez deux dates pour voir ce qui a monté et ce qui a baissé.",es:"Tu inventario se registra automáticamente todos los días. Elegí dos fechas para ver qué subió y qué bajó.",pt:"Seu inventário é registrado automaticamente todos os dias. Escolha duas datas para ver o que subiu e o que desceu.",de:"Ihr Inventar wird täglich automatisch erfasst. Wählen Sie zwei Daten, um zu sehen, was gestiegen und gesunken ist.",it:"Il tuo inventario viene registrato automaticamente ogni giorno. Scegli due date per vedere cosa è salito e cosa è sceso.",nl:"Je inventaris wordt elke dag automatisch vastgelegd. Kies twee datums om te zien wat is gestegen en gedaald."},
 exportExcel:{en:"Export (Excel)",fr:"Exporter (Excel)",es:"Exportar (Excel)",pt:"Exportar (Excel)",de:"Exportieren (Excel)",it:"Esporta (Excel)",nl:"Exporteren (Excel)"},
@@ -1227,7 +1251,7 @@ if(dw){dw.innerHTML=!D.boxes.length?`<div class="welcome-card">
 </div>`:''}
 const lowOn=D.settings.low_stock_on!=='0';
 const thr=parseInt(D.settings.low_stock_threshold)||5;const agg={};
-D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}`;if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,qty:0};agg[k].qty+=i.quantity});
+D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}`;if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,bid:i.box_id,qty:0};agg[k].qty+=i.quantity});
 const low=lowOn?Object.values(agg).filter(a=>a.qty>0&&a.qty<=thr):[];
 $('lowStockAlerts').innerHTML=low.length?`<div class="alert-banner"><h4>⚠ ${low.length} ${t('lowStockAlert')} ${thr}</h4><ul>${low.map(a=>`<li>${gtn(a.tid)} — ${gcn(a.cid)}${a.size&&a.size!=='—'?' — '+a.size:''}: <strong>${a.qty}</strong></li>`).join('')}</ul></div>`:'';
 const byT={};D.items.forEach(i=>{const n=gtn(i.item_type_id);byT[n]=(byT[n]||0)+i.quantity});
@@ -1316,14 +1340,17 @@ if(tids.length){
 const tmeta=tids.map(tid=>{const ti=items.filter(x=>x.item_type_id===tid);
 const present=sizes.filter(s=>ti.some(x=>x.size===s&&x.quantity>0));
 return{tid,ti,sized:present.length>0,sizes:present}});
-dpc.innerHTML=tmeta.map((m,i)=>`<div class="charts-grid"><div class="chart-card"><h3>${esc(gtn(m.tid))} — ${m.sized?t('sizeByColor'):t('qtyByColor')}</h3><canvas id="dSC${i}"></canvas></div><div class="chart-card"><h3>${esc(gtn(m.tid))} — ${t('colorBreakdown')}</h3><canvas id="dCB${i}"></canvas></div></div>`).join('');
-tmeta.forEach((m,i)=>{const ti=m.ti;
-if(m.sized){const cd={};ti.forEach(x=>{const cn=gcn(x.color_id);if(!cd[cn])cd[cn]={hex:gch(x.color_id),s:{}};cd[cn].s[x.size]=(cd[cn].s[x.size]||0)+x.quantity});
-rChart('dSC'+i,'bar',{labels:m.sizes,datasets:Object.entries(cd).map(([n,d])=>({label:n,data:m.sizes.map(s=>d.s[s]||0),backgroundColor:d.hex,borderRadius:3,borderSkipped:false}))},{stacked:true})}
-else{const qc={};ti.forEach(x=>{const n=gcn(x.color_id);qc[n]=(qc[n]||0)+x.quantity});
-rChart('dSC'+i,'bar',{labels:Object.keys(qc),datasets:[{data:Object.values(qc),backgroundColor:Object.keys(qc).map(n=>{const cc=D.colors.find(x=>x.name===n);return cc?cc.hex_code:'#6b7280'}),borderRadius:5,borderSkipped:false}]},{pl:false})}
-const bc={};ti.forEach(x=>{const n=gcn(x.color_id);bc[n]=(bc[n]||0)+x.quantity});
-rChart('dCB'+i,'doughnut',{labels:Object.keys(bc),datasets:[{data:Object.values(bc),backgroundColor:Object.keys(bc).map(n=>{const c=D.colors.find(x=>x.name===n);return c?c.hex_code:'#6b7280'}),borderWidth:0}]},{cut:55})})}else dpc.innerHTML='';
+// One chart per item, each colour as its own bar group so every colour is visible
+dpc.innerHTML=`<div class="det-charts">${tmeta.map((m,i)=>{const tot=m.ti.reduce((s,x)=>s+x.quantity,0);
+const nc=new Set(m.ti.filter(x=>x.quantity>0).map(x=>x.color_id)).size;
+return `<div class="chart-card"><h3>${esc(gtn(m.tid))} <span class="ch-sub">· ${nc} ${(nc===1?t('color'):t('colors')).toLowerCase()} · ${tot}</span></h3><canvas id="dSC${i}"></canvas></div>`}).join('')}</div>`;
+tmeta.forEach((m,i)=>{const ti=m.ti.filter(x=>x.quantity>0);
+const cols=[...new Set(ti.map(x=>x.color_id))].sort((a,b)=>gcn(a).localeCompare(gcn(b)));
+if(m.sized){rChart('dSC'+i,'bar',{labels:m.sizes,datasets:cols.map(cid=>({label:gcn(cid),
+data:m.sizes.map(s=>ti.filter(x=>x.color_id===cid&&x.size===s).reduce((a,x)=>a+x.quantity,0)),
+backgroundColor:gch(cid),borderColor:'rgba(148,163,184,.7)',borderWidth:1,borderRadius:3,borderSkipped:false}))},{})}
+else{rChart('dSC'+i,'bar',{labels:cols.map(gcn),datasets:[{data:cols.map(cid=>ti.filter(x=>x.color_id===cid).reduce((a,x)=>a+x.quantity,0)),
+backgroundColor:cols.map(gch),borderColor:'rgba(148,163,184,.7)',borderWidth:1,borderRadius:5,borderSkipped:false}]},{pl:false})}})}else dpc.innerHTML='';
 new QRious({element:$('qrCanvas'),value:boxURL(id),size:100,backgroundAlpha:0,foreground:'#38b6ff',level:'M'});renderItems();showPage('detail')}
 function printBoxQR(){const b=D.boxes.find(x=>x.id===curBox);if(!b)return;
 const el=$('printBoxName');el.textContent=b.name;
@@ -1498,7 +1525,7 @@ toast(t('tUndone'));renderCO()}
 
 // HISTORY
 function renderHistory(){try{const af=$('histAction').value;const df=$('histDate').value;let logs=[...D.logs];if(af)logs=logs.filter(l=>l.action_type===af);if(df)logs=logs.filter(l=>l.created_at&&l.created_at.startsWith(df));
-$('historyList').innerHTML=logs.length?`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('action')}</th><th>${t('item')}</th><th>${t('color')}</th><th>${t('size')}</th><th>${t('qty')}</th><th>${t('by')}</th><th>${t('date')}</th></tr></thead><tbody>${logs.slice(0,200).map(l=>{const cls=l.action_type==='checkout'?'color:var(--red)':'color:var(--accent)';return`<tr><td><span style="${cls};font-weight:600;font-size:12px;text-transform:uppercase">${l.action_type.replace('_',' ')}</span></td><td>${esc(gtn(l.item_type_id))}</td><td><span class="color-dot" style="background:${gcs(l.color_id)}"></span>${esc(gcn(l.color_id))}</td><td>${l.size||''}</td><td class="qty">${l.quantity}</td><td style="font-size:12px">${esc(getEmail(l.created_by))}</td><td style="font-size:12px">${new Date(l.created_at).toLocaleString()}</td></tr>`}).join('')}</tbody></table></div>`:`<div class="empty-state"><p>${t('noActivity')}</p><p style="font-size:13px">${t('activityHint')}</p></div>`}catch(e){console.error('History error:',e);$('historyList').innerHTML=`<div class="empty-state"><p>${t('errLoadHist')}</p></div>`}}
+$('historyList').innerHTML=logs.length?`<div class="items-table-wrap"><table class="items-table"><thead><tr><th>${t('action')}</th><th>${t('item')}</th><th>${t('color')}</th><th>${t('size')}</th><th>${t('qty')}</th><th>${t('by')}</th><th>${t('date')}</th></tr></thead><tbody>${logs.slice(0,200).map(l=>{const cls=l.action_type==='checkout'?'color:var(--red)':'color:var(--accent)';return`<tr><td><span style="${cls};font-weight:600;font-size:12px;text-transform:uppercase">${({checkout:t('checkout'),item_added:t('addedAct'),item_removed:t('removedAct'),item_updated:t('updatedAct')})[l.action_type]||l.action_type.replace('_',' ')}</span></td><td>${esc(gtn(l.item_type_id))}</td><td><span class="color-dot" style="background:${gcs(l.color_id)}"></span>${esc(gcn(l.color_id))}</td><td>${l.size||''}</td><td class="qty">${l.quantity}</td><td style="font-size:12px">${esc(getEmail(l.created_by))}</td><td style="font-size:12px">${new Date(l.created_at).toLocaleString()}</td></tr>`}).join('')}</tbody></table></div>`:`<div class="empty-state"><p>${t('noActivity')}</p><p style="font-size:13px">${t('activityHint')}</p></div>`}catch(e){console.error('History error:',e);$('historyList').innerHTML=`<div class="empty-state"><p>${t('errLoadHist')}</p></div>`}}
 
 // SNAPSHOTS
 // ============ REPORTS ============
@@ -1510,15 +1537,15 @@ return d.toLocaleDateString()+(auto?'':' \u00b7 '+s.name)}
 async function autoSnapshot(){if(!CID||!D.items.length)return;
 const today=new Date().toISOString().split('T')[0];
 if(D.snaps.some(s=>(s.name||'')==='auto:'+today))return;
-const agg={};D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}`;
-if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,qty:0};agg[k].qty+=i.quantity});
+const agg={};D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}|${i.box_id}`;
+if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,bid:i.box_id,qty:0};agg[k].qty+=i.quantity});
 const{data}=await ins('inventory_snapshots',{name:'auto:'+today,data:Object.values(agg),created_by:U.id}).select();
 if(data?.[0])D.snaps.unshift(data[0])}
 function repKey(row,mode){if(mode==='fam')return typeFam(row.tid)||'__none';if(mode==='tc')return row.tid+'|'+row.cid;return row.tid}
 function repName(key,mode){if(mode==='fam')return key==='__none'?t('noFamily'):famName(key);
 if(mode==='tc'){const[a,b]=key.split('|');return gtn(a)+' \u00b7 '+gcn(b)}return gtn(key)}
 function repAgg(snap,mode){const m={};(snap?.data||[]).forEach(r=>{const k=repKey(r,mode);m[k]=(m[k]||0)+r.qty});return m}
-let repRows=[];
+let repRows=[],repOpen=null,repA=null,repB=null,repMode='type';
 function renderSnaps(){const chrono=snapChrono();
 const fromS=$('repFrom'),toS=$('repTo');
 if(chrono.length<2){$('repStats').innerHTML='';$('repTable').innerHTML=`<div class="empty-state"><p>${t('repNeedTwo')}</p></div>`;
@@ -1548,9 +1575,10 @@ $('repStats').innerHTML=`<div class="stat-card"><div class="stat-label">${t('fro
 <div class="stat-card"><div class="stat-label">${t('wentUp')}</div><div class="stat-value rep-up">+${up}</div></div>
 <div class="stat-card"><div class="stat-label">${t('wentDown')}</div><div class="stat-value rep-dn">${dn}</div></div>`;
 // Table
-$('repTable').innerHTML=repRows.length?`<div class="items-table-wrap"><table class="rep-tbl"><thead><tr><th>${t('itemsTab')}</th><th style="text-align:right">${t('fromLbl')}</th><th style="text-align:right">${t('toLbl')}</th><th style="text-align:right">${t('changeLbl')}</th></tr></thead><tbody>
-${repRows.map(r=>`<tr><td>${esc(r.name)}</td><td class="n">${r.from}</td><td class="n">${r.to}</td><td class="n ${r.d>0?'rep-up':r.d<0?'rep-dn':'rep-eq'}">${r.d>0?'+':''}${r.d}</td></tr>`).join('')}</tbody></table></div>`
-:`<div class="empty-state"><p>${t('noChanges')}</p></div>`;
+repA=A;repB=B;repMode=mode;
+if(repOpen&&!repRows.some(r=>r.k===repOpen))repOpen=null;
+if(!repOpen&&repRows.length)repOpen=repRows[0].k;
+renderRepTable();renderRepFocus();
 // Line: total stock across every snapshot in the window
 const win=chrono.filter(s=>new Date(s.created_at)>=new Date(A.created_at)&&new Date(s.created_at)<=new Date(B.created_at));
 rChart('repLine','line',{labels:win.map(s=>new Date(s.created_at).toLocaleDateString(undefined,{month:'short',day:'numeric'})),
@@ -1560,17 +1588,84 @@ const top=repRows.slice(0,10);
 rChart('repBars','bar',{labels:top.map(r=>r.name.length>22?r.name.slice(0,21)+'\u2026':r.name),
 datasets:[{data:top.map(r=>r.d),backgroundColor:top.map(r=>r.d>=0?'#34d399':'#f87171'),borderRadius:4,borderSkipped:false}]},{pl:false,horiz:true});
 $('repFoot').textContent=t('repFoot').replace('{n}',D.snaps.length).replace('{d}',new Date(chrono[0].created_at).toLocaleDateString())}
-function exportReport(){if(!repRows.length){toast(t('noChanges'),'error');return}
-const q=s=>`"${String(s??'').replace(/"/g,'""')}"`;
-const A=D.snaps.find(s=>s.id===$('repFrom').value),B=D.snaps.find(s=>s.id===$('repTo').value);
-let csv=[t('itemsTab'),t('fromLbl')+' ('+new Date(A.created_at).toLocaleDateString()+')',t('toLbl')+' ('+new Date(B.created_at).toLocaleDateString()+')',t('changeLbl')].map(q).join(',')+'\n';
-repRows.forEach(r=>{csv+=[q(r.name),r.from,r.to,r.d].join(',')+'\n'});
-const slug=(D.settings.club_name||CLUB?.name||'qajon').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'qajon';
-const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));
-a.download=`${slug}-report-${new Date().toISOString().split('T')[0]}.csv`;a.click();toast(t('tExported'))}
+// Break one row of the report down to colour x size (x box when both records have it)
+function repDetail(k){const A=repA,B=repB,mode=repMode;
+const hasBox=(A.data||[]).some(r=>r.bid)&&(B.data||[]).some(r=>r.bid);
+const m={};const add=(snap,f)=>(snap.data||[]).forEach(r=>{if(repKey(r,mode)!==k)return;
+const kk=[r.tid,r.cid,r.size,hasBox?r.bid:''].join('|');
+m[kk]=m[kk]||{tid:r.tid,cid:r.cid,size:r.size,bid:hasBox?r.bid:null,a:0,b:0};m[kk][f]+=r.qty});
+add(A,'a');add(B,'b');
+return Object.values(m).map(x=>({...x,d:x.b-x.a})).sort((p,q)=>Math.abs(q.d)-Math.abs(p.d)||gcn(p.cid).localeCompare(gcn(q.cid))||sizeRank(p.size)-sizeRank(q.size))}
+function repToggle(k){repOpen=repOpen===k?null:k;renderRepTable();renderRepFocus()}
+function renderRepTable(){const only=$('repOnlyChanged').checked;
+const dcls=d=>d>0?'rep-up':d<0?'rep-dn':'rep-eq',dtx=d=>(d>0?'+':'')+d;
+$('repTable').innerHTML=repRows.length?`<div class="items-table-wrap"><table class="rep-tbl"><thead><tr><th>${t('itemsTab')}</th><th style="text-align:right">${t('fromLbl')}</th><th style="text-align:right">${t('toLbl')}</th><th style="text-align:right">${t('changeLbl')}</th></tr></thead><tbody>
+${repRows.map(r=>{const on=repOpen===r.k;
+let sub='';if(on){const det=repDetail(r.k).filter(x=>!only||x.d!==0);
+sub=det.map(x=>{const b=x.bid?D.boxes.find(bb=>bb.id===x.bid):null;
+return `<tr class="rep-sub"><td>${repMode==='type'?'':esc(gtn(x.tid))+' · '}<span class="color-dot" style="background:${gcs(x.cid)}"></span>${esc(gcn(x.cid))}${x.size&&x.size!=='—'?' · <strong>'+esc(x.size)+'</strong>':''}${x.bid?` <span class="bx">· ${esc(b?b.name:t('deletedBox'))}</span>`:''}</td><td class="n">${x.a}</td><td class="n">${x.b}</td><td class="n ${dcls(x.d)}">${dtx(x.d)}</td></tr>`}).join('')||`<tr class="rep-sub"><td colspan="4">${t('noChanges')}</td></tr>`}
+return `<tr class="rep-row${on?' on':''}" data-k="${escA(r.k)}" onclick="repToggle(this.dataset.k)"><td><span class="chev">▶</span>${esc(r.name)}</td><td class="n">${r.from}</td><td class="n">${r.to}</td><td class="n ${dcls(r.d)}">${dtx(r.d)}</td></tr>${sub}`}).join('')}</tbody></table></div>`
+:`<div class="empty-state"><p>${t('noChanges')}</p></div>`}
+// Before vs after for the open row, by size (or by colour when it has no sizes)
+function renderRepFocus(){const card=$('repFocusCard');if(!card)return;
+const r=repRows.find(x=>x.k===repOpen);
+if(!r){card.style.display='none';if(charts.repFocus){charts.repFocus.destroy();delete charts.repFocus}return}
+card.style.display='block';
+const det=repDetail(r.k);
+const sized=det.some(x=>x.size&&x.size!=='—');
+let labels,ga,gb;
+if(sized){labels=sizeNames().filter(s=>det.some(x=>x.size===s&&(x.a||x.b)));
+det.forEach(x=>{if(x.size&&x.size!=='—'&&!labels.includes(x.size))labels.push(x.size)});
+ga=labels.map(s=>det.filter(x=>x.size===s).reduce((a,x)=>a+x.a,0));
+gb=labels.map(s=>det.filter(x=>x.size===s).reduce((a,x)=>a+x.b,0))}
+else{const cs=[...new Set(det.map(x=>x.cid))];labels=cs.map(gcn);
+ga=cs.map(cid=>det.filter(x=>x.cid===cid).reduce((a,x)=>a+x.a,0));
+gb=cs.map(cid=>det.filter(x=>x.cid===cid).reduce((a,x)=>a+x.b,0))}
+$('repFocusTitle').textContent=r.name+' — '+t('beforeAfter')+(sized?' ('+t('size').toLowerCase()+')':'');
+const dA=new Date(repA.created_at).toLocaleDateString(),dB=new Date(repB.created_at).toLocaleDateString();
+rChart('repFocus','bar',{labels,datasets:[
+{label:t('fromLbl')+' '+dA,data:ga,backgroundColor:'rgba(148,163,184,.55)',borderRadius:4,borderSkipped:false},
+{label:t('toLbl')+' '+dB,data:gb,backgroundColor:'#38b6ff',borderRadius:4,borderSkipped:false}]},{})}
+async function exportReport(){let A=D.snaps.find(s=>s.id===$('repFrom')?.value),B=D.snaps.find(s=>s.id===$('repTo')?.value);
+if(!A||!B){toast(t('repNeedTwo'),'error');return}
+if(new Date(A.created_at)>new Date(B.created_at)){[A,B]=[B,A]}
+busy('busyExporting');
+try{const XL=await loadExcel();const wb=new XL.Workbook();wb.creator='Qajon';wb.created=new Date();
+const dA=new Date(A.created_at).toLocaleDateString(),dB=new Date(B.created_at).toLocaleDateString();
+const lblA=t('fromLbl')+' '+dA,lblB=t('toLbl')+' '+dB;
+// Full detail, independent of the on-screen filter and grouping
+const hasBox=(A.data||[]).some(r=>r.bid)&&(B.data||[]).some(r=>r.bid);
+const m={};const add=(snap,field)=>(snap.data||[]).forEach(r=>{const k=r.tid+'|'+r.cid+'|'+r.size+'|'+(hasBox?r.bid:'');
+m[k]=m[k]||{tid:r.tid,cid:r.cid,size:r.size,bid:hasBox?r.bid:null,a:0,b:0};m[k][field]+=r.qty});
+add(A,'a');add(B,'b');
+const det=Object.values(m).map(x=>({fam:famName(typeFam(x.tid))||t('noFamily'),item:gtn(x.tid),color:gcn(x.cid),size:szTxt(x.size),box:x.bid?(D.boxes.find(bb=>bb.id===x.bid)?.name||t('deletedBox')):'',a:x.a,b:x.b,d:x.b-x.a}))
+.sort((p,q)=>p.fam.localeCompare(q.fam)||p.item.localeCompare(q.item)||p.color.localeCompare(q.color)||sizeRank(p.size||'\u2014')-sizeRank(q.size||'\u2014'));
+const paint=(ws,col)=>ws.eachRow((row,n)=>{if(n===1)return;const cell=row.getCell(col);const v=cell.value;
+if(typeof v==='number'&&v!==0){cell.font={bold:true,color:{argb:v>0?'FF15803D':'FFB91C1C'}};if(v>0)cell.numFmt='+0;-0;0'}});
+const cols=[{h:t('familyLbl'),k:'fam'},{h:t('byItem'),k:'item'},{h:t('color'),k:'color'},{h:t('size'),k:'size',w:7},...(hasBox?[{h:t('boxes'),k:'box'}]:[]),{h:lblA,k:'a',num:1,w:12},{h:lblB,k:'b',num:1,w:12},{h:t('changeLbl'),k:'d',num:1,w:10}];
+const dcol=cols.length;
+const w1=xlSheet(wb,t('xlDetail'),cols,det);
+xlTotal(w1,t('total'),{a:det.reduce((s,r)=>s+r.a,0),b:det.reduce((s,r)=>s+r.b,0),d:det.reduce((s,r)=>s+r.d,0)});
+paint(w1,dcol);
+// Per family
+const fm={};det.forEach(r=>{fm[r.fam]=fm[r.fam]||{fam:r.fam,a:0,b:0,d:0};fm[r.fam].a+=r.a;fm[r.fam].b+=r.b;fm[r.fam].d+=r.d});
+const fr=Object.values(fm).sort((p,q)=>Math.abs(q.d)-Math.abs(p.d)||p.fam.localeCompare(q.fam));
+const w2=xlSheet(wb,t('byFamily'),[{h:t('familyLbl'),k:'fam'},{h:lblA,k:'a',num:1,w:12},{h:lblB,k:'b',num:1,w:12},{h:t('changeLbl'),k:'d',num:1,w:10}],fr);
+xlTotal(w2,t('total'),{a:fr.reduce((s,r)=>s+r.a,0),b:fr.reduce((s,r)=>s+r.b,0),d:fr.reduce((s,r)=>s+r.d,0)});
+paint(w2,4);
+// Only what moved, biggest first — the quick read
+const ch=det.filter(r=>r.d!==0).sort((p,q)=>Math.abs(q.d)-Math.abs(p.d));
+const w3=xlSheet(wb,t('xlChanges'),cols,ch.length?ch:[{fam:t('noChanges')}]);
+paint(w3,dcol);
+// Stock over time: every record between the two dates
+const win=snapChrono().filter(s=>new Date(s.created_at)>=new Date(A.created_at)&&new Date(s.created_at)<=new Date(B.created_at))
+.map(s=>({date:new Date(s.created_at).toLocaleString(),name:(s.name||'').startsWith('auto:')?t('xlAuto'):s.name,qty:(s.data||[]).reduce((x,r)=>x+r.qty,0)}));
+xlSheet(wb,t('stockOverTime'),[{h:t('xlDate'),k:'date'},{h:t('name'),k:'name'},{h:t('qty'),k:'qty',num:1,w:10}],win);
+await xlDownload(wb,`${clubSlug()}-report-${new Date(A.created_at).toISOString().split('T')[0]}-to-${new Date(B.created_at).toISOString().split('T')[0]}.xlsx`);toast(t('tExported'))}
+catch(e){toast(e.message||'Export failed','error')}finally{busyOff()}}
 function openSnapModal(){$('snapName').value='';openModal('snapModal')}
 async function takeSnap(){const n=$('snapName').value.trim();if(!n){toast(t('tEnterName'),'error');return}
-const agg={};D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}`;if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,qty:0};agg[k].qty+=i.quantity});
+const agg={};D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}|${i.box_id}`;if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,bid:i.box_id,qty:0};agg[k].qty+=i.quantity});
 const b=$('snapBtn');b.innerHTML='<span class="spinner"></span>';b.disabled=1;
 const{data}=await ins('inventory_snapshots',{name:n,data:Object.values(agg),created_by:U.id}).select();
 if(data?.[0])D.snaps.unshift(data[0]);
@@ -2013,8 +2108,8 @@ busy('busyImporting');
 const low=s=>(s||'').trim().toLowerCase();
 try{
 // Automatic restore point before anything is written
-const agg={};D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}`;
-if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,qty:0};agg[k].qty+=i.quantity});
+const agg={};D.items.forEach(i=>{const k=`${i.item_type_id}|${i.color_id}|${i.size}|${i.box_id}`;
+if(!agg[k])agg[k]={tid:i.item_type_id,cid:i.color_id,size:i.size,bid:i.box_id,qty:0};agg[k].qty+=i.quantity});
 if(Object.keys(agg).length)await ins('inventory_snapshots',{name:t('impSnapName')+' '+new Date().toISOString().split('T')[0],data:Object.values(agg),created_by:U.id});
 // Create everything the file references that doesn't exist yet
 const PAL=['#3b82f6','#ef4444','#22c55e','#eab308','#f97316','#a855f7','#ec4899','#14b8a6','#6b7280','#84cc16'];
@@ -2038,23 +2133,60 @@ if(ex)ups.push({id:ex.id,quantity:impM==='add'?ex.quantity+p.qty:p.qty});
 else inserts.push({box_id:bx.id,item_type_id:ty.id,color_id:co.id,size:sz,quantity:p.qty})});
 if(inserts.length){const r=await ins('box_items',inserts);if(r.error)throw r.error}
 for(const u of ups){const r=await SB.from('box_items').update({quantity:u.quantity}).eq('id',u.id);if(r.error)throw r.error}
-await ins('activity_log',{action_type:'item_added',quantity:d.rows.length,created_by:U.id});
+{const logs=[];d.rows.forEach(p=>{const bx=D.boxes.find(x=>low(x.name)===low(p.bx)),ty=D.types.find(x=>low(x.name)===low(p.ty)),co=D.colors.find(x=>low(x.name)===low(p.co));
+if(bx&&ty&&co&&p.qty>0)logs.push({action_type:impM==='add'?'item_added':'item_updated',item_type_id:ty.id,color_id:co.id,size:p.sz,quantity:p.qty,box_id:bx.id,created_by:U.id})});
+if(logs.length)await ins('activity_log',logs)}
 await loadData();
 closeModal('importModal');toast(t('tImported').replace('{n}',d.rows.length));impData=null}
 catch(e){toast(e.message||'Import failed','error')}
 finally{busyOff();b.innerHTML=t('impConfirm');b.disabled=0}}
-function exportCSV(){
-const q=s=>`"${String(s??'').replace(/"/g,'""')}"`;
+// ============ EXCEL EXPORTS (.xlsx) ============
+// ExcelJS is ~1MB, so it only downloads the first time someone exports
+let _xl=null;
+function loadExcel(){if(window.ExcelJS)return Promise.resolve(window.ExcelJS);
+if(_xl)return _xl;
+const srcs=['https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js','https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js'];
+_xl=new Promise((res,rej)=>{const tryN=k=>{if(k>=srcs.length){_xl=null;rej(new Error('Excel library failed to load'));return}
+const s=document.createElement('script');s.src=srcs[k];s.onload=()=>window.ExcelJS?res(window.ExcelJS):tryN(k+1);s.onerror=()=>{s.remove();tryN(k+1)};document.head.appendChild(s)};tryN(0)});
+return _xl}
+function clubSlug(){return (D.settings.club_name||CLUB?.name||'qajon').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'qajon'}
+const XL_HEAD={font:{bold:true,color:{argb:'FFFFFFFF'}},fill:{type:'pattern',pattern:'solid',fgColor:{argb:'FF03306B'}},alignment:{vertical:'middle'}};
+// Header row styling, frozen header, auto-filter and sensible column widths
+function xlSheet(wb,name,cols,rows){const ws=wb.addWorksheet(name,{views:[{state:'frozen',ySplit:1}]});
+ws.columns=cols.map(c=>({header:c.h,key:c.k,width:c.w||14,style:c.num?{alignment:{horizontal:'right'}}:{}}));
+rows.forEach(r=>ws.addRow(r));
+const h=ws.getRow(1);h.height=22;h.eachCell(cell=>{cell.font=XL_HEAD.font;cell.fill=XL_HEAD.fill;cell.alignment=XL_HEAD.alignment});
+ws.autoFilter={from:{row:1,column:1},to:{row:1,column:cols.length}};
+// widen columns to fit the longest value (capped)
+cols.forEach((col,ix)=>{let m=col.h.length;rows.forEach(r=>{const v=r[col.k];if(v!=null)m=Math.max(m,String(v).length)});ws.getColumn(ix+1).width=Math.min(Math.max(m+2,col.w||8),48)});
+return ws}
+function xlTotal(ws,label,sums){const r=ws.addRow(Object.assign({},sums));r.getCell(1).value=label;
+r.eachCell(cell=>{cell.font={bold:true};cell.border={top:{style:'thin',color:{argb:'FF94A3B8'}}}});return r}
+async function xlDownload(wb,fname){const buf=await wb.xlsx.writeBuffer();
+const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
+a.download=fname;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+const szTxt=s=>s&&s!=='\u2014'?s:'';
+async function exportCSV(){if(!D.items.length){toast(t('noItems'),'error');return}
+busy('busyExporting');
+try{const XL=await loadExcel();const wb=new XL.Workbook();wb.creator='Qajon';wb.created=new Date();
 const st=s=>s==='na'?t('statusNA'):s==='clean'?t('clean'):t('dirty');
-let csv=[t('type'),t('color'),t('size'),t('qty'),t('boxes'),t('location'),t('status')].map(q).join(',')+'\n';
-D.items.slice().sort((a,b)=>gtn(a.item_type_id).localeCompare(gtn(b.item_type_id))||gcn(a.color_id).localeCompare(gcn(b.color_id)))
-.forEach(i=>{const b=D.boxes.find(x=>x.id===i.box_id);
-csv+=[q(gtn(i.item_type_id)),q(gcn(i.color_id)),q(i.size==='—'?'':i.size),i.quantity,q(b?b.name:''),q(b?gln(b.location_id):''),q(b?st(b.status):'')].join(',')+'\n'});
-const slug=(D.settings.club_name||CLUB?.name||'qajon').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'qajon';
-const a=document.createElement('a');
-// BOM so Excel opens accented names correctly
-a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));
-a.download=`${slug}-inventory-${new Date().toISOString().split('T')[0]}.csv`;a.click();toast(t('tExported'))}
+// Sheet 1: every row, with family so similar names can't be confused
+const det=D.items.filter(i=>i.quantity>0).map(i=>{const b=D.boxes.find(x=>x.id===i.box_id);
+return{fam:famName(typeFam(i.item_type_id))||t('noFamily'),item:gtn(i.item_type_id),color:gcn(i.color_id),size:szTxt(i.size),qty:i.quantity,
+box:b?b.name:'',loc:b?gln(b.location_id)||'':'',status:b?st(b.status):''}})
+.sort((a,b)=>a.fam.localeCompare(b.fam)||a.item.localeCompare(b.item)||a.color.localeCompare(b.color)||sizeRank(a.size||'\u2014')-sizeRank(b.size||'\u2014'));
+const w1=xlSheet(wb,t('xlInventory'),[{h:t('familyLbl'),k:'fam'},{h:t('byItem'),k:'item'},{h:t('color'),k:'color'},{h:t('size'),k:'size',w:7},{h:t('qty'),k:'qty',num:1,w:8},{h:t('boxes'),k:'box'},{h:t('location'),k:'loc'},{h:t('status'),k:'status'}],det);
+xlTotal(w1,t('total'),{qty:det.reduce((s,r)=>s+r.qty,0)});
+// Sheet 2: totals per family and item
+const agg={};det.forEach(r=>{const k=r.fam+'|'+r.item;agg[k]=agg[k]||{fam:r.fam,item:r.item,qty:0,boxes:new Set()};agg[k].qty+=r.qty;agg[k].boxes.add(r.box)});
+const sum=Object.values(agg).map(x=>({fam:x.fam,item:x.item,qty:x.qty,nb:x.boxes.size})).sort((a,b)=>a.fam.localeCompare(b.fam)||b.qty-a.qty);
+const w2=xlSheet(wb,t('xlSummary'),[{h:t('familyLbl'),k:'fam'},{h:t('byItem'),k:'item'},{h:t('qty'),k:'qty',num:1,w:8},{h:t('xlInBoxes'),k:'nb',num:1,w:10}],sum);
+xlTotal(w2,t('total'),{qty:sum.reduce((s,r)=>s+r.qty,0)});
+// Sheet 3: one line per box
+const bx=D.boxes.map(b=>{const it=D.items.filter(i=>i.box_id===b.id);return{box:b.name,loc:gln(b.location_id)||'',status:st(b.status),n:it.reduce((s,i)=>s+i.quantity,0),kinds:new Set(it.filter(i=>i.quantity>0).map(i=>i.item_type_id)).size}}).sort((a,b)=>a.box.localeCompare(b.box));
+xlSheet(wb,t('boxes'),[{h:t('boxes'),k:'box'},{h:t('location'),k:'loc'},{h:t('status'),k:'status'},{h:t('qty'),k:'n',num:1,w:8},{h:t('xlKinds'),k:'kinds',num:1,w:10}],bx);
+await xlDownload(wb,`${clubSlug()}-inventory-${new Date().toISOString().split('T')[0]}.xlsx`);toast(t('tExported'))}
+catch(e){toast(e.message||'Export failed','error')}finally{busyOff()}}
 
 // HELPERS
 function openModal(id){$(id).classList.add('show')}
